@@ -181,8 +181,7 @@ So that we can integrate the check in our wrapper (the source code is available 
     Service Reachabilty Check (SRC) of Oracle Database Server [BDTSERV] completed...
 
 During the instance creation, you could also check the progress through the web interface:  
-[  
-<img src="{{ site.baseurl }}/assets/images/screen-shot-2018-05-24-at-22-15-06.png" class="aligncenter size-full wp-image-3353" width="1100" height="206" />](https://bdrouvot.wordpress.com/2018/05/28/demystifying-and-wrapping-the-oracle-cloud-apis-with-python/screen-shot-2018-05-24-at-22-15-06/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2018-05-24-at-22-15-06.png" class="aligncenter size-full wp-image-3353" width="1100" height="206" />
 
 ### Source code:
 
