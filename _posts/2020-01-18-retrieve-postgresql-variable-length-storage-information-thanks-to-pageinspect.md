@@ -155,7 +155,13 @@ INSERT 0 1
 postgres=# \i toast_info.sql
  t_ctid |        toast_info
 --------+---------------------------
-(0,1) | short in-line (0,2) | long in-line (compressed) (0,3) | toasted (compressed) (0,4) | short in-line (0,5) | toasted (uncompressed) **(0,6)** | toasted (uncompressed) (6 rows)
+(0,1)   | short in-line
+(0,2)   | long in-line (compressed)
+(0,3)   | toasted (compressed)
+(0,4)   | short in-line
+(0,5)   | toasted (uncompressed)
+<strong>(0,6)</strong>   | toasted (uncompressed)
+(6 rows)</pre>
 
 this one is TOAST-ed and uncompressed with storage external (as compare with t\_ctid (0,3) with storage extended).
 

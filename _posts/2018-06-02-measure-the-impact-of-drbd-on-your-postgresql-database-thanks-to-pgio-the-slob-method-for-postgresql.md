@@ -270,7 +270,9 @@ DBNAME: pgio. 1 schemas, 1 threads(each). Run time: 120 seconds. RIOPS &gt;99352
 <p>My cgroup configuration on the DRBD secondary server is the following:</p>
 <pre style="padding-left:30px;">root@ubdrbd2:~# ls -l /dev/sdb
 brw-rw----
-1 root disk 8, 16 Jun 1 15:16 /dev/sdb root@ubdrbd2:~# cat /etc/cgconfig.conf mount { blkio = /cgroup/blkio; } group iothrottle { blkio { blkio.throttle.write\_iops\_device="8:16 500"; } } root@ubdrbd2:~# cat /etc/cgrules.conf \* blkio /iothrottle
+1 root disk 8, 16 Jun 1 15:16 /dev/sdb root@ubdrbd2:~# cat /etc/cgconfig.conf mount { blkio = /cgroup/blkio; } group iothrottle { blkio { blkio.throttle.write\_iops\_device="8:16 500"; } } root@ubdrbd2:~# cat /etc/cgrules.conf 
+\* blkio /iothrottle
+</pre>
 
 Means: we want to ensure that the number of writes per second on /dev/sdb will be limited to 500 for all the processes.
 

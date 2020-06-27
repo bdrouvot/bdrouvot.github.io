@@ -61,11 +61,36 @@ permalink: "/2018/08/12/postgresql-active-session-history-extension-testing-with
 <pre style="padding-left:30px;">[root@bdtdocker dockerfile]# docker run -d -p 5432:5432 --name pgsentinel pgsentinel-testing
 </pre>
 <h4>and verify that the pg_active_session_history view is available</h4>
-<pre style="padding-left:30px;">[root@bdtdocker dockerfile]# docker exec -it pgsentinel psql -c "\d pg_active_session_history"
-                   View "public.pg_active_session_history"
+<pre style="padding-left:30px;">                   View "public.pg_active_session_history"
       Column      |           Type           | Collation | Nullable | Default
 ------------------+--------------------------+-----------+----------+---------
-ash\_time | timestamp with time zone | | | datid | oid | | | datname | text | | | pid | integer | | | usesysid | oid | | | usename | text | | | application\_name | text | | | client\_addr | text | | | client\_hostname | text | | | client\_port | integer | | | backend\_start | timestamp with time zone | | | xact\_start | timestamp with time zone | | | query\_start | timestamp with time zone | | | state\_change | timestamp with time zone | | | wait\_event\_type | text | | | wait\_event | text | | | state | text | | | backend\_xid | xid | | | backend\_xmin | xid | | | top\_level\_query | text | | | query | text | | | cmdtype | text | | | queryid | bigint | | | backend\_type | text | | | blockers | integer | | | blockerpid | integer | | | blocker\_state | text | | |
-
+ ash_time         | timestamp with time zone |           |          |
+ datid            | oid                      |           |          |
+ datname          | text                     |           |          |
+ pid              | integer                  |           |          |
+ usesysid         | oid                      |           |          |
+ usename          | text                     |           |          |
+ application_name | text                     |           |          |
+ client_addr      | text                     |           |          |
+ client_hostname  | text                     |           |          |
+ client_port      | integer                  |           |          |
+ backend_start    | timestamp with time zone |           |          |
+ xact_start       | timestamp with time zone |           |          |
+ query_start      | timestamp with time zone |           |          |
+ state_change     | timestamp with time zone |           |          |
+ wait_event_type  | text                     |           |          |
+ wait_event       | text                     |           |          |
+ state            | text                     |           |          |
+ backend_xid      | xid                      |           |          |
+ backend_xmin     | xid                      |           |          |
+ top_level_query  | text                     |           |          |
+ query            | text                     |           |          |
+ cmdtype          | text                     |           |          |
+ queryid          | bigint                   |           |          |
+ backend_type     | text                     |           |          |
+ blockers         | integer                  |           |          |
+ blockerpid       | integer                  |           |          |
+ blocker_state    | text                     |           |          |
+</pre>
 So that we can now test the extension behavior on the postgreSQL version of our choice (11beta3 in this example).
 

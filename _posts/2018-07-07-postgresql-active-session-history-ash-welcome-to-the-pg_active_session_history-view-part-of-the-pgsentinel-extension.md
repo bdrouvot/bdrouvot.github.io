@@ -95,12 +95,34 @@ permalink: "/2018/07/07/postgresql-active-session-history-ash-welcome-to-the-pg_
 </ul>
 <h2>How does it look like?</h2>
 <p>Let's have a look to the pg_active_session_history view (more details on how to create it later on):</p>
-<pre style="padding-left:30px;">postgres@pgu:~$ /usr/local/pgsql/bin/psql -c "\d pg_active_session_history"
-                   View "public.pg_active_session_history"
+<pre style="padding-left:30px;">                   View "public.pg_active_session_history"
       Column      |           Type           | Collation | Nullable | Default
 ------------------+--------------------------+-----------+----------+---------
-ash\_time | timestamp with time zone | | | datid | oid | | | datname | text | | | pid | integer | | | usesysid | oid | | | usename | text | | | application\_name | text | | | client\_addr | text | | | client\_hostname | text | | | client\_port | integer | | | backend\_start | timestamp with time zone | | | xact\_start | timestamp with time zone | | | query\_start | timestamp with time zone | | | state\_change | timestamp with time zone | | | wait\_event\_type | text | | | wait\_event | text | | | state | text | | | backend\_xid | xid | | | backend\_xmin | xid | | | top\_level\_query | text | | | query | text | | | queryid | bigint | | | backend\_type | text | | |
-
+ ash_time         | timestamp with time zone |           |          |
+ datid            | oid                      |           |          |
+ datname          | text                     |           |          |
+ pid              | integer                  |           |          |
+ usesysid         | oid                      |           |          |
+ usename          | text                     |           |          |
+ application_name | text                     |           |          |
+ client_addr      | text                     |           |          |
+ client_hostname  | text                     |           |          |
+ client_port      | integer                  |           |          |
+ backend_start    | timestamp with time zone |           |          |
+ xact_start       | timestamp with time zone |           |          |
+ query_start      | timestamp with time zone |           |          |
+ state_change     | timestamp with time zone |           |          |
+ wait_event_type  | text                     |           |          |
+ wait_event       | text                     |           |          |
+ state            | text                     |           |          |
+ backend_xid      | xid                      |           |          |
+ backend_xmin     | xid                      |           |          |
+ top_level_query  | text                     |           |          |
+ query            | text                     |           |          |
+ cmdtype          | text                     |           |          |
+ queryid          | bigint                   |           |          |
+ backend_type     | text                     |           |          |
+</pre>
 You could see it as samplings of&nbsp;[pg\_stat\_activity](https://www.postgresql.org/docs/current/static/monitoring-stats.html#PG-STAT-ACTIVITY-VIEW)&nbsp;(one second interval) providing more information:
 
 - **ash\_time** : the sampling time

@@ -140,7 +140,10 @@ order by count(*) desc;<br />
 postgres@pgu:~$ psql -f pg_ash_wait_chain.sql
  % of total wait | seconds |                                  wait_chain
 -----------------+---------+------------------------------------------------------------------------------
-57% | 582 | pid:1890 (Lock : transactionid) -\>pid:1888 40% | 403 | pid:1913 (Lock : transactionid) -\>pid:1890 (Lock : transactionid) -\>pid:1888 3% | 33 | pid:1913 (Lock : transactionid) -\>pid:1890 (3 rows)
+57%              | 582     | pid:1890 (Lock : transactionid) -\>pid:1888
+40%              | 403     | pid:1913 (Lock : transactionid) -\>pid:1890 (Lock : transactionid) -\>pid:1888
+3%               | 33      | pid:1913 (Lock : transactionid) -\>pid:1890
+(3 rows)</pre>
 
 As you can see the first two chains are still displayed (as the **query does not filter on ash\_time** ) but are not waiting anymore (seconds does not increase) while the last one (new one) is still waiting (seconds increase).
 
