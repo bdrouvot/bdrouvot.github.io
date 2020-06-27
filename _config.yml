@@ -36,7 +36,7 @@ title-img: "/assets/img/bdt_avatar.png"
 
 # Personalize the colors in your website. Colour values can be any valid CSS colour
 
-navbar-col: "#5697C2"
+navbar-col: "#418BBD"
 navbar-text-col: "#FFFFF0"
 navbar-children-col: "#87CEFA"
 page-col: "#FFFFFF"
