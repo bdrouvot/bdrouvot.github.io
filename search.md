@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Search bdrouvot.github.io"
-css: "/css/search.css"
+css: "/assets/css/search.css"
 ---
     
 ## Search bdrouvot.github.io with Google!
