@@ -3,10 +3,6 @@
 # Name of website
 title: bdt's blog
 
-# --- Local development options ---
-# If your website is hosted locally rather than on GitHub, then you need to uncomment the next two parameters to set the url and baseurl
-# *** If you're not sure what this mean, then leave this section as it is. Only modify the url and baseurl if you know what you're doing!***
-
 # url is the the website domain URL without a trailing slash
 url: "https://bdrouvot.github.io"
 
@@ -20,7 +16,6 @@ navbar-links:
   About Me: "aboutme"
   Resources:
     - My previous blog: "https://bdrouvot.wordpress.com/"
-  Author's home: "https://bdrouvot.wordpress.com/"
 
 # Image to show in the navigation bar - image must be a square (width = height)
 # Remove this parameter if you don't want an image in the navbar
@@ -73,26 +68,6 @@ share-links-active:
   twitter: true
   linkedin: true
   github: true
-
-# --- Web Statistics Section --- #
-
-# Fill in your Google Analytics gtag.js ID to track your website using gtag
-#gtag: ""
-
-# Fill in your Google Analytics ID to track your website using GA
-#google_analytics: ""
-
-# Google Tag Manager ID
-#gtm: ""
-
-# Matomo (aka Piwik) Web statistics
-# Uncomment the following section to enable Matomo. The opt-out parameter controls
-# whether or not you want to allow users to opt out of tracking.
-
-#matomo:
-#  site_id: "9"
-#  uri: "demo.wiki.pro"
-#  opt-out: true
 
 # Excerpt Word Length
 # Truncates the excerpt to the specified number of words on the index page
