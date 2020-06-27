@@ -54,7 +54,7 @@ To try to answer this question I decided to use strace (the Linux system call tr
 
 <!-- -->
 
-    io_submit(140691479359488, 4, {{0x7ff547f6c210, 0, 0, 0, 261}, {0x7ff547f6d0b0, 0, 0, 0, 261}, {0x7ff547f6c960, 0, 0, 0, 261}, {0x7ff547f6cbd0, 0, 0, 0, 261}}) = 4
+    io_submit(140691479359488, 4, \{\{0x7ff547f6c210, 0, 0, 0, 261\}, \{0x7ff547f6d0b0, 0, 0, 0, 261\}, \{0x7ff547f6c960, 0, 0, 0, 261\}, \{0x7ff547f6cbd0, 0, 0, 0, 261\}\}) = 4
 
 We can see that **4** IOs have been submitted **at the same time** (with a single io\_submit call).
 
@@ -62,7 +62,7 @@ We can see that **4** IOs have been submitted **at the same time** (with a singl
 
 <!-- -->
 
-    io_getevents(140691479359488, 1, 128, {{0x7ff547f6c960, 0x7ff547f6c960, 1048576, 0}, {0x7ff547f6cbd0, 0x7ff547f6cbd0, 1048576, 0}, {0x7ff547f6d0b0, 0x7ff547f6d0b0, 1048576, 0}, {0x7ff547f6c210, 0x7ff547f6c210, 1048576, 0}}, {600, 0}) = 4
+    io_getevents(140691479359488, 1, 128, \{\{0x7ff547f6c960, 0x7ff547f6c960, 1048576, 0\}, \{0x7ff547f6cbd0, 0x7ff547f6cbd0, 1048576, 0\}, \{0x7ff547f6d0b0, 0x7ff547f6d0b0, 1048576, 0\}, \{0x7ff547f6c210, 0x7ff547f6c210, 1048576, 0\}\}, \{600, 0\}) = 4
 
 I also straced arb during the rebalance of the DATA1M diskgroup (Allocation unit of **1MB**) and observed:
 
@@ -70,7 +70,7 @@ I also straced arb during the rebalance of the DATA1M diskgroup (Allocation uni
 
 <!-- -->
 
-    io_submit(139928633700352, 1, {{0x7f43aadbd210, 0, 1, 0, 262}}) = 1
+    io_submit(139928633700352, 1, \{\{0x7f43aadbd210, 0, 1, 0, 262\}\}) = 1
 
 So **1** IO is submitted per io\_submit call.
 
@@ -78,7 +78,7 @@ So **1** IO is submitted per io\_submit call.
 
 <!-- -->
 
-    io_getevents(139928633700352, 3, 128, {{0x7f43aadbd6f0, 0x7f43aadbd6f0, 1048576, 0}}, {0, 0}) = 1
+    io_getevents(139928633700352, 3, 128, \{\{0x7f43aadbd6f0, 0x7f43aadbd6f0, 1048576, 0\}\}, \{0, 0\}) = 1
 
 <span style="text-decoration:underline;">**So that it makes sense to conclude that:**</span>
 
