@@ -39,7 +39,7 @@ As an oracle DBA you might have to deal with [REST API](https://en.wikipedia.org
 
 The instance creation can be done manually using the Web Interface that way:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2018-05-26-at-07-36-25.png" class="aligncenter size-full wp-image-3361" width="1100" height="461" />]
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2018-05-26-at-07-36-25.png" class="aligncenter size-full wp-image-3361" width="1100" height="461" />
 
 It could also been done using the APIs. The APIs are described in this [link](https://apicatalog.oraclecloud.com/ui/views/apicollection/oracle-public/database/csdbr-13/serviceinstances). The one related to the Instance creation is the following:
 
