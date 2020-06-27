@@ -12,7 +12,7 @@ url: "https://bdrouvot.github.io"
 # baseurl should be an empty string
 baseurl: ""
 
-show_excerpts: true
+show_excerpts: false 
 permalink: /:title/
 
 
