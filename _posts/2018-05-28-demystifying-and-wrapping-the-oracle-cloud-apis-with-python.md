@@ -53,10 +53,9 @@ To work with JSON let's use the [JSON one](https://docs.python.org/2/library/jso
 
 First, we need to create an http session. Let's import the requests module:
 
-\[sourcecode language="python"\]  
+```
 import requests  
-\[/sourcecode\]
-
+```
 and then create the http session:
 
 \[sourcecode language="python"\]  
