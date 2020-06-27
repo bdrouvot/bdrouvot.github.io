@@ -27,56 +27,71 @@ author:
   last_name: ''
 permalink: "/2013/01/11/asm-asynchronous-or-synchronous-io/"
 ---
-<p>As you know ASM is doing non (operating system) buffered I/O (also known as ‘DIO’ or Direct I/O) regardless of the oracle database <strong>filesystemio_options</strong> parameter.</p>
-<p><span style="color:#0000ff;">But what's about :  Asynchronous/Synchronous I/O ?</span></p>
-<p>If you have a look to <a href="https://support.oracle.com/epmos/faces/ui/km/SearchDocDisplay.jspx?_afrLoop=638224979179169&amp;recommended=true&amp;type=DOCUMENT&amp;id=751463.1&amp;_afrWindowMode=0&amp;_adf.ctrl-state=e23gwbnmc_184" target="_blank">MOS note [ID 751463.1]</a> you'll see that ASM asynchronous/synchronous I/O is entirely controlled by the DISK_ASYNCH_IO parameter and not the FILESYSTEMIO_OPTIONS one.</p>
-<p>At the time being, this note only deals with 10.2 databases, so I want to check if this is still the case with 11.2 databases (Let me tell you than I hope so ;-) ) :</p>
-<p><span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">For this test I will (at the database level):</span></span></p>
-<ul>
-<li>create a tablespace of 10M (<span style="color:#003300;">create tablespace bdt datafile '+DATA' size 10m</span>)</li>
-<li>strace the DBW process (<span style="color:#003300;">strace -cp &lt;pid of dbw process&gt;</span>)</li>
-</ul>
-<p>With differents values for <strong>filesystemio_options</strong> and <strong>disk_asynch_io</strong>.</p>
-<p><span style="text-decoration:underline;color:#0000ff;">The results are :</span></p>
-<pre>filesystemio_options=setall
-disk_asynch_io=true
 
-% time seconds usecs/call calls errors syscall
+As you know ASM is doing non (operating system) buffered I/O (also known as ‘DIO’ or Direct I/O) regardless of the oracle database **filesystemio\_options** parameter.
 
------- ----------- ----------- --------- --------- ----------------
-41.39 0.001000 7 150 14 semtimedop
-35.02 0.000846 7 126 io_submit
-20.70 0.000500 4 126 io_getevents</pre>
-<p>As you can see the <strong>io_getevents</strong> and <strong>io_submit</strong> system calls have been used =&gt; <strong>Asynchronous</strong> I/O.</p>
-<pre>filesystemio_options=setall
-disk_asynch_io=false
+<span style="color:#0000ff;">But what's about :  Asynchronous/Synchronous I/O ?</span>
 
-% time seconds usecs/call calls errors syscall
------- ----------- ----------- --------- --------- ----------------
-75.38 0.007469 30 252 pwrite
-20.19 0.002000 10 202 5 semtimedop
-0.00 0.000000 0 8 close
-0.00 0.000000 0 2 2 stat</pre>
-<p>As you can see the <strong>pwrite</strong> system call has been used =&gt; <strong>Synchronous</strong> I/O.</p>
-<pre>filesystemio_options=none
-disk_asynch_io=true
+If you have a look to [MOS note \[ID 751463.1\]](https://support.oracle.com/epmos/faces/ui/km/SearchDocDisplay.jspx?_afrLoop=638224979179169&recommended=true&type=DOCUMENT&id=751463.1&_afrWindowMode=0&_adf.ctrl-state=e23gwbnmc_184) you'll see that ASM asynchronous/synchronous I/O is entirely controlled by the DISK\_ASYNCH\_IO parameter and not the FILESYSTEMIO\_OPTIONS one.
 
-% time seconds usecs/call calls errors syscall
------- ----------- ----------- --------- --------- ----------------
-75.45 0.005055 40 126 io_submit
-14.93 0.001000 6 157 2 semtimedop
-9.10 0.000610 5 126 io_getevents</pre>
-<p>As you can see the <strong>io_getevents</strong> and <strong>io_submit</strong> system calls have been used =&gt; <strong>Asynchronous</strong> I/O.</p>
-<pre>filesystemio_options=none
-disk_asynch_io=false
+At the time being, this note only deals with 10.2 databases, so I want to check if this is still the case with 11.2 databases (Let me tell you than I hope so ;-) ) :
 
-% time seconds usecs/call calls errors syscall
------- ----------- ----------- --------- --------- ----------------
-56.54 0.005354 21 252 pwrite 42.23 0.003999 16 256 3 semtimedop 0.51 0.000048 0 268 semctl 0.49 0.000046 0 817 times
+<span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">For this test I will (at the database level):</span></span>
 
-As you can see the&nbsp; **pwrite** &nbsp;system call has been used =\> **Synchronous** I/O.
+-   create a tablespace of 10M (<span style="color:#003300;">create tablespace bdt datafile '+DATA' size 10m</span>)
+-   strace the DBW process (<span style="color:#003300;">strace -cp &lt;pid of dbw process&gt;</span>)
 
-Conclusion :
+With differents values for **filesystemio\_options** and **disk\_asynch\_io**.
 
-With 11.2 databases, ASM asynchronous/synchronous&nbsp;I/O is still entirely controlled by the DISK\_ASYNCH\_IO parameter.
+<span style="text-decoration:underline;color:#0000ff;">The results are :</span>
 
+    filesystemio_options=setall
+    disk_asynch_io=true
+
+    % time seconds usecs/call calls errors syscall
+
+    ------ ----------- ----------- --------- --------- ----------------
+    41.39 0.001000 7 150 14 semtimedop
+    35.02 0.000846 7 126 io_submit
+    20.70 0.000500 4 126 io_getevents
+
+As you can see the **io\_getevents** and **io\_submit** system calls have been used =&gt; **Asynchronous** I/O.
+
+    filesystemio_options=setall
+    disk_asynch_io=false
+
+    % time seconds usecs/call calls errors syscall
+    ------ ----------- ----------- --------- --------- ----------------
+    75.38 0.007469 30 252 pwrite
+    20.19 0.002000 10 202 5 semtimedop
+    0.00 0.000000 0 8 close
+    0.00 0.000000 0 2 2 stat
+
+As you can see the **pwrite** system call has been used =&gt; **Synchronous** I/O.
+
+    filesystemio_options=none
+    disk_asynch_io=true
+
+    % time seconds usecs/call calls errors syscall
+    ------ ----------- ----------- --------- --------- ----------------
+    75.45 0.005055 40 126 io_submit
+    14.93 0.001000 6 157 2 semtimedop
+    9.10 0.000610 5 126 io_getevents
+
+As you can see the **io\_getevents** and **io\_submit** system calls have been used =&gt; **Asynchronous** I/O.
+
+    filesystemio_options=none
+    disk_asynch_io=false
+
+    % time seconds usecs/call calls errors syscall
+    ------ ----------- ----------- --------- --------- ----------------
+    56.54 0.005354 21 252 pwrite
+    42.23 0.003999 16 256 3 semtimedop
+    0.51 0.000048 0 268 semctl
+    0.49 0.000046 0 817 times
+
+As you can see the **pwrite** system call has been used =&gt; **Synchronous** I/O.
+
+<span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">Conclusion :</span></span>
+
+With 11.2 databases, ASM asynchronous/synchronous I/O is still entirely controlled by the DISK\_ASYNCH\_IO parameter.

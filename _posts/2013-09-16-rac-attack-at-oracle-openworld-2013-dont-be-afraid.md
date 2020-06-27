@@ -25,24 +25,24 @@ author:
   last_name: ''
 permalink: "/2013/09/16/rac-attack-at-oracle-openworld-2013-dont-be-afraid/"
 ---
+
 You'll attend Oracle OpenWorld 2013 and:
 
-- You want to install a 12c RAC using oracle Virtual Box on your laptop.
-- Or you just want to have a talk or share your experience with some people around this technology.
+-   You want to install a 12c RAC using oracle Virtual Box on your laptop.
+-   Or you just want to have a talk or share your experience with some people around this technology.
 
-So, you should attend to RAC Attack at Oracle OpenWorld 2013:
+<span style="text-decoration:underline;">So, you should attend to RAC Attack at Oracle OpenWorld 2013:</span>
 
-[![RAC-attack]({{ site.baseurl }}/assets/images/rac-attack.png)](http://bdrouvot.files.wordpress.com/2013/09/rac-attack.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/rac-attack.png" class="aligncenter size-full wp-image-1378" width="620" height="464" alt="RAC-attack" />](http://bdrouvot.files.wordpress.com/2013/09/rac-attack.png)
 
 **Don't be afraid ! we won't configure an extended RAC and then no need to break your laptop into 2 separate pieces to simulate a stretched cluster :-)**
 
-You can find more information on the event&nbsp;[here](http://www.pythian.com/blog/rac-attack-at-oracle-openworld-2013-operation-ninja/).
+You can find more information on the event [here](http://www.pythian.com/blog/rac-attack-at-oracle-openworld-2013-operation-ninja/).
 
-Join Rac Attack on the social media:
+<span style="text-decoration:underline;">Join Rac Attack on the social media:</span>
 
-- Rac Attack is on Google +&nbsp;[here](https://plus.google.com/110729222679087570828/posts).
-- Rac Attack is on twitter: Use the #RacAttack hashtag.
-- Rac Attack is on facebook [here](https://www.facebook.com/racattackoow13).
+-   Rac Attack is on Google + [here](https://plus.google.com/110729222679087570828/posts).
+-   Rac Attack is on twitter: Use the \#RacAttack hashtag.
+-   Rac Attack is on facebook [here](https://www.facebook.com/racattackoow13).
 
 Hope to see you there !
-

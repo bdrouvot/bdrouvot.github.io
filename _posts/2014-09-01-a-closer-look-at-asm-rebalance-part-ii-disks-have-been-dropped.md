@@ -37,118 +37,119 @@ author:
   last_name: ''
 permalink: "/2014/09/01/a-closer-look-at-asm-rebalance-part-ii-disks-have-been-dropped/"
 ---
-This article is the second&nbsp;Part of the "A closer look at ASM rebalance" series:
 
-1. [Part I: Disks have been added.](http://bdrouvot.wordpress.com/2014/08/25/a-closer-look-at-asm-rebalance-part-i-disks-have-been-added/ "A closer look at ASM rebalance, Part I: Disks have been added")
-2. Part II: Disks have been dropped.
-3. [Part III: Disks have been added and dropped (at the same time).](http://bdrouvot.wordpress.com/2014/09/01/a-closer-look-at-asm-rebalance-part-iii-disks-have-been-added-and-dropped-at-the-same-time/ "A closer look at ASM rebalance, Part III: Disks have been added and dropped (at the same time)")
+This article is the second Part of the "A closer look at ASM rebalance" series:
 
-If you are not familiar with ASM rebalance I would suggest first to read those 2 blog posts written by&nbsp;Bane Radulovic:
+1.  [Part I: Disks have been added.](http://bdrouvot.wordpress.com/2014/08/25/a-closer-look-at-asm-rebalance-part-i-disks-have-been-added/ "A closer look at ASM rebalance, Part I: Disks have been added")
+2.  Part II: Disks have been dropped.
+3.  [Part III: Disks have been added and dropped (at the same time).](http://bdrouvot.wordpress.com/2014/09/01/a-closer-look-at-asm-rebalance-part-iii-disks-have-been-added-and-dropped-at-the-same-time/ "A closer look at ASM rebalance, Part III: Disks have been added and dropped (at the same time)")
 
-- [Rebalancing act](http://asmsupportguy.blogspot.com.au/2011/11/rebalancing-act.html)
-- [When will my rebalance complete](http://asmsupportguy.blogspot.fr/2012/07/when-will-my-rebalance-complete.html)
+If you are not familiar with ASM rebalance I would suggest first to read those 2 blog posts written by Bane Radulovic:
 
-In this part II I want to visualize the rebalance operation (with 3 power values: 2,6 and 11) after&nbsp;disks have been dropped.
+-   [Rebalancing act](http://asmsupportguy.blogspot.com.au/2011/11/rebalancing-act.html)
+-   [When will my rebalance complete](http://asmsupportguy.blogspot.fr/2012/07/when-will-my-rebalance-complete.html)
 
-To do so, on a&nbsp;2 nodes Extended Rac Cluster (11.2.0.4),&nbsp;I dropped&nbsp;2 disks into the DATA diskgroup (created with an ASM Allocation Unit of 4MB) and launched (connected on +ASM1):
+In this part II I want to visualize the rebalance operation (with 3 power values: 2,6 and 11) after disks have been dropped.
 
-1. _alter diskgroup DATA rebalance power 2;_ (At 09:09&nbsp;AM).
-2. _alter diskgroup DATA rebalance power 6;_ (At 09:19&nbsp;AM).
-3. _alter diskgroup DATA rebalance power 11;_&nbsp;(At 09:29&nbsp;AM).
+To do so, on a 2 nodes Extended Rac Cluster (11.2.0.4), I dropped 2 disks into the DATA diskgroup (created with an ASM Allocation Unit of 4MB) and launched (connected on +ASM1):
 
-And then I waited until it finished (means _v$asm\_operation_ returns no rows for the DATA diskgroup).
+1.  *alter diskgroup DATA rebalance power 2;* (At 09:09 AM).
+2.  *alter diskgroup DATA rebalance power 6;* (At 09:19 AM).
+3.  *alter diskgroup DATA rebalance power 11;* (At 09:29 AM).
+
+And then I waited until it finished (means *v$asm\_operation* returns no rows for the DATA diskgroup).
 
 Note that 2) and 3) **interrupted** the rebalance in progress and launched a new one with a new power.
 
-During this amount of time I collected the [ASM performance metrics that way](http://bdrouvot.wordpress.com/2014/07/08/graphing-asm-performance-metrics/ "Graphing ASM performance metrics")&nbsp;for the **DATA diskgroup only**.
+During this amount of time I collected the [ASM performance metrics that way](http://bdrouvot.wordpress.com/2014/07/08/graphing-asm-performance-metrics/ "Graphing ASM performance metrics") for the **DATA diskgroup only**.
 
 I'll present the results with [Tableau](http://www.tableausoftware.com/public//community) (For each Graph I'll keep the “columns”, “rows” and “marks” shelf into the print screen so that you can reproduce).
 
-**Note:** There is no database activity on the Host where the rebalance has been launched.
+<span style="text-decoration:underline;">**Note:**</span> There is no database activity on the Host where the rebalance has been launched.
 
-**Here are the results:**
+<span style="text-decoration:underline;">**Here are the results:**</span>
 
-First let's verify that the whole rebalance activity has been done on the +ASM1 instance (As I launched the rebalance operations&nbsp;from&nbsp;it).
+First let's verify that the whole rebalance activity has been done on the +ASM1 instance (As I launched the rebalance operations from it).
 
-[![Screen Shot 2014-08-31 at 18.50.48]({{ site.baseurl }}/assets/images/screen-shot-2014-08-31-at-18-50-48.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-18-50-48.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-31-at-18-50-48.png" class="aligncenter size-full wp-image-2243" width="640" height="308" alt="Screen Shot 2014-08-31 at 18.50.48" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-18-50-48.png)
 
-We can see:
+<span style="text-decoration:underline;">We can see:</span>
 
-1. That all Read and Write rebalance activity has been done on +ASM1 .
-2. That the read throughput is very close to the write throughput on +ASM1.
-3. The impact of the power values&nbsp;(2,6 and 11) on the throughput.
+1.  That all Read and Write rebalance activity has been done on +ASM1 .
+2.  That the read throughput is very close to the write throughput on +ASM1.
+3.  The impact of the power values (2,6 and 11) on the throughput.
 
-Now I would like to compare the behavior of 2 Sets of Disks: The disks that have been dropped&nbsp;and the disks that will remain into&nbsp;the DATA diskgroup.
+Now I would like to compare the behavior of 2 Sets of Disks: The disks that have been dropped and the disks that will remain into the DATA diskgroup.
 
-To do so, let's create in Tableau a SET that contains the 2 dropped&nbsp;disks.
+To do so, let's create in Tableau a SET that contains the 2 dropped disks.
 
-[![Screen Shot 2014-08-20 at 21.27.34]({{ site.baseurl }}/assets/images/screen-shot-2014-08-20-at-21-27-34.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-20-at-21-27-34.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-20-at-21-27-34.png" class="aligncenter size-full wp-image-2157" width="480" height="514" alt="Screen Shot 2014-08-20 at 21.27.34" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-20-at-21-27-34.png)
 
 Let's call it "Dropped Disks"
 
-[![Screen Shot 2014-08-31 at 18.53.04]({{ site.baseurl }}/assets/images/screen-shot-2014-08-31-at-18-53-04.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-18-53-04.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-31-at-18-53-04.png" class="aligncenter size-full wp-image-2244" width="472" height="401" alt="Screen Shot 2014-08-31 at 18.53.04" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-18-53-04.png)
 
-So that now we&nbsp;are&nbsp;able to display the ASM metrics **IN** &nbsp;this set (the 2 dropped&nbsp;disks) and **OUT** &nbsp;this set (the disks that will remain into&nbsp;the DATA diskgroup).
+So that now we are able to display the ASM metrics **IN** this set (the 2 dropped disks) and **OUT** this set (the disks that will remain into the DATA diskgroup).
 
 I will filter the metrics on ASM1 only (to avoid any "little parasites" coming from ASM2).
 
-**Let's visualize&nbsp;the _Reads/s_ and _Writes/s_ metrics:**
+<span style="text-decoration:underline;">**Let's visualize the *Reads/s* and *Writes/s* metrics:**</span>
 
-[![Screen Shot 2014-08-31 at 18.57.08]({{ site.baseurl }}/assets/images/screen-shot-2014-08-31-at-18-57-08.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-18-57-08.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-31-at-18-57-08.png" class="aligncenter size-full wp-image-2246" width="640" height="310" alt="Screen Shot 2014-08-31 at 18.57.08" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-18-57-08.png)
 
-We can see that during the 3 rebalances:
+<span style="text-decoration:underline;">We can see that during the 3 rebalances:</span>
 
-1. No writes&nbsp;on the dropped disks.
-2. Number of _Reads/s_ increasing on the dropped&nbsp;disks depending of the power values.
-3. _Reads/s_ and _Writes/s_ both&nbsp;increasing on the remaining&nbsp;disks depending of the power values.
+1.  No writes on the dropped disks.
+2.  Number of *Reads/s* increasing on the dropped disks depending of the power values.
+3.  *Reads/s* and *Writes/s* both increasing on the remaining disks depending of the power values.
 
-- Are 1, 2 and 3 surprising? No.
+-   Are 1, 2 and 3 surprising? No.
 
-**Let's visualize&nbsp;the _Kby&nbsp;Read/s_ and _Kby&nbsp;Write/s_ metrics:**
+<span style="text-decoration:underline;">**Let's visualize the *Kby Read/s* and *Kby Write/s* metrics:**</span>
 
-[![Screen Shot 2014-08-31 at 19.00.33]({{ site.baseurl }}/assets/images/screen-shot-2014-08-31-at-19-00-33.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-19-00-33.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-31-at-19-00-33.png" class="aligncenter size-full wp-image-2247" width="640" height="307" alt="Screen Shot 2014-08-31 at 19.00.33" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-31-at-19-00-33.png)
 
-We can see that during the 3 rebalances:
+<span style="text-decoration:underline;">We can see that during the 3 rebalances:</span>
 
-1. No _Kby Write/s_ on the dropped&nbsp;disks.
-2. Number of _Kby Read/s_ increasing on the dropped&nbsp;disks depending of the power values.
-3. _Kby Read/s_ and _Kby Write/s_ both&nbsp;increasing on the remaining&nbsp;disks depending of the power values.
+1.  No *Kby Write/s* on the dropped disks.
+2.  Number of *Kby Read/s* increasing on the dropped disks depending of the power values.
+3.  *Kby Read/s* and *Kby Write/s* both increasing on the remaining disks depending of the power values.
 
 Are 1, 2 and 3 surprising? No.
 
-**Let's visualize&nbsp;the Average By/_Read_&nbsp;and Average&nbsp;B_y/Write&nbsp;_metrics:**
+<span style="text-decoration:underline;">**Let's visualize the Average By/*Read* and Average B*y/Write *metrics:**</span>
 
-**Important remark regarding the&nbsp;averages computation/display:&nbsp;** The By_/Read_ and _By/Write_&nbsp;measures **depend on the number of reads**. So the averages have to be calculated using **Weighted Averages**.
+**Important remark regarding the averages computation/display: **The By*/Read* and *By/Write* measures **depend on the number of reads**. So the averages have to be calculated using **Weighted Averages**.
 
-Let’s create the calculated field in Tableau for the _By/Read_ Weighted Average:
+Let’s create the calculated field in Tableau for the *By/Read* Weighted Average:
 
-[![Screen Shot 2014-08-20 at 21.56.49]({{ site.baseurl }}/assets/images/screen-shot-2014-08-20-at-21-56-49.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-20-at-21-56-49.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-20-at-21-56-49.png" class="aligncenter size-full wp-image-2161" width="640" height="229" alt="Screen Shot 2014-08-20 at 21.56.49" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-20-at-21-56-49.png)
 
-The same has to be done for the _By/Write_&nbsp;Weighted Average.
+The same has to be done for the *By/Write* Weighted Average.
 
 Let's see the result:
 
-[![Screen Shot 2014-09-01 at 21.33.48]({{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-21-33-48.png)](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-33-48.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-21-33-48.png" class="aligncenter size-full wp-image-2262" width="640" height="306" alt="Screen Shot 2014-09-01 at 21.33.48" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-33-48.png)
 
-We can see:
+<span style="text-decoration:underline;">We can see:</span>
 
-1. The Avg _By/Read_&nbsp;on the dropped&nbsp;disks is about the same (about 1MB) whatever the power value is.
-2. The Avg _By/Read_&nbsp;and _Avg By/Write_ on the remaining&nbsp;disks is about the same (about 1MB) whatever the power value is.
+1.  The Avg *By/Read* on the dropped disks is about the same (about 1MB) whatever the power value is.
+2.  The Avg *By/Read* and *Avg By/Write* on the remaining disks is about the same (about 1MB) whatever the power value is.
 
-- Are 1 and 2 surprising? No for the behaviour, Yes (at least for me) for the 1MB value as the ASM allocation unit is 4MB.
+-   Are 1 and 2 surprising? No for the behaviour, Yes (at least for me) for the 1MB value as the ASM allocation unit is 4MB.
 
 Now that we have seen all those metrics, we can ask:
 
-**Q1: The ASM Allocation Unit size is 4MB and the Avg By/Read is stucked to 1MB,why?**
+<span style="text-decoration:underline;">**Q1: The ASM Allocation Unit size is 4MB and the Avg By/Read is stucked to 1MB,why?**</span>
 
-I don't have the answer yet,&nbsp;it will be the subject of [another post](http://bdrouvot.wordpress.com/2014/09/03/asm-rebalance-why-is-the-avg-byread-equal-to-1mb-while-the-allocation-unit-is-4mb/ "ASM Rebalance: Why is the avg By/Read equal to 1MB while the allocation unit is 4MB?").
+I don't have the answer yet, it will be the subject of [another post](http://bdrouvot.wordpress.com/2014/09/03/asm-rebalance-why-is-the-avg-byread-equal-to-1mb-while-the-allocation-unit-is-4mb/ "ASM Rebalance: Why is the avg By/Read equal to 1MB while the allocation unit is 4MB?").
 
-**Two remarks before to conclude:**
+<span style="text-decoration:underline;">**Two remarks before to conclude:**</span>
 
-1. The ASM rebalance activity is not recorded into the&nbsp;_v$asm\_disk\_iostat_ view_.&nbsp;_It is recorded into the _v$asm\_disk\_stat_ view. So, if you are using the [asm\_metrics](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm\_metrics")&nbsp;utility, you have to change the&nbsp;_asm\_feature\_version&nbsp;_variable to a value \> your ASM instance version.
-2. I tested with _compatible.asm_&nbsp;set to 10.1 and 11.2.0.2 and observed the same behaviour for all those metrics.
+1.  The ASM rebalance activity is not recorded into the *v$asm\_disk\_iostat* view*. *It is recorded into the *v$asm\_disk\_stat* view. So, if you are using the [asm\_metrics](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm_metrics") utility, you have to change the *asm\_feature\_version *variable to a value &gt; your ASM instance version.
+2.  I tested with *compatible.asm* set to 10.1 and 11.2.0.2 and observed the same behaviour for all those metrics.
 
-**Conclusion of Part II:**
+<span style="text-decoration:underline;">**Conclusion of Part II:**</span>
 
-- Nothing surprising except (at least for me) that the _Avg By/Read_ is stucked to 1MB (While the allocation unit is 4MB).
-- I'll update this post with ASM 12c results as soon as I can (if something new needs to be told).
+-   Nothing surprising except (at least for me) that the *Avg By/Read* is stucked to 1MB (While the allocation unit is 4MB).
+-   I'll update this post with ASM 12c results as soon as I can (if something new needs to be told).

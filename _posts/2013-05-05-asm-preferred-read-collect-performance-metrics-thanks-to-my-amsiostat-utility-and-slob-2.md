@@ -31,61 +31,73 @@ author:
   last_name: ''
 permalink: "/2013/05/05/asm-preferred-read-collect-performance-metrics-thanks-to-my-amsiostat-utility-and-slob-2/"
 ---
+
 Some times ago I provided a way to see the ASM Preferred Read feature in action thanks to Kevin Closson's SLOB kit and my [asmiostat utility](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility") into this [blog post](http://bdrouvot.wordpress.com/2013/02/18/asm-preferred-read-collect-performance-metrics/ "ASM Preferred Read: Collect performance metrics"). Since that time Kevin released [SLOB 2.](http://kevinclosson.wordpress.com/2013/05/02/slob-2-a-significant-update-links-are-here/)
 
 One of its new feature is that it now supports RAC so that **we don't need to launch SLOB on each node anymore** as it has been done into my previous post.
 
 Let's see how we can show the ASM preferred read feature in action and collect performance metrics thanks to SLOB 2.
 
-First, let's create two services SLOB\_BDT1 and SLOB\_BDT2 respectively on BDT\_1 and BDT\_2 instances:
+<span style="text-decoration:underline;">First, let's create two services SLOB\_BDT1 and SLOB\_BDT2 respectively on BDT\_1 and BDT\_2 instances:</span>
 
-```
-$ srvctl add service -s SLOB\_BDT2 -d BDTO -r BDTO\_2 $ srvctl start service -s SLOB\_BDT2 -d BDTO $ srvctl add service -s SLOB\_BDT1 -d BDTO -r BDTO\_1 $ srvctl start service -s SLOB\_BDT1 -d BDTO $ srvctl status service -s SLOB\_BDT1 -d BDTO Service SLOB\_BDT1 is running on instance(s) BDTO\_1 $ srvctl status service -s SLOB\_BDT2 -d BDTO Service SLOB\_BDT2 is running on instance(s) BDTO\_2
-```
+    $ srvctl add service -s SLOB_BDT2 -d BDTO -r BDTO_2
+    $ srvctl start service -s SLOB_BDT2 -d BDTO
+    $ srvctl add service -s SLOB_BDT1 -d BDTO -r BDTO_1
+    $ srvctl start service -s SLOB_BDT1 -d BDTO
+    $ srvctl status service -s SLOB_BDT1 -d BDTO
+    Service SLOB_BDT1 is running on instance(s) BDTO_1
+    $ srvctl status service -s SLOB_BDT2  -d BDTO
+    Service SLOB_BDT2 is running on instance(s) BDTO_2
 
-Now let's configure the slob.conf so that the SLOB's sessions will be distributed over those 2 services with a "round-robin" manner and no updates triggered:
+<span style="text-decoration:underline;">Now let's configure the slob.conf so that the SLOB's sessions will be distributed over those 2 services with a "round-robin" manner and no updates triggered:</span>
 
-```
-$ grep -i sqlnet slob.conf ADMIN\_SQLNET\_SERVICE=slob\_bdt SQLNET\_SERVICE\_BASE=slob\_bdt SQLNET\_SERVICE\_MAX=2 $ grep -i UPDATE\_PCT slob.conf | head -1 UPDATE\_PCT=0
-```
+    $ grep -i sqlnet slob.conf
+    ADMIN_SQLNET_SERVICE=slob_bdt
+    SQLNET_SERVICE_BASE=slob_bdt
+    SQLNET_SERVICE_MAX=2
+    $ grep -i UPDATE_PCT slob.conf | head -1
+    UPDATE_PCT=0
 
-Let's configure the ASM preferred read parameters:
+<span style="text-decoration:underline;">Let's configure the ASM preferred read parameters:</span>
 
-```
-SQL\> alter system set asm\_preferred\_read\_failure\_groups='BDT\_ONLY.WIN' sid='+ASM1'; System altered. SQL\> alter system set asm\_preferred\_read\_failure\_groups='BDT\_ONLY.JMO' sid='+ASM2'; System altered.
-```
+    SQL>  alter system set asm_preferred_read_failure_groups='BDT_ONLY.WIN' sid='+ASM1';
+
+    System altered.
+
+    SQL> alter system set asm_preferred_read_failure_groups='BDT_ONLY.JMO' sid='+ASM2';
+
+    System altered.
 
 As we want to see the ASM preferred read in action, we need to configure our BDT\_1 and BDT\_2 instances in such a way that the SLOB run will generate physical IOs.
 
-For this purpose, I use those settings:
+<span style="text-decoration:underline;">For this purpose, I use those settings:</span>
 
-```
-alter system set "\_db\_block\_prefetch\_limit"=0 scope=spfile sid='\*'; alter system set "\_db\_block\_prefetch\_quota"=0 scope=spfile sid='\*'; alter system set "\_db\_file\_noncontig\_mblock\_read\_count"=0 scope=spfile sid='\*'; alter system set "cpu\_count"=1 scope=spfile sid='\*'; alter system set "db\_cache\_size"=4m scope=spfile sid='\*'; alter system set "shared\_pool\_size"=500m scope=spfile sid='\*'; alter system set "sga\_target"=0 scope=spfile sid='\*';
-```
+    alter system set "_db_block_prefetch_limit"=0 scope=spfile sid='*';
+    alter system set "_db_block_prefetch_quota"=0  scope=spfile sid='*';
+    alter system set "_db_file_noncontig_mblock_read_count"=0 scope=spfile sid='*';
+    alter system set "cpu_count"=1 scope=spfile sid='*';
+    alter system set "db_cache_size"=4m scope=spfile sid='*';
+    alter system set "shared_pool_size"=500m scope=spfile sid='*';
+    alter system set "sga_target"=0 scope=spfile sid='*';
 
 You can find a very good description, on how to use SLOB for PIO testing into this [flashdba's blog post](http://flashdba.com/database/useful-scripts/using-slob-for-pio-testing/).
 
-Now we are ready to launch the SLOB 2 run:
+<span style="text-decoration:underline;">Now we are ready to launch the SLOB 2 run:</span>
 
-```
-$ ./runit.sh 16
-```
+    $ ./runit.sh 16
 
-and see the preferred read in action as well as its associated performance metrics thanks to my [asmiostat utility](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility") that way:
+<span style="text-decoration:underline;">and see the preferred read in action as well as its associated performance metrics thanks to my [asmiostat utility](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility") that way:</span>
 
-```
-$ ./real\_time.pl -type=asmiostat -dg=BDT\_ONLY -show=dg,inst,fg
-```
+    $ ./real_time.pl -type=asmiostat -dg=BDT_ONLY -show=dg,inst,fg
 
-with the following result:
+<span style="text-decoration:underline;">with the following result:</span>
 
-[![asm_preferred_read_slob2]({{ site.baseurl }}/assets/images/asm_preferred_read_slob21.png)](http://bdrouvot.files.wordpress.com/2013/05/asm_preferred_read_slob21.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asm_preferred_read_slob21.png" class="aligncenter size-full wp-image-979" width="620" height="117" alt="asm_preferred_read_slob2" />](http://bdrouvot.files.wordpress.com/2013/05/asm_preferred_read_slob21.png)
 
 Great, data have been read from their preferred read failure groups ;-) We can also see their respectives performance metrics.
 
-**Conclusion:**
+<span style="text-decoration:underline;">**Conclusion:**</span>
 
 Thanks to [Kevin's SLOB 2 kit](http://kevinclosson.wordpress.com/2013/05/02/slob-2-a-significant-update-links-are-here/) and my [asmiostat utility](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility") we are now able to check the ASM preferred read performance metrics with a single SLOB run.
 
-**UPDATE:** &nbsp;The asmiostat utility is not part of the real\_time.pl script anymore. A new utility called **asm\_metrics.pl** has been created. See "[ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time](http://bdrouvot.wordpress.com/2013/10/04/asm-metrics-are-a-gold-mine-welcome-to-asm_metrics-pl-a-new-utility-to-extract-and-to-manipulate-them-in-real-time/ "ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time")" for more information.
-
+**UPDATE:** The asmiostat utility is not part of the real\_time.pl script anymore. A new utility called **asm\_metrics.pl** has been created. See "[ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time](http://bdrouvot.wordpress.com/2013/10/04/asm-metrics-are-a-gold-mine-welcome-to-asm_metrics-pl-a-new-utility-to-extract-and-to-manipulate-them-in-real-time/ "ASM metrics are a gold mine. Welcome to asm_metrics.pl, a new utility to extract and to manipulate them in real time")" for more information.

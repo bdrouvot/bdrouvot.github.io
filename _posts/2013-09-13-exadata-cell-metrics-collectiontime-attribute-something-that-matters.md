@@ -27,124 +27,151 @@ author:
   last_name: ''
 permalink: "/2013/09/13/exadata-cell-metrics-collectiontime-attribute-something-that-matters/"
 ---
-<p>Exadata provides a lot of useful metrics to monitor the Cells.</p>
-<p><span style="text-decoration:underline;">The Metrics can be of various types:</span></p>
-<ul>
-<li>Cumulative: Cumulative statistics since the metric was created.</li>
-<li>Instantaneous: Value at the time that the metric is collected.</li>
-<li>Rate: Rates computed by averaging statistics over observation periods.</li>
-<li>Transition: Are collected at the time when the value of the metrics has changed, and typically captures important transitions in hardware status.</li>
-</ul>
-<p>One attribute of the cumulative metric is the <strong>collectionTime.</strong></p>
-<p><span style="text-decoration:underline;">For example, let's have a look to one of them:</span></p>
-<pre style="padding-left:30px;">CellCLI&gt; list METRICCURRENT DB_IO_WT_SM detail
-         name:                   DB_IO_WT_SM
-         alertState:             normal
-         collectionTime:         2013-09-12T23:46:14+02:00
-         metricObjectName:       EXABDT
-         metricType:             Cumulative
-         metricValue:            120 ms
-         objectType:             IORM_DATABASE</pre>
-<p>The collectionTime attribute is the time<strong> at which the metric was collected</strong>.</p>
-<p><span style="text-decoration:underline;">Why does it matter ?</span></p>
-<p><strong>Based on it, we can compute the delta in second between 2 collections.</strong></p>
-<p>Let's see two use cases.</p>
-<p><span style="text-decoration:underline;"><strong>First use case: </strong></span>Suppose, you decided to extract real-time metrics from the cumulative ones. To do so, you created a script that takes a snapshot of the cumulative metrics each second (default interval) and computes the delta with the previous snapshot (yes, I am describing my <a title="exadata_metrics" href="http://bdrouvot.wordpress.com/exadata_metrics/" target="_blank">exadata_metrics.pl</a> script introduced into this <a title="Exadata real-time metrics extracted from cumulative metrics" href="http://bdrouvot.wordpress.com/2012/11/27/exadata-real-time-metrics-extracted-from-cumulative-metrics/" target="_blank">post</a> :-) ).</p>
-<p>Then, if the <strong>delta value of the metric is 0</strong>, you need to know why (two explanations are possible as we'll see).</p>
-<p><span style="text-decoration:underline;">Let's see an example: I'll take a snapshot with a 40 seconds interval of 2 IORM cumulative metrics:</span></p>
-<pre style="padding-left:30px;">./exadata_metrics.pl 40 cell=exacell1  name='DB_IO_WT_.*' objectname='EXABDT'
---------------------------------------
-----------COLLECTING DATA-------------
---------------------------------------
 
-00:19:21   CELL                    NAME                         OBJECTNAME                                                  VALUE
-00:19:21   ----                    ----                         ----------                                                  -----
-00:19:21   exacell1                DB_IO_WT_LG                  EXABDT                                                      0.00 ms
-00:19:21   exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms</pre>
-<p>Well, as you can see the computed (delta) value is 0.00 ms but:</p>
-<ul>
-<li>does it mean that <strong>no IO</strong> has been queued by the IORM ?</li>
-<li>or does it mean that the 2 snaps are <strong>based on the same collectionTime</strong>? (could be the case if the <strong>collection interval is greater</strong> than the interval you are using with my script).</li>
-</ul>
-<p>To answer those questions, I modified the script so that it takes care of the collectionTime: <strong>It computes the delta in seconds of the collectionTime recorded into the snapshots</strong>.</p>
-<p><span style="text-decoration:underline;">Let's see it in action:</span></p>
-<p><span style="text-decoration:underline;">Enable the IORM plan:</span></p>
-<pre style="padding-left:30px;">CellCLI&gt; alter iormplan objective=auto;
-IORMPLAN successfully altered</pre>
-<p><span style="text-decoration:underline;">and launch the script with a 40 seconds interval:</span></p>
-<pre style="padding-left:30px;">./exadata_metrics.pl 40 cell=exacell1  name='DB_IO_WT_.*' objectname='EXABDT'
+Exadata provides a lot of useful metrics to monitor the Cells.
 
---------------------------------------
-----------COLLECTING DATA-------------
---------------------------------------
+<span style="text-decoration:underline;">The Metrics can be of various types:</span>
 
-DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE
---------   ----                    ----                         ----------                                                  -----
-61         exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms
-61         exacell1                DB_IO_WT_LG                  EXABDT                                                      1444922.00 ms
+-   Cumulative: Cumulative statistics since the metric was created.
+-   Instantaneous: Value at the time that the metric is collected.
+-   Rate: Rates computed by averaging statistics over observation periods.
+-   Transition: Are collected at the time when the value of the metrics has changed, and typically captures important transitions in hardware status.
 
---------------------------------------
-----------COLLECTING DATA-------------
---------------------------------------
+One attribute of the cumulative metric is the **collectionTime.**
 
-DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE
---------   ----                    ----                         ----------                                                  -----
-60         exacell1                DB_IO_WT_SM                  EXABDT                                                      1.00 ms
-60         exacell1                DB_IO_WT_LG                  EXABDT                                                      2573515.00 ms
+<span style="text-decoration:underline;">For example, let's have a look to one of them:</span>
 
---------------------------------------
-----------COLLECTING DATA-------------
---------------------------------------
+    CellCLI> list METRICCURRENT DB_IO_WT_SM detail
+             name:                   DB_IO_WT_SM
+             alertState:             normal
+             collectionTime:         2013-09-12T23:46:14+02:00
+             metricObjectName:       EXABDT
+             metricType:             Cumulative
+             metricValue:            120 ms
+             objectType:             IORM_DATABASE
 
-DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE
---------   ----                    ----                         ----------                                                  -----
-0          exacell1                DB_IO_WT_LG                  EXABDT                                                      0.00 ms
-0          exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms</pre>
-<p><strong>Look at the DELTA(s) column</strong>: It indicates the delta in seconds for the collectionTime attribute.</p>
-<p><span style="text-decoration:underline;"><strong>So that:</strong></span></p>
-<ul>
-<li><strong>DELTA(s) &gt; 0</strong>: Means you can check the metric value as the snaps are from 2 <strong>distinct</strong> collectionTime.</li>
-<li><strong>DELTA(s) = 0</strong>: Means the snaps come from the <strong>same</strong> collectionTime and then a metric value of 0 is obvious.</li>
-</ul>
-<p><span style="text-decoration:underline;"><strong>Second use case:</strong></span></p>
-<p>As we now have the DELTA(s) value we can <strong>compute by our own the associated (_SEC) rate metrics</strong>.</p>
-<p>For example, from:</p>
-<pre style="padding-left:30px;">./exadata_metrics_orig_new.pl 10 cell=exacell1 name='DB_IO_.*' objectname='EXABDT'
---------------------------------------
-----------COLLECTING DATA-------------
---------------------------------------
+The collectionTime attribute is the time **at which the metric was collected**.
 
-DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE                
---------   ----                    ----                         ----------                                                  -----
-60 exacell1 DB\_IO\_WT\_SM EXABDT 0.00 ms 60 exacell1 DB\_IO\_RQ\_SM EXABDT 153.00 IO requests 60 exacell1 DB\_IO\_RQ\_LG EXABDT 292.00 IO requests 60 exacell1 DB\_IO\_WT\_LG EXABDT 830399.00 ms
+<span style="text-decoration:underline;">Why does it matter ?</span>
 
-We can conclude, that:
+**Based on it, we can compute the delta in second between 2 collections.**
 
-- the number of large IO request per second is 292/60=4.87.
-- the number of small IO request per second is 153/60=2.55.
+Let's see two use cases.
 
-Let's verify those numbers with their associated rate metrics (DB\_IO\_RQ\_LG\_SEC and&nbsp;DB\_IO\_RQ\_SM\_SEC):
+<span style="text-decoration:underline;">**First use case: **</span>Suppose, you decided to extract real-time metrics from the cumulative ones. To do so, you created a script that takes a snapshot of the cumulative metrics each second (default interval) and computes the delta with the previous snapshot (yes, I am describing my [exadata\_metrics.pl](http://bdrouvot.wordpress.com/exadata_metrics/ "exadata_metrics") script introduced into this [post](http://bdrouvot.wordpress.com/2012/11/27/exadata-real-time-metrics-extracted-from-cumulative-metrics/ "Exadata real-time metrics extracted from cumulative metrics") :-) ).
 
-```
-cellcli -e "list metriccurrent attributes name,metrictype,metricobjectname,metricvalue,collectionTime where name like 'DB\_IO\_.\*' and metricobjectname='EXABDT' and metrictype='Rate'" DB\_IO\_RQ\_LG\_SEC Rate EXABDT 4.9 IO/sec 2013-09-13T16:13:40+02:00 DB\_IO\_RQ\_SM\_SEC Rate EXABDT 2.6 IO/sec 2013-09-13T16:13:40+02:00 DB\_IO\_WT\_LG\_RQ Rate EXABDT 2,844 ms/request 2013-09-13T16:13:40+02:00 DB\_IO\_WT\_SM\_RQ Rate EXABDT 0.0 ms/request 2013-09-13T16:13:40+02:00
-```
+Then, if the **delta value of the metric is 0**, you need to know why (two explanations are possible as we'll see).
+
+<span style="text-decoration:underline;">Let's see an example: I'll take a snapshot with a 40 seconds interval of 2 IORM cumulative metrics:</span>
+
+    ./exadata_metrics.pl 40 cell=exacell1  name='DB_IO_WT_.*' objectname='EXABDT'
+    --------------------------------------
+    ----------COLLECTING DATA-------------
+    --------------------------------------
+
+    00:19:21   CELL                    NAME                         OBJECTNAME                                                  VALUE
+    00:19:21   ----                    ----                         ----------                                                  -----
+    00:19:21   exacell1                DB_IO_WT_LG                  EXABDT                                                      0.00 ms
+    00:19:21   exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms
+
+Well, as you can see the computed (delta) value is 0.00 ms but:
+
+-   does it mean that **no IO** has been queued by the IORM ?
+-   or does it mean that the 2 snaps are **based on the same collectionTime**? (could be the case if the **collection interval is greater** than the interval you are using with my script).
+
+To answer those questions, I modified the script so that it takes care of the collectionTime: **It computes the delta in seconds of the collectionTime recorded into the snapshots**.
+
+<span style="text-decoration:underline;">Let's see it in action:</span>
+
+<span style="text-decoration:underline;">Enable the IORM plan:</span>
+
+    CellCLI> alter iormplan objective=auto;
+    IORMPLAN successfully altered
+
+<span style="text-decoration:underline;">and launch the script with a 40 seconds interval:</span>
+
+    ./exadata_metrics.pl 40 cell=exacell1  name='DB_IO_WT_.*' objectname='EXABDT'
+
+    --------------------------------------
+    ----------COLLECTING DATA-------------
+    --------------------------------------
+
+    DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE
+    --------   ----                    ----                         ----------                                                  -----
+    61         exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms
+    61         exacell1                DB_IO_WT_LG                  EXABDT                                                      1444922.00 ms
+
+    --------------------------------------
+    ----------COLLECTING DATA-------------
+    --------------------------------------
+
+    DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE
+    --------   ----                    ----                         ----------                                                  -----
+    60         exacell1                DB_IO_WT_SM                  EXABDT                                                      1.00 ms
+    60         exacell1                DB_IO_WT_LG                  EXABDT                                                      2573515.00 ms
+
+    --------------------------------------
+    ----------COLLECTING DATA-------------
+    --------------------------------------
+
+    DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE
+    --------   ----                    ----                         ----------                                                  -----
+    0          exacell1                DB_IO_WT_LG                  EXABDT                                                      0.00 ms
+    0          exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms
+
+**Look at the DELTA(s) column**: It indicates the delta in seconds for the collectionTime attribute.
+
+<span style="text-decoration:underline;">**So that:**</span>
+
+-   **DELTA(s) &gt; 0**: Means you can check the metric value as the snaps are from 2 **distinct** collectionTime.
+-   **DELTA(s) = 0**: Means the snaps come from the **same** collectionTime and then a metric value of 0 is obvious.
+
+<span style="text-decoration:underline;">**Second use case:**</span>
+
+As we now have the DELTA(s) value we can **compute by our own the associated (\_SEC) rate metrics**.
+
+For example, from:
+
+    ./exadata_metrics_orig_new.pl 10 cell=exacell1 name='DB_IO_.*' objectname='EXABDT'
+    --------------------------------------
+    ----------COLLECTING DATA-------------
+    --------------------------------------
+
+    DELTA(s)   CELL                    NAME                         OBJECTNAME                                                  VALUE                
+    --------   ----                    ----                         ----------                                                  -----                
+    60         exacell1                DB_IO_WT_SM                  EXABDT                                                      0.00 ms        
+    60         exacell1                DB_IO_RQ_SM                  EXABDT                                                      153.00 IO requests
+    60         exacell1                DB_IO_RQ_LG                  EXABDT                                                      292.00 IO requests
+    60         exacell1                DB_IO_WT_LG                  EXABDT                                                      830399.00 ms
+
+<span style="text-decoration:underline;">We can conclude, that:</span>
+
+-   the number of large IO request per second is 292/60=4.87.
+-   the number of small IO request per second is 153/60=2.55.
+
+Let's verify those numbers with their associated rate metrics (DB\_IO\_RQ\_LG\_SEC and DB\_IO\_RQ\_SM\_SEC):
+
+    cellcli -e "list metriccurrent attributes name,metrictype,metricobjectname,metricvalue,collectionTime where name like 'DB_IO_.*' and metricobjectname='EXABDT' and metrictype='Rate'"
+             DB_IO_RQ_LG_SEC         Rate    EXABDT  4.9 IO/sec              2013-09-13T16:13:40+02:00
+             DB_IO_RQ_SM_SEC         Rate    EXABDT  2.6 IO/sec              2013-09-13T16:13:40+02:00
+             DB_IO_WT_LG_RQ          Rate    EXABDT  2,844 ms/request        2013-09-13T16:13:40+02:00
+             DB_IO_WT_SM_RQ          Rate    EXABDT  0.0 ms/request          2013-09-13T16:13:40+02:00
 
 Great, that's the same numbers.
 
-**Conclusion:**
+<span style="text-decoration:underline;">**Conclusion:**</span>
 
 The collectionTime metric attribute can be very useful when you extract real-time metrics from the cumulative ones as:
 
-- It provides a way to **interpret the results**.
-- it provides a way to **extract the rate metrics (\_SEC)** from their cumulatives ones.
+-   It provides a way to **interpret the results**.
+-   it provides a way to **extract the rate metrics (\_SEC)** from their cumulatives ones.
 
-Regarding the script:
+<span style="text-decoration:underline;">Regarding the script:</span>
 
-- You are able to collect real-time metrics based on cumulative metrics.
-- You can choose the number of snapshots to display and the time to wait between snapshots.
-- You can choose to filter on name and objectname based on predicates (see the help).
-- You can work on all the cells or a subset thanks to the CELL or the GROUPFILE parameter.
-- You can decide the way to compute the metrics with no aggregation, aggregation on cell, objectname or both.
+-   You are able to collect real-time metrics based on cumulative metrics.
+-   You can choose the number of snapshots to display and the time to wait between snapshots.
+-   You can choose to filter on name and objectname based on predicates (see the help).
+-   You can work on all the cells or a subset thanks to the CELL or the GROUPFILE parameter.
+-   You can decide the way to compute the metrics with no aggregation, aggregation on cell, objectname or both.
 
-You can download the exadata\_metrics.pl script&nbsp;from [this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit).
-
+You can download the exadata\_metrics.pl script from [this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit).

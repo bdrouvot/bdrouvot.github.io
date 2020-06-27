@@ -37,150 +37,173 @@ author:
   last_name: ''
 permalink: "/2014/05/06/report-database-physical-io-activity-per-io-type-and-oracle-files-type-in-real-time/"
 ---
-<p style="text-align:center;"><span style="text-decoration:underline;color:#008000;"><strong>Introduction</strong></span></p>
-<p>After I published the blog post related to the <a title="Welcome to db_io_metrics, a new utility to display database physical IO metrics in real time" href="http://bdrouvot.wordpress.com/2014/04/30/welcome-to-db_io_metrics-a-new-utility-to-display-database-physical-io-metrics-in-real-time/" target="_blank">db_io_metrics</a> utiliy (based on gv$filestat and gv$tempstat), <a href="http://externaltable.blogspot.be/" target="_blank">Luca Canali</a> suggested me to create a version based on the <a href="http://docs.oracle.com/cd/E16655_01/server.121/e17615/refrn30441.htm#REFRN30441" target="_blank">gv$iostat_file</a> cumulative view (available since 11.1).</p>
-<p><span style="text-decoration:underline;">The advantages of this view are:</span></p>
-<ul>
-<li>it displays information about disk I/O statistics on a lot of <strong>file types</strong> (including data files, temp files,control files, log files, archive logs, and so on).</li>
-<li>it takes care of the <strong>IO type</strong> (small,large,reads, writes and synchronous).</li>
-</ul>
-<p>Then based on this, I created a new utility: <strong>db_io_type_metrics</strong></p>
-<p style="text-align:center;"><span style="text-decoration:underline;color:#008000;"><strong>db_io_type_metrics description</strong></span></p>
-<p style="text-align:left;">The db_io_type_metrics.pl utility is used to display database <strong>physical IO type (small, large, synchronous, reads and writes)</strong> real-time metrics. It basically takes a snapshot each second (default interval) from the gv$iostat_file cumulative view and computes the delta with the previous snapshot. The utility is RAC and Multitenant aware.</p>
-<p><span style="text-decoration:underline;"><strong>This utility:</strong></span></p>
-<ul>
-<li>provides useful metrics.</li>
-<li>is RAC aware.</li>
-<li>detects if it is connected to a multitenant database and then is able to display the containers metrics.</li>
-<li>is fully customizable: you can aggregate the results depending on your needs.</li>
-<li>does not install anything into the database.</li>
-</ul>
-<p style="color:#555555;"><span style="text-decoration:underline;"><strong>It displays the following metrics per IO Type (small, large, synchronous, reads and writes):</strong></span></p>
-<ul>
-<li style="color:#555555;">MB/s: Megabytes per second.</li>
-<li style="color:#555555;">RQ/s: Requests per second.</li>
-<li style="color:#555555;">Avg MB/RQ: Average Megabytes per request.</li>
-<li style="color:#555555;">Avg ms/RQ: Average ms per request.</li>
-</ul>
-<p style="color:#555555;"><span style="text-decoration:underline;"><strong>At the following levels:</strong></span></p>
-<ul style="color:#555555;">
-<li>Database Instance.</li>
-<li>Database container.</li>
-<li>File Type (log file, control file, data file, temp file…) or tablespace.</li>
-</ul>
-<p><span style="text-decoration:underline;"><strong>Let's see the help:</strong></span></p>
-<pre style="padding-left:30px;">./db_io_type_metrics.pl -help
 
-Usage: ./db_io_type_metrics.pl [-interval] [-count] [-inst] [-cont] [-file_type_tbs] [-io_type] [-file_type] [-tbs] [-show] [-display] [-sort_field] [-help]
+<span style="text-decoration:underline;color:#008000;">**Introduction**</span>
 
- Default Interval : 1 second.
- Default Count    : Unlimited
+After I published the blog post related to the [db\_io\_metrics](http://bdrouvot.wordpress.com/2014/04/30/welcome-to-db_io_metrics-a-new-utility-to-display-database-physical-io-metrics-in-real-time/ "Welcome to db_io_metrics, a new utility to display database physical IO metrics in real time") utiliy (based on gv$filestat and gv$tempstat), [Luca Canali](http://externaltable.blogspot.be/) suggested me to create a version based on the [gv$iostat\_file](http://docs.oracle.com/cd/E16655_01/server.121/e17615/refrn30441.htm#REFRN30441) cumulative view (available since 11.1).
 
-  Parameter         Comment                                                                     Default
-  ---------         -------                                                                     -------
-  -INST=            ALL - Show all Instance(s)                                                  ALL
-                    CURRENT - Show Current Instance
-  -CONT=            Container to collect (wildcard allowed)                                     ALL
-  -FILE_TYPE_TBS=   Collect on File Type or on Tablespace: file_type,tbs                        FILE_TYPE
-  -IO_TYPE=         IO Type to collect: reads,writes,small,large,synch                          READS
-  -FILE_TYPE=       File Type to collect (in case FILE_TYPE_TBS=file_type) (wildcard allowed)   NONE
-  -TBS=             Tablespace to collect (in case FILE_TYPE_TBS=tbs) (wildcard allowed)        NONE
-  -SHOW=            What to show: inst,cont,file_type_tbs (comma separated list)                INST
-  -DISPLAY=         What to display: snap,avg (comma separated list)                            SNAP
-  -SORT_FIELD=      small_reads,small_writes,large_reads,large_writes                           NONE
+<span style="text-decoration:underline;">The advantages of this view are:</span>
 
-Example: ./db_io_type_metrics.pl
-Example: ./db_io_type_metrics.pl  -inst=CBDT1
-Example: ./db_io_type_metrics.pl  -show=inst,file_type_tbs
-Example: ./db_io_type_metrics.pl  -show=inst,file_type_tbs -file_type=%Data%
-Example: ./db_io_type_metrics.pl  -show=inst -io_type=large
-Example: ./db_io_type_metrics.pl  -show=inst -io_type=small -sort_field=small_reads
-Example: ./db_io_type_metrics.pl  -show=inst,file_type_tbs -file_type_tbs=tbs -tbs=%USE%
-Example: ./db_io_type_metrics.pl  -show=inst,cont
-Example: ./db_io_type_metrics.pl  -show=inst,cont -cont=%P%
-Example: ./db_io_type_metrics.pl  -show=inst,cont,file_type_tbs -io_type=small -sort_field=small_reads
-</pre>
-<p><span style="text-decoration:underline;"><strong>The main options/features are:</strong></span></p>
-<ol style="color:#555555;">
-<li>You can choose the number of snapshots to display and the time to wait between snapshots.</li>
-<li>You can choose on which <strong>database instance</strong> to collect the metrics thanks to the -<strong>INST=</strong> parameter.</li>
-<li>You can choose on which <strong>database container</strong> to collect the metrics thanks to the <strong>-CONT=</strong> parameter.</li>
-<li>You can choose to collect on <strong>File Type</strong> or <strong>tablespace</strong> thanks to the<strong> -FILE_TYPE_TBS=</strong>parameter.</li>
-<li>You can choose on which <strong>IO Type</strong> to collect the metrics thanks to the <strong>-IO_TYPE=</strong> parameter.</li>
-<li>You can choose on which <strong>File Type</strong> to collect the metric thanks to the <strong>-FILE_TYPE</strong>=parameter (wilcard allowed).</li>
-<li>You can choose on which <b>Tablespace</b> to collect the metric thanks to the <strong>-TBS</strong>=parameter (wilcard allowed).</li>
-<li>You can <strong>aggregate the results</strong> on the database instances, containers, file type or tablespace level thanks to the -<strong>SHOW=</strong> parameter.</li>
-<li>You can display the metrics <strong>per snapshot, the average metrics</strong> value since the collection began (that is to say since the script has been launched) or both thanks to the -<strong>DISPLAY=</strong> parameter.</li>
-<li>You can sort based on the number of <strong>small_reads</strong>, number of <strong>small_writes, </strong>number of<strong> large_reads </strong>or number of<strong> large_writes </strong>thanks to the -<strong>SORT_FIELD=</strong> parameter.</li>
-</ol>
-<p><span style="text-decoration:underline;"><strong style="color:#555555;text-decoration:underline;"><span style="text-decoration:underline;"><strong>Let’s see some use cases:</strong></span></strong></span></p>
-<p><span style="color:#555555;">Report the IO type metrics for “reads” IO per database instances, tablespaces for the SLOB tablespace:</span></p>
-<pre style="padding-left:30px;"> ./db_io_type_metrics.pl  -show=inst,file_type_tbs -file_type_tbs=tbs -tbs=%SLOB% -io_type=reads
-............................
-Collecting 1 sec....
-............................
+-   it displays information about disk I/O statistics on a lot of **file types** (including data files, temp files,control files, log files, archive logs, and so on).
+-   it takes care of the **IO type** (small,large,reads, writes and synchronous).
 
-......... SNAP TAKEN AT ...................
+Then based on this, I created a new utility: **db\_io\_type\_metrics**
 
-10:52:54                                               SMALL R   SMALL R   LARGE R   LARGE R   Avg MB/   Avg MB/   Avg ms/   Avg ms/
-10:52:54   INST         FILE_TYPE_TBS                  MB/s      RQ/s      MB/s      RQ/s      SMALL R   LARGE R   SMALL R   LARGE R
-10:52:54   ----------   ----------------------------   -------   -------   -------   -------   -------   -------   -------   -------
-10:52:54   BDT_1                                       144       18390     0         0         0.008     0.0       0.08      0.00
-10:52:54   BDT_1        SLOB                           144       18390     0         0         0.008     0.0       0.08      0.00
-</pre>
-<p>&nbsp;</p>
-<p>Report the IO type metrics for “small” IO” and all file type:</p>
-<pre style="padding-left:30px;">./db_io_type_metrics.pl  -show=file_type_tbs -file_type_tbs=file_type -io_type=small
-............................
-Collecting 1 sec....
-............................
+<span style="text-decoration:underline;color:#008000;">**db\_io\_type\_metrics description**</span>
 
-......... SNAP TAKEN AT ...................
+The db\_io\_type\_metrics.pl utility is used to display database **physical IO type (small, large, synchronous, reads and writes)** real-time metrics. It basically takes a snapshot each second (default interval) from the gv$iostat\_file cumulative view and computes the delta with the previous snapshot. The utility is RAC and Multitenant aware.
 
-10:57:01                                               SMALL R   SMALL R   SMALL W   SMALL W   Avg MB/   Avg MB/   Avg ms/   Avg ms/
-10:57:01   INST         FILE_TYPE_TBS                  MB/s      RQ/s      MB/s      RQ/s      SMALL R   SMALL W   SMALL R   SMALL W
-10:57:01   ----------   ----------------------------   -------   -------   -------   -------   -------   -------   -------   -------
-10:57:01                Archive Log                    0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Archive Log Backup             0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Control File                   1         66        0         0         0.015     0.000     0.00      0.00
-10:57:01                Data File                      125       16230     0         0         0.008     0.000     0.15      0.00
-10:57:01                Data File Backup               0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Data File Copy                 0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Data File Incremental Backup   0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Data Pump Dump File            0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Flashback Log                  0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Log File                       0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Other                          0         0         0         0         0.000     0.000     0.00      0.00
-10:57:01                Temp File                      0         0         0         0         0.000     0.000     0.00      0.00
-</pre>
-<p>&nbsp;</p>
-<p><span style="color:#555555;">Report the IO type metrics for “small” IO per database instances and containers:</span></p>
-<pre style="padding-left:30px;">./db_io_type_metrics.pl -show=inst,cont -io_type=small
-............................
-Collecting 1 sec....
-............................
+<span style="text-decoration:underline;">**This utility:**</span>
 
-......... SNAP TAKEN AT ...................
+-   provides useful metrics.
+-   is RAC aware.
+-   detects if it is connected to a multitenant database and then is able to display the containers metrics.
+-   is fully customizable: you can aggregate the results depending on your needs.
+-   does not install anything into the database.
 
-13:07:46                                                                 SMALL R   SMALL R   SMALL W   SMALL W   Avg MB/   Avg MB/   Avg ms/   Avg ms/
-13:07:46   INST         CONT              FILE_TYPE_TBS                  MB/s      RQ/s      MB/s      RQ/s      SMALL R   SMALL W   SMALL R   SMALL W
-13:07:46   ----------   ---------------   ----------------------------   -------   -------   -------   -------   -------   -------   -------   -------
-13:07:46 CBDT1 2 97 0 1 0.021 0.000 0.03 1.00 13:07:46 CBDT1 CDB$ROOT 2 97 0 1 0.021 0.000 0.03 1.00 13:07:46 CBDT1 PDB$SEED 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT1 P\_1 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT1 P\_2 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT1 P\_3 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT2 1 96 0 1 0.010 0.000 0.09 2.00 13:07:46 CBDT2 CDB$ROOT 1 96 0 1 0.010 0.000 0.09 2.00 13:07:46 CBDT2 PDB$SEED 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT2 P\_1 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT2 P\_2 0 0 0 0 0.000 0.000 0.00 0.00 13:07:46 CBDT2 P\_3 0 0 0 0 0.000 0.000 0.00 0.00
+<span style="text-decoration:underline;">**It displays the following metrics per IO Type (small, large, synchronous, reads and writes):**</span>
 
-&nbsp;
+-   MB/s: Megabytes per second.
+-   RQ/s: Requests per second.
+-   Avg MB/RQ: Average Megabytes per request.
+-   Avg ms/RQ: Average ms per request.
 
-Report the IO type metrics per… I let you finish the sentence as the utility is customizable enough ;-)
+<span style="text-decoration:underline;">**At the following levels:**</span>
 
-You can **download** it from [this repository](https://docs.google.com/folderview?id=0B7Jf_4JdsptpRHdyOWk1VTdUdEU) or copy the source code from [this page](http://bdrouvot.wordpress.com/db_io_type_metrics_source_code/ "db\_io\_type\_metrics\_source").[  
-](http://bdrouvot.wordpress.com/db_io_metrics_source/ "db\_io\_metrics\_source")
+-   Database Instance.
+-   Database container.
+-   File Type (log file, control file, data file, temp file…) or tablespace.
 
-**Conclusion:**
+<span style="text-decoration:underline;">**Let's see the help:**</span>
 
-Three utilities are now available to report IO metrics in real time depending&nbsp;on our needs:
+    ./db_io_type_metrics.pl -help
 
-1. [asm\_metrics](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm\_metrics") for reads and writes metrics related to ASM.
-2. [db\_io\_metrics](http://bdrouvot.wordpress.com/db_io_metrics_script/ "db\_io\_metrics") for reads and writes metrics related to data files and temp files.
-3. [db\_io\_type\_metrics](http://bdrouvot.wordpress.com/db_io_type_metrics_script/ "db\_io\_type\_metrics") for reads, writes, small, large and synchronous metrics related to data files, temp files,control files, log files, archive logs, and so on.
+    Usage: ./db_io_type_metrics.pl [-interval] [-count] [-inst] [-cont] [-file_type_tbs] [-io_type] [-file_type] [-tbs] [-show] [-display] [-sort_field] [-help]
+
+     Default Interval : 1 second.
+     Default Count    : Unlimited
+
+      Parameter         Comment                                                                     Default
+      ---------         -------                                                                     -------
+      -INST=            ALL - Show all Instance(s)                                                  ALL
+                        CURRENT - Show Current Instance
+      -CONT=            Container to collect (wildcard allowed)                                     ALL
+      -FILE_TYPE_TBS=   Collect on File Type or on Tablespace: file_type,tbs                        FILE_TYPE
+      -IO_TYPE=         IO Type to collect: reads,writes,small,large,synch                          READS
+      -FILE_TYPE=       File Type to collect (in case FILE_TYPE_TBS=file_type) (wildcard allowed)   NONE
+      -TBS=             Tablespace to collect (in case FILE_TYPE_TBS=tbs) (wildcard allowed)        NONE
+      -SHOW=            What to show: inst,cont,file_type_tbs (comma separated list)                INST
+      -DISPLAY=         What to display: snap,avg (comma separated list)                            SNAP
+      -SORT_FIELD=      small_reads,small_writes,large_reads,large_writes                           NONE
+
+    Example: ./db_io_type_metrics.pl
+    Example: ./db_io_type_metrics.pl  -inst=CBDT1
+    Example: ./db_io_type_metrics.pl  -show=inst,file_type_tbs
+    Example: ./db_io_type_metrics.pl  -show=inst,file_type_tbs -file_type=%Data%
+    Example: ./db_io_type_metrics.pl  -show=inst -io_type=large
+    Example: ./db_io_type_metrics.pl  -show=inst -io_type=small -sort_field=small_reads
+    Example: ./db_io_type_metrics.pl  -show=inst,file_type_tbs -file_type_tbs=tbs -tbs=%USE%
+    Example: ./db_io_type_metrics.pl  -show=inst,cont
+    Example: ./db_io_type_metrics.pl  -show=inst,cont -cont=%P%
+    Example: ./db_io_type_metrics.pl  -show=inst,cont,file_type_tbs -io_type=small -sort_field=small_reads
+
+<span style="text-decoration:underline;">**The main options/features are:**</span>
+
+1.  You can choose the number of snapshots to display and the time to wait between snapshots.
+2.  You can choose on which **database instance** to collect the metrics thanks to the -**INST=** parameter.
+3.  You can choose on which **database container** to collect the metrics thanks to the **-CONT=** parameter.
+4.  You can choose to collect on **File Type** or **tablespace** thanks to the** -FILE\_TYPE\_TBS=**parameter.
+5.  You can choose on which **IO Type** to collect the metrics thanks to the **-IO\_TYPE=** parameter.
+6.  You can choose on which **File Type** to collect the metric thanks to the **-FILE\_TYPE**=parameter (wilcard allowed).
+7.  You can choose on which **Tablespace** to collect the metric thanks to the **-TBS**=parameter (wilcard allowed).
+8.  You can **aggregate the results** on the database instances, containers, file type or tablespace level thanks to the -**SHOW=** parameter.
+9.  You can display the metrics **per snapshot, the average metrics** value since the collection began (that is to say since the script has been launched) or both thanks to the -**DISPLAY=** parameter.
+10. You can sort based on the number of **small\_reads**, number of **small\_writes,** number of **large\_reads** or number of **large\_writes **thanks to the -**SORT\_FIELD=** parameter.
+
+<span style="text-decoration:underline;">**<span style="text-decoration:underline;">**Let’s see some use cases:**</span>**</span>
+
+<span style="color:#555555;">Report the IO type metrics for “reads” IO per database instances, tablespaces for the SLOB tablespace:</span>
+
+     ./db_io_type_metrics.pl  -show=inst,file_type_tbs -file_type_tbs=tbs -tbs=%SLOB% -io_type=reads
+    ............................
+    Collecting 1 sec....
+    ............................
+
+    ......... SNAP TAKEN AT ...................
+
+    10:52:54                                               SMALL R   SMALL R   LARGE R   LARGE R   Avg MB/   Avg MB/   Avg ms/   Avg ms/
+    10:52:54   INST         FILE_TYPE_TBS                  MB/s      RQ/s      MB/s      RQ/s      SMALL R   LARGE R   SMALL R   LARGE R
+    10:52:54   ----------   ----------------------------   -------   -------   -------   -------   -------   -------   -------   -------
+    10:52:54   BDT_1                                       144       18390     0         0         0.008     0.0       0.08      0.00
+    10:52:54   BDT_1        SLOB                           144       18390     0         0         0.008     0.0       0.08      0.00
+
+ 
+
+Report the IO type metrics for “small” IO” and all file type:
+
+    ./db_io_type_metrics.pl  -show=file_type_tbs -file_type_tbs=file_type -io_type=small
+    ............................
+    Collecting 1 sec....
+    ............................
+
+    ......... SNAP TAKEN AT ...................
+
+    10:57:01                                               SMALL R   SMALL R   SMALL W   SMALL W   Avg MB/   Avg MB/   Avg ms/   Avg ms/
+    10:57:01   INST         FILE_TYPE_TBS                  MB/s      RQ/s      MB/s      RQ/s      SMALL R   SMALL W   SMALL R   SMALL W
+    10:57:01   ----------   ----------------------------   -------   -------   -------   -------   -------   -------   -------   -------
+    10:57:01                Archive Log                    0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Archive Log Backup             0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Control File                   1         66        0         0         0.015     0.000     0.00      0.00
+    10:57:01                Data File                      125       16230     0         0         0.008     0.000     0.15      0.00
+    10:57:01                Data File Backup               0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Data File Copy                 0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Data File Incremental Backup   0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Data Pump Dump File            0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Flashback Log                  0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Log File                       0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Other                          0         0         0         0         0.000     0.000     0.00      0.00
+    10:57:01                Temp File                      0         0         0         0         0.000     0.000     0.00      0.00
+
+ 
+
+<span style="color:#555555;">Report the IO type metrics for “small” IO per database instances and containers:</span>
+
+    ./db_io_type_metrics.pl -show=inst,cont -io_type=small
+    ............................
+    Collecting 1 sec....
+    ............................
+
+    ......... SNAP TAKEN AT ...................
+
+    13:07:46                                                                 SMALL R   SMALL R   SMALL W   SMALL W   Avg MB/   Avg MB/   Avg ms/   Avg ms/
+    13:07:46   INST         CONT              FILE_TYPE_TBS                  MB/s      RQ/s      MB/s      RQ/s      SMALL R   SMALL W   SMALL R   SMALL W
+    13:07:46   ----------   ---------------   ----------------------------   -------   -------   -------   -------   -------   -------   -------   -------
+    13:07:46   CBDT1                                                         2         97        0         1         0.021     0.000     0.03      1.00
+    13:07:46   CBDT1        CDB$ROOT                                         2         97        0         1         0.021     0.000     0.03      1.00
+    13:07:46   CBDT1        PDB$SEED                                         0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT1        P_1                                              0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT1        P_2                                              0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT1        P_3                                              0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT2                                                         1         96        0         1         0.010     0.000     0.09      2.00
+    13:07:46   CBDT2        CDB$ROOT                                         1         96        0         1         0.010     0.000     0.09      2.00
+    13:07:46   CBDT2        PDB$SEED                                         0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT2        P_1                                              0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT2        P_2                                              0         0         0         0         0.000     0.000     0.00      0.00
+    13:07:46   CBDT2        P_3                                              0         0         0         0         0.000     0.000     0.00      0.00
+
+ 
+
+Report the IO type metrics per… I let you finish the sentence as the utility is customizable enough <span class="wp-smiley emoji emoji-wink" title=";-)">;-)</span>
+
+You can **download** it from [this repository](https://docs.google.com/folderview?id=0B7Jf_4JdsptpRHdyOWk1VTdUdEU) or copy the source code from [this page](http://bdrouvot.wordpress.com/db_io_type_metrics_source_code/ "db_io_type_metrics_source").[  
+](http://bdrouvot.wordpress.com/db_io_metrics_source/ "db_io_metrics_source")
+
+<span style="text-decoration:underline;">**Conclusion:**</span>
+
+Three utilities are now available to report IO metrics in real time depending on our needs:
+
+1.  [asm\_metrics](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm_metrics") for reads and writes metrics related to ASM.
+2.  [db\_io\_metrics](http://bdrouvot.wordpress.com/db_io_metrics_script/ "db_io_metrics") for reads and writes metrics related to data files and temp files.
+3.  [db\_io\_type\_metrics](http://bdrouvot.wordpress.com/db_io_type_metrics_script/ "db_io_type_metrics") for reads, writes, small, large and synchronous metrics related to data files, temp files,control files, log files, archive logs, and so on.
 
 Enjoy and don't hesitate to come back to me in case of questions, issues or suggestions.
-

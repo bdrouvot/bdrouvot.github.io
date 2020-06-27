@@ -34,72 +34,74 @@ author:
   last_name: ''
 permalink: "/2014/08/11/simulate-and-visualize-the-impact-of-the-asm-preferred-feature-on-the-read-iops-and-throughput/"
 ---
-Suppose that you decided to put the ASM preferred feature in place because you observed&nbsp;that the read latency is **too high on the&nbsp;farthest disk array** (You can find how you can lead to this conclusion&nbsp;with&nbsp;the use case 3 into [this post](http://bdrouvot.wordpress.com/2014/07/12/asm-performance-metrics-visualization-use-cases/ "ASM performance metrics visualization: Use cases")).
 
-So, you want to enable the ASM preferred read feature so that:
+Suppose that you decided to put the ASM preferred feature in place because you observed that the read latency is **too high on the farthest disk array** (You can find how you can lead to this conclusion with the use case 3 into [this post](http://bdrouvot.wordpress.com/2014/07/12/asm-performance-metrics-visualization-use-cases/ "ASM performance metrics visualization: Use cases")).
 
-1. The +ASM1 instance "prefers" to read from the "WIN" failgroup.
-2. The +ASM2 instance "prefers" to read from the "JMO" failgroup.
+<span style="text-decoration:underline;">So, you want to enable the ASM preferred read feature so that:</span>
 
-But doing so **may have an impact on the number of read IOPS and the throughput** repartition per host/disk array because:
+1.  The +ASM1 instance "prefers" to read from the "WIN" failgroup.
+2.  The +ASM2 instance "prefers" to read from the "JMO" failgroup.
 
-1. The "previous" ASM1 to JMO reads will now be done on the "WIN" array.
-2. The "previous" ASM2 to WIN reads will now be done on the "JMO" array.
+<span style="text-decoration:underline;">But doing so **may have an impact on the number of read IOPS and the throughput** repartition per host/disk array because:</span>
+
+1.  The "previous" ASM1 to JMO reads will now be done on the "WIN" array.
+2.  The "previous" ASM2 to WIN reads will now be done on the "JMO" array.
 
 Of course, the total number of read operations and throughput will not change, but the **repartition across the failgroup (disk array) may change** with the ASM preferred read feature in place.
 
-**Question:**
+<span style="text-decoration:underline;">**Question:**</span>
 
-- Is the architecture able to deal with this new read repartition?
+-   Is the architecture able to deal with this new read repartition?
 
-To answer this question I will:
+<span style="text-decoration:underline;">To answer this question I will:</span>
 
-1. Collect the ASM metrics during a certain amount of time (without the ASM preferred read in place) and produce a csv file as described [here](http://bdrouvot.wordpress.com/2014/07/08/graphing-asm-performance-metrics/ "Graphing ASM performance metrics").
-2. Visualize the ASM metrics with&nbsp;[Tableau](http://www.tableausoftware.com/public//community)&nbsp;and **simulate** &nbsp;the impact of the preferred read feature on the read IOPS and the throughput repartition.
+1.  Collect the ASM metrics during a certain amount of time (without the ASM preferred read in place) and produce a csv file as described [here](http://bdrouvot.wordpress.com/2014/07/08/graphing-asm-performance-metrics/ "Graphing ASM performance metrics").
+2.  Visualize the ASM metrics with [Tableau](http://www.tableausoftware.com/public//community) and **simulate** the impact of the preferred read feature on the read IOPS and the throughput repartition.
 
-Once the csv file is ready (means you collected a representative workload), let's check what the current workload is ( **Without** the ASM preferred read in place).
+Once the csv file is ready (means you collected a representative workload), let's check what the current workload is (**Without** the ASM preferred read in place).
 
-For the&nbsp;_Kby Read/s_ measure_:_
+<span style="text-decoration:underline;">For the *Kby Read/s* measure*:*</span>
 
 We can visualize it that way with Tableau (I keep the “columns”, “rows” and “marks” shelf into the print screen so that you can reproduce).
 
-[![Screen Shot 2014-08-10 at 18.45.03]({{ site.baseurl }}/assets/images/screen-shot-2014-08-10-at-18-45-03.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-10-at-18-45-03.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-10-at-18-45-03.png" class="aligncenter size-full wp-image-2104" width="640" height="362" alt="Screen Shot 2014-08-10 at 18.45.03" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-10-at-18-45-03.png)
 
-For the&nbsp;_Reads/s_ measure_:_
+<span style="text-decoration:underline;">For the *Reads/s* measure*:*</span>
 
-[![Screen Shot 2014-08-11 at 11.07.01]({{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-07-01.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-07-01.png)We can see the read IOPS and the throughput repartition by failgroup and ASM instances. We can see that the read IOPS and&nbsp;the throughput are&nbsp;equally distributed over the Failgroups (It is the expected behaviour without the ASM preferred read in place).
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-11-at-11-07-01.png" class="aligncenter size-full wp-image-2116" width="640" height="338" alt="Screen Shot 2014-08-11 at 11.07.01" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-07-01.png)We can see the read IOPS and the throughput repartition by failgroup and ASM instances. We can see that the read IOPS and the throughput are equally distributed over the Failgroups (It is the expected behaviour without the ASM preferred read in place).
 
 Now, **what If** we implement the ASM preferred feature? **What would** be the impact on the read IOPS and the throughput repartition?
 
 To simulate and visualize the impact, let's create this "New FG for Read operations" calculated field:
 
-[![Screen Shot 2014-08-11 at 11.10.01]({{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-10-01.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-10-01.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-11-at-11-10-01.png" class="aligncenter size-full wp-image-2118" width="640" height="217" alt="Screen Shot 2014-08-11 at 11.10.01" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-10-01.png)
 
-**Basically it simulates&nbsp;the ASM preferred Read in place by assigning the failgroup per ASM instances.**
+**Basically it simulates the ASM preferred Read in place by assigning the failgroup per ASM instances.**
 
 Now, let's simulate and visualize the impact of the ASM preferred read feature (should it be implemented) using the same csv file and this calculated field as dimension.
 
-For the&nbsp;_Kby Read/s_ measure_:_
+<span style="text-decoration:underline;">For the *Kby Read/s* measure*:*</span>
 
-[![Screen Shot 2014-08-11 at 11.12.56]({{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-12-56.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-12-56.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-11-at-11-12-56.png" class="aligncenter size-full wp-image-2119" width="640" height="340" alt="Screen Shot 2014-08-11 at 11.12.56" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-12-56.png)
 
-Note that the throughput repartition would not be the same and that the peak are higher (\> 200 Mo/s compare to about 130 Mo/s without the ASM preferred read).
+Note that the throughput repartition would not be the same and that the peak are higher (&gt; 200 Mo/s compare to about 130 Mo/s without the ASM preferred read).
 
-For the&nbsp;_Reads/s_ measure_:_
+<span style="text-decoration:underline;">For the *Reads/s* measure*:*</span>
 
-[![Screen Shot 2014-08-11 at 11.14.31]({{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-14-31.png)](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-14-31.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-11-at-11-14-31.png" class="aligncenter size-full wp-image-2120" width="640" height="340" alt="Screen Shot 2014-08-11 at 11.14.31" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-14-31.png)
 
-Note that the read IOPS repartition would not be the same and that the peak on the WIN failgroup is&nbsp;higher (about 8000&nbsp;Reads/s compare to about 5000 Reads/s without the ASM preferred read).
+Note that the read IOPS repartition would not be the same and that the peak on the WIN failgroup is higher (about 8000 Reads/s compare to about 5000 Reads/s without the ASM preferred read).
 
 Now you can check (with your Systems and Storage administrators) if your current architecture would be able to deal with this new repartition.
 
-**Remarks:**
+<span style="text-decoration:underline;">**Remarks:**</span>
 
-- ASM is not performing any reads for the database, it records metrics for&nbsp;the database instances that it is servicing.
+-   ASM is not performing any reads for the database, it records metrics for the database instances that it is servicing.
 
-- I would not suggest to use the&nbsp;[Flex ASM feature](http://www.oracle.com/technetwork/products/cloud-storage/oracle-12c-asm-overview-1965430.pdf) with the ASM preferred read because [the preferred read feature is broken with Flex ASM 12c (12.1) in place](https://bdrouvot.wordpress.com/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unpreferred-read/ "Flex ASM 12c (12.1) and Extended Rac: be careful to “unpreferred” read !").
+<!-- -->
 
-**Conclusion:**
+-   I would not suggest to use the [Flex ASM feature](http://www.oracle.com/technetwork/products/cloud-storage/oracle-12c-asm-overview-1965430.pdf) with the ASM preferred read because [the preferred read feature is broken with Flex ASM 12c (12.1) in place](https://bdrouvot.wordpress.com/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unpreferred-read/ "Flex ASM 12c (12.1) and Extended Rac: be careful to “unpreferred” read !").
+
+<span style="text-decoration:underline;">**Conclusion:**</span>
 
 We have been able to simulate and visualize the impact of the ASM preferred read feature on the read IOPS and the throughput repartition without actually implementing it.
-

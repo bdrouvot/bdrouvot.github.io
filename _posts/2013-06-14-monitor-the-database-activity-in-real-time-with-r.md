@@ -28,54 +28,65 @@ author:
   last_name: ''
 permalink: "/2013/06/14/monitor-the-database-activity-in-real-time-with-r/"
 ---
-A quick post to let you know that I just finished a&nbsp;[R](http://www.r-project.org/)&nbsp;script to monitor the database activity in real time.
 
-The " **graph\_real\_time\_db\_activity.r**" script (You can download it from this [repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit "Perl Scripts Shared Directory")) basically **takes a snapshot based on the v$system\_event&nbsp;** view then computes and graphs the differences with the previous snapshot.
+A quick post to let you know that I just finished a [R](http://www.r-project.org/) script to monitor the database activity in real time.
 
-One graph refreshed in real time is provided. It contains:
+The "**graph\_real\_time\_db\_activity.r**" script (You can download it from this [repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit "Perl Scripts Shared Directory")) basically **takes a snapshot based on the v$system\_event **view then computes and graphs the differences with the previous snapshot.
 
-- A sub-graph for the time waited (in ms) per wait class.
+<span style="text-decoration:underline;">One graph refreshed in real time is provided. It contains:</span>
 
-[![real_time_db_activity_time_values]({{ site.baseurl }}/assets/images/real_time_db_activity_time_values.png)](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_time_values.png)
+-   A sub-graph for the time waited (in ms) per wait class.
 
-- A sub-graph for the wait events distribution of the wait class having the max time waited during the last snap.
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_time_values.png" class="aligncenter size-full wp-image-1085" width="620" height="184" alt="real_time_db_activity_time_values" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_time_values.png)
 
-[![real_time_db_activity_events_distribution]({{ site.baseurl }}/assets/images/real_time_db_activity_events_distribution.png)](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_events_distribution.png)
+-   A sub-graph for the wait events distribution of the wait class having the max time waited during the last snap.
 
-- A sub-graph for the&nbsp;wait class distribution since the script has been launched.
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_events_distribution.png" class="aligncenter size-full wp-image-1086" width="526" height="364" alt="real_time_db_activity_events_distribution" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_events_distribution.png)
 
-[![real_time_db_activity_wait_class_distribution]({{ site.baseurl }}/assets/images/real_time_db_activity_wait_class_distribution.png)](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_distribution.png)
+-   A sub-graph for the wait class distribution since the script has been launched.
 
-The script also provides:
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_wait_class_distribution.png" class="aligncenter size-full wp-image-1087" width="472" height="365" alt="real_time_db_activity_wait_class_distribution" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_distribution.png)
 
-- a text file that contains the snaps computations.
-- a pdf file that contains the final graph.
+<span style="text-decoration:underline;">The script also provides:</span>
 
-As you can see, for a better understanding of the database&nbsp;behavior, I also included a fake "CPU" &nbsp;wait class (coming from the **v$sys\_time\_model** view)&nbsp;as suggested by&nbsp;Guy Harrison into this [blog post](http://guyharrison.typepad.com/oracleguy/2006/09/10g_time_model_.html).
+-   a text file that contains the snaps computations.
+-   a pdf file that contains the final graph.
+
+As you can see, for a better understanding of the database behavior, I also included a fake "CPU"  wait class (coming from the **v$sys\_time\_model** view) as suggested by Guy Harrison into this [blog post](http://guyharrison.typepad.com/oracleguy/2006/09/10g_time_model_.html).
 
 The graph is generated to both outputs (X11 and the pdf file). In case the X11 environment does not work, **the pdf file is generated anyway**.
 
-Let’s see the script in action:
+<span style="text-decoration:underline;">Let’s see the script in action:</span>
 
-```
-./graph\_real\_time\_db\_activity.r Building the thin jdbc connection string.... host ?:BDT\_HOST port ?:1521 service\_name ?: BDT system password ?:donotreadthis Number of snapshots:50 Refresh interval (seconds):2 Loading required package: methods Loading required package: DBI Loading required package: rJava Please enter any key to exit:
-```
+    ./graph_real_time_db_activity.r
+    Building the thin jdbc connection string....
 
-As you can see you are prompted for:
+    host ?:BDT_HOST
+    port ?:1521
+    service_name ?: BDT
+    system password ?:donotreadthis
+    Number of snapshots:50
+    Refresh interval (seconds):2
+    Loading required package: methods
+    Loading required package: DBI
+    Loading required package: rJava
+    Please enter any key to exit:
 
-- jdbc thin “like” details to connect to the database (You can launch the R script outside the host hosting the database).
-- oracle system user password.
-- Number of snapshots.
-- Refresh Interval.
+<span style="text-decoration:underline;">As you can see you are prompted for:</span>
+
+-   jdbc thin “like” details to connect to the database (You can launch the R script outside the host hosting the database).
+-   oracle system user password.
+-   Number of snapshots.
+-   Refresh Interval.
 
 So you can **choose the number of snapshots and the graph refresh interval**.
 
-**The output is like:**
+<span style="text-decoration:underline;">**The output is like:**</span>
 
-[![real_time_db_activity_wait_class_all]({{ site.baseurl }}/assets/images/real_time_db_activity_wait_class_all.png)](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_all.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_wait_class_all.png" class="aligncenter size-full wp-image-1090" width="620" height="395" alt="real_time_db_activity_wait_class_all" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_all.png)
 
-**Remarks:**
+<span style="text-decoration:underline;">**Remarks:**</span>
 
-- The script does not create any objects into the database.
-- If you want to install R, a good staring point is into the “Getting Staring” section of this [link](http://www.r-project.org/).
-- Now that I am able to graph in real time with R, my next work is to graph in real time the metrics coming from my [asmiostat utility](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility"). I’ll keep you posted.
+-   The script does not create any objects into the database.
+-   If you want to install R, a good staring point is into the “Getting Staring” section of this [link](http://www.r-project.org/).
+-   Now that I am able to graph in real time with R, my next work is to graph in real time the metrics coming from my [asmiostat utility](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility"). I’ll keep you posted.

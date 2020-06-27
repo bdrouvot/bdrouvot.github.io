@@ -31,171 +31,191 @@ author:
   last_name: ''
 permalink: "/2013/04/29/bind-variable-peeking-retrieve-peeked-and-passed-values-per-execution-in-oracle-11-2/"
 ---
-<p>To understand this blog post you have to know what bind variable peeking is. You can found a very good explanation into this <a href="http://kerryosborne.oracle-guy.com/2009/03/bind-variable-peeking-drives-me-nuts/" target="_blank">Kerry Osborne's blog post</a>.</p>
-<p>So when dealing with performance issues linked to bind variable peeking you have to know:</p>
-<ul>
-<li>The peeked values (The ones that generate the execution plan)</li>
-<li>The passed values (The ones that have been passed to the sql statement)</li>
-</ul>
-<p>Kerry Osborne helped us to retrieve the <strong>peeked</strong> values from <strong>v$sql_plan</strong> view into this <a href="http://kerryosborne.oracle-guy.com/2009/07/creating-test-scripts-with-bind-variables/" target="_blank">blog post</a>, but what about the passed values ?  For those ones, Tanel Poder helped us to retrieve the <strong>passed</strong> values from <strong>v$sql_monitor</strong> into this <a href="http://blog.tanelpoder.com/2010/10/18/read-currently-running-sql-statements-bind-variable-values/" target="_blank">blog post</a> (This is reliable compare to <strong>v$sql_bind_capture</strong>)</p>
-<p>Great ! So we know how to extract the peeked and the passed values. Another interesting point is that v$sql_monitor contains also the <strong>sql_exec_id</strong> field (see this <a title="Drill down to sql_id execution details in ASH" href="http://bdrouvot.wordpress.com/2013/04/19/drill-down-to-sql_id-execution-details-in-ash/" target="_blank">blog post</a> for more details about this field).</p>
-<p>Here we are:  <strong>It looks like that as of 11.2 we are able to retrieve the passed and peeked values per execution</strong> (If the statement is "monitored" which  means CPU + I/O wait time &gt;= 5 seconds per default (can be changed thanks to the _sqlmon_threshold hidden parameter).</p>
-<p>But as your are dealing with performance issues related to bind variable peeking it is likely that the sql is monitored ;-)</p>
-<p>So let's write the sql to do so, and let's test it.</p>
-<p><span style="text-decoration:underline;">The sql script is the following:</span></p>
-<p>[code language="sql"]<br />
-SQL&gt; !cat binds_peeked_passed.sql<br />
-set linesi 200 pages 999 feed off verify off<br />
-col bind_name format a20<br />
-col end_time format a19<br />
-col start_time format a19<br />
-col peeked format a20<br />
-col passed format a20</p>
-<p>alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';<br />
-alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';</p>
-<p>select<br />
-pee.sql_id,<br />
-ash.starting_time,<br />
-ash.end_time,<br />
-(EXTRACT(HOUR FROM ash.run_time) * 3600<br />
-                    + EXTRACT(MINUTE FROM ash.run_time) * 60<br />
-                    + EXTRACT(SECOND FROM ash.run_time)) run_time_sec,<br />
-pee.plan_hash_value,<br />
-pee.bind_name,<br />
-pee.bind_pos,<br />
-pee.bind_data peeked,<br />
-run_t.bind_data passed<br />
-from<br />
-(<br />
-select<br />
-p.sql_id,<br />
-p.sql_child_address,<br />
-p.sql_exec_id,<br />
-c.bind_name,<br />
-c.bind_pos,<br />
-c.bind_data<br />
-from<br />
-v$sql_monitor p,<br />
-xmltable<br />
-(<br />
-'/binds/bind' passing xmltype(p.binds_xml)<br />
-columns bind_name varchar2(30) path '/bind/@name',<br />
-bind_pos number path '/bind/@pos',<br />
-bind_data varchar2(30) path '/bind'<br />
-) c<br />
-where<br />
-p.binds_xml is not null<br />
-) run_t<br />
-,<br />
-(<br />
-select<br />
-p.sql_id,<br />
-p.child_number,<br />
-p.child_address,<br />
-c.bind_name,<br />
-c.bind_pos,<br />
-p.plan_hash_value,<br />
-case<br />
-     when c.bind_type = 1 then utl_raw.cast_to_varchar2(c.bind_data)<br />
-     when c.bind_type = 2 then to_char(utl_raw.cast_to_number(c.bind_data))<br />
-     when c.bind_type = 96 then to_char(utl_raw.cast_to_varchar2(c.bind_data))<br />
-     else 'Sorry: Not printable try with DBMS_XPLAN.DISPLAY_CURSOR'<br />
-end bind_data<br />
-from<br />
-v$sql_plan p,<br />
-xmltable<br />
-(<br />
-'/*/peeked_binds/bind' passing xmltype(p.other_xml)<br />
-columns bind_name varchar2(30) path '/bind/@nam',<br />
-bind_pos number path '/bind/@pos',<br />
-bind_type number path '/bind/@dty',<br />
-bind_data  raw(2000) path '/bind'<br />
-) c<br />
-where<br />
-p.other_xml is not null<br />
-) pee,<br />
-(<br />
-select<br />
-sql_id,<br />
-sql_exec_id,<br />
-max(sample_time - sql_exec_start) run_time,<br />
-max(sample_time) end_time,<br />
-sql_exec_start starting_time<br />
-from<br />
-v$active_session_history<br />
-group by sql_id,sql_exec_id,sql_exec_start<br />
-) ash<br />
-where<br />
-pee.sql_id=run_t.sql_id and<br />
-pee.sql_id=ash.sql_id and<br />
-run_t.sql_exec_id=ash.sql_exec_id and<br />
-pee.child_address=run_t.sql_child_address and<br />
-pee.bind_name=run_t.bind_name and<br />
-pee.bind_pos=run_t.bind_pos and<br />
-pee.sql_id like nvl('&amp;sql_id',pee.sql_id)<br />
-order by 1,2,3,7 ;<br />
-[/code]</p>
-<p><span style="text-decoration:underline;">Now let's test it:</span></p>
-<pre style="padding-left:30px;">SQL&gt; var my_owner varchar2(50)
-SQL&gt; var my_date varchar2(30)
-SQL&gt; var my_object_id number
-SQL&gt; exec :my_owner :='BDT'
 
-PL/SQL procedure successfully completed.
+To understand this blog post you have to know what bind variable peeking is. You can found a very good explanation into this [Kerry Osborne's blog post](http://kerryosborne.oracle-guy.com/2009/03/bind-variable-peeking-drives-me-nuts/).
 
-SQL&gt; exec :my_date := '01-jan-2001'
+So when dealing with performance issues linked to bind variable peeking you have to know:
 
-PL/SQL procedure successfully completed.
+-   The peeked values (The ones that generate the execution plan)
+-   The passed values (The ones that have been passed to the sql statement)
 
-SQL&gt; exec :my_object_id :=1
+Kerry Osborne helped us to retrieve the **peeked** values from **v$sql\_plan** view into this [blog post](http://kerryosborne.oracle-guy.com/2009/07/creating-test-scripts-with-bind-variables/), but what about the passed values ?  For those ones, Tanel Poder helped us to retrieve the **passed** values from **v$sql\_monitor** into this [blog post](http://blog.tanelpoder.com/2010/10/18/read-currently-running-sql-statements-bind-variable-values/) (This is reliable compare to **v$sql\_bind\_capture**)
 
-PL/SQL procedure successfully completed.
+Great ! So we know how to extract the peeked and the passed values. Another interesting point is that v$sql\_monitor contains also the **sql\_exec\_id** field (see this [blog post](http://bdrouvot.wordpress.com/2013/04/19/drill-down-to-sql_id-execution-details-in-ash/ "Drill down to sql_id execution details in ASH") for more details about this field).
 
-SQL&gt; select /*+ MONITOR */ count(*),min(object_id),max(object_id) from bdt2 where owner=:my_owner and created &gt; :my_date and object_id &gt; :my_object_id;
+Here we are:  **It looks like that as of 11.2 we are able to retrieve the passed and peeked values per execution** (If the statement is "monitored" which  means CPU + I/O wait time &gt;= 5 seconds per default (can be changed thanks to the \_sqlmon\_threshold hidden parameter).
 
-  COUNT(*) MIN(OBJECT_ID) MAX(OBJECT_ID)
----------- -------------- --------------
-   6974365              2          18233
+But as your are dealing with performance issues related to bind variable peeking it is likely that the sql is monitored ;-)
 
-SQL&gt; @binds_peeked_passed.sql
-Enter value for sql_id: 
+So let's write the sql to do so, and let's test it.
 
-SQL_ID        STARTING_TIME       END_TIME            RUN_TIME_SEC PLAN_HASH_VALUE BIND_NAME              BIND_POS PEEKED               PASSED
-------------- ------------------- ------------------- ------------ --------------- -------------------- ---------- -------------------- --------------------
-bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_OWNER                     1 BDT                  BDT
-bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_DATE                      2 01-jan-2001          01-jan-2001
-bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_OBJECT_ID                 3 1                    1</pre>
-<p>As this is the first execution then peeked values = passed values. Note that I used the "MONITOR" hint to force the sql to be monitored and then get an entry into v$sql_monitor.</p>
-<p><span style="text-decoration:underline;">Let's put new passed values:</span></p>
-<pre style="padding-left:30px;">SQL&gt; exec :my_date := '01-jan-2002'
+<span style="text-decoration:underline;">The sql script is the following:</span>
 
-PL/SQL procedure successfully completed.
+\[code language="sql"\]  
+SQL&gt; !cat binds\_peeked\_passed.sql  
+set linesi 200 pages 999 feed off verify off  
+col bind\_name format a20  
+col end\_time format a19  
+col start\_time format a19  
+col peeked format a20  
+col passed format a20
 
-SQL&gt; exec :my_object_id :=100
+alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
 
-PL/SQL procedure successfully completed.
+select  
+pee.sql\_id,  
+ash.starting\_time,  
+ash.end\_time,  
+(EXTRACT(HOUR FROM ash.run\_time) \* 3600  
++ EXTRACT(MINUTE FROM ash.run\_time) \* 60  
++ EXTRACT(SECOND FROM ash.run\_time)) run\_time\_sec,  
+pee.plan\_hash\_value,  
+pee.bind\_name,  
+pee.bind\_pos,  
+pee.bind\_data peeked,  
+run\_t.bind\_data passed  
+from  
+(  
+select  
+p.sql\_id,  
+p.sql\_child\_address,  
+p.sql\_exec\_id,  
+c.bind\_name,  
+c.bind\_pos,  
+c.bind\_data  
+from  
+v$sql\_monitor p,  
+xmltable  
+(  
+'/binds/bind' passing xmltype(p.binds\_xml)  
+columns bind\_name varchar2(30) path '/bind/@name',  
+bind\_pos number path '/bind/@pos',  
+bind\_data varchar2(30) path '/bind'  
+) c  
+where  
+p.binds\_xml is not null  
+) run\_t  
+,  
+(  
+select  
+p.sql\_id,  
+p.child\_number,  
+p.child\_address,  
+c.bind\_name,  
+c.bind\_pos,  
+p.plan\_hash\_value,  
+case  
+when c.bind\_type = 1 then utl\_raw.cast\_to\_varchar2(c.bind\_data)  
+when c.bind\_type = 2 then to\_char(utl\_raw.cast\_to\_number(c.bind\_data))  
+when c.bind\_type = 96 then to\_char(utl\_raw.cast\_to\_varchar2(c.bind\_data))  
+else 'Sorry: Not printable try with DBMS\_XPLAN.DISPLAY\_CURSOR'  
+end bind\_data  
+from  
+v$sql\_plan p,  
+xmltable  
+(  
+'/\*/peeked\_binds/bind' passing xmltype(p.other\_xml)  
+columns bind\_name varchar2(30) path '/bind/@nam',  
+bind\_pos number path '/bind/@pos',  
+bind\_type number path '/bind/@dty',  
+bind\_data raw(2000) path '/bind'  
+) c  
+where  
+p.other\_xml is not null  
+) pee,  
+(  
+select  
+sql\_id,  
+sql\_exec\_id,  
+max(sample\_time - sql\_exec\_start) run\_time,  
+max(sample\_time) end\_time,  
+sql\_exec\_start starting\_time  
+from  
+v$active\_session\_history  
+group by sql\_id,sql\_exec\_id,sql\_exec\_start  
+) ash  
+where  
+pee.sql\_id=run\_t.sql\_id and  
+pee.sql\_id=ash.sql\_id and  
+run\_t.sql\_exec\_id=ash.sql\_exec\_id and  
+pee.child\_address=run\_t.sql\_child\_address and  
+pee.bind\_name=run\_t.bind\_name and  
+pee.bind\_pos=run\_t.bind\_pos and  
+pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
+order by 1,2,3,7 ;  
+\[/code\]
 
-SQL&gt; select /*+ MONITOR */ count(*),min(object_id),max(object_id) from bdt2 where owner=:my_owner and created &gt; :my_date and object_id &gt; :my_object_id;
+<span style="text-decoration:underline;">Now let's test it:</span>
 
-  COUNT(*) MIN(OBJECT_ID) MAX(OBJECT_ID)
----------- -------------- --------------
-   6923776            101          18233
+    SQL> var my_owner varchar2(50)
+    SQL> var my_date varchar2(30)
+    SQL> var my_object_id number
+    SQL> exec :my_owner :='BDT'
 
-SQL&gt; @binds_peeked_passed.sql
-Enter value for sql_id: 
+    PL/SQL procedure successfully completed.
 
-SQL_ID        STARTING_TIME       END_TIME            RUN_TIME_SEC PLAN_HASH_VALUE BIND_NAME              BIND_POS PEEKED               PASSED
-------------- ------------------- ------------------- ------------ --------------- -------------------- ---------- -------------------- --------------------
-bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07 5.678 1047781245 :MY\_OWNER 1 BDT BDT bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07 5.678 1047781245 :MY\_DATE 2 01-jan-2001 01-jan-2001 bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07 5.678 1047781245 :MY\_OBJECT\_ID 3 1 1 bu9367qrhq28t 2013/04/29 11:07:21 2013/04/29 11:07:25 4.139 1047781245 :MY\_OWNER 1 BDT BDT bu9367qrhq28t 2013/04/29 11:07:21 2013/04/29 11:07:25 4.139 1047781245 :MY\_DATE 2 01-jan-2001 01-jan-2002 bu9367qrhq28t 2013/04/29 11:07:21 2013/04/29 11:07:25 4.139 1047781245 :MY\_OBJECT\_ID 3 1 100
+    SQL> exec :my_date := '01-jan-2001'
+
+    PL/SQL procedure successfully completed.
+
+    SQL> exec :my_object_id :=1
+
+    PL/SQL procedure successfully completed.
+
+    SQL> select /*+ MONITOR */ count(*),min(object_id),max(object_id) from bdt2 where owner=:my_owner and created > :my_date and object_id > :my_object_id;
+
+      COUNT(*) MIN(OBJECT_ID) MAX(OBJECT_ID)
+    ---------- -------------- --------------
+       6974365              2          18233
+
+    SQL> @binds_peeked_passed.sql
+    Enter value for sql_id: 
+
+    SQL_ID        STARTING_TIME       END_TIME            RUN_TIME_SEC PLAN_HASH_VALUE BIND_NAME              BIND_POS PEEKED               PASSED
+    ------------- ------------------- ------------------- ------------ --------------- -------------------- ---------- -------------------- --------------------
+    bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_OWNER                     1 BDT                  BDT
+    bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_DATE                      2 01-jan-2001          01-jan-2001
+    bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_OBJECT_ID                 3 1                    1
+
+As this is the first execution then peeked values = passed values. Note that I used the "MONITOR" hint to force the sql to be monitored and then get an entry into v$sql\_monitor.
+
+<span style="text-decoration:underline;">Let's put new passed values:</span>
+
+    SQL> exec :my_date := '01-jan-2002'
+
+    PL/SQL procedure successfully completed.
+
+    SQL> exec :my_object_id :=100
+
+    PL/SQL procedure successfully completed.
+
+    SQL> select /*+ MONITOR */ count(*),min(object_id),max(object_id) from bdt2 where owner=:my_owner and created > :my_date and object_id > :my_object_id;
+
+      COUNT(*) MIN(OBJECT_ID) MAX(OBJECT_ID)
+    ---------- -------------- --------------
+       6923776            101          18233
+
+    SQL> @binds_peeked_passed.sql
+    Enter value for sql_id: 
+
+    SQL_ID        STARTING_TIME       END_TIME            RUN_TIME_SEC PLAN_HASH_VALUE BIND_NAME              BIND_POS PEEKED               PASSED
+    ------------- ------------------- ------------------- ------------ --------------- -------------------- ---------- -------------------- --------------------
+    bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_OWNER                     1 BDT                  BDT
+    bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_DATE                      2 01-jan-2001          01-jan-2001
+    bu9367qrhq28t 2013/04/29 11:01:02 2013/04/29 11:01:07        5.678      1047781245 :MY_OBJECT_ID                 3 1                    1
+    bu9367qrhq28t 2013/04/29 11:07:21 2013/04/29 11:07:25        4.139      1047781245 :MY_OWNER                     1 BDT                  BDT
+    bu9367qrhq28t 2013/04/29 11:07:21 2013/04/29 11:07:25        4.139      1047781245 :MY_DATE                      2 01-jan-2001          01-jan-2002
+    bu9367qrhq28t 2013/04/29 11:07:21 2013/04/29 11:07:25        4.139      1047781245 :MY_OBJECT_ID                 3 1                    100
 
 So as you can see, peeked values are the same and passed are not: bind variable peeking in action ;-)
 
-**Conclusion:**
+<span style="text-decoration:underline;">**Conclusion:**</span>
 
 We are able to retrieve peeked and passed values per execution.
 
-**Remarks:**
+<span style="text-decoration:underline;">**Remarks:**</span>
 
-1. You need Diagnostic and tuning licenses pack to query v$active\_session\_history and v$sql\_monitor.
-2. The query is not able to retrieve the DATE values (if any) from the v$sql\_plan (check the code): This is because I don't want to create a new function into the database. If you want to extract the DATE datatype then you could create the display\_raw function (see Kerry Osborne's [blog post](http://kerryosborne.oracle-guy.com/2009/07/creating-test-scripts-with-bind-variables/) for this) and modify the sql.
-3. If you know how to extract DATE values from RAW type without creating new function please tell me so that i can update the code ;-)
+1.  You need Diagnostic and tuning licenses pack to query v$active\_session\_history and v$sql\_monitor.
+2.  The query is not able to retrieve the DATE values (if any) from the v$sql\_plan (check the code): This is because I don't want to create a new function into the database. If you want to extract the DATE datatype then you could create the display\_raw function (see Kerry Osborne's [blog post](http://kerryosborne.oracle-guy.com/2009/07/creating-test-scripts-with-bind-variables/) for this) and modify the sql.
+3.  If you know how to extract DATE values from RAW type without creating new function please tell me so that i can update the code ;-)

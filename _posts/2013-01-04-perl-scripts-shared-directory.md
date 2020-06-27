@@ -28,9 +28,9 @@ author:
   last_name: ''
 permalink: "/2013/01/04/perl-scripts-shared-directory/"
 ---
-A small post to let you know that the perl scripts used into this blog are now also available for download from this[shared directory](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit) (click on the link).
+
+A small post to let you know that the perl scripts used into this blog are now also available for download from this [shared directory](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit) (click on the link).
 
 It will avoid a lot of copy/paste used so far.
 
 You can still find their description, usage and copy/paste their source from this [this page](http://bdrouvot.wordpress.com/perl-scripts-2/ "Perl Scripts") (click on the link).
-

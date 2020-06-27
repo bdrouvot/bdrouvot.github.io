@@ -31,23 +31,24 @@ author:
   last_name: ''
 permalink: "/2014/01/08/otech-magazine-introduction-and-winter-2014-issue/"
 ---
-Just a quick post to introduce the&nbsp;[OTech Magazine](http://www.otechmag.com/ "OTech Magazine HomePage")&nbsp;(In case you don't already know about it).
 
-This magazine is independent, free to download and last but not least non-vendored at all. It's all about oracle technologies, written by&nbsp;authors who want to contribute for the fun of it.
+Just a quick post to introduce the [OTech Magazine](http://www.otechmag.com/ "OTech Magazine HomePage") (In case you don't already know about it).
 
-The winter 2014 issue is life, you can reach it:
+This magazine is independent, free to download and last but not least non-vendored at all. It's all about oracle technologies, written by authors who want to contribute for the fun of it.
 
-- [here](http://www.otechmag.com/2014/otech-magazine-winter-2014/ "OTech Magazine Winter 2014 issue")&nbsp;for OTech Magazine.
-- [here](http://www.otechmag.com/magazine/2014/winter/OTech%20Magazine%20-%20Winter%202014.pdf "PDF Version of OTech Magazine Winter 2014 issue")&nbsp;for direct pdf version.
+<span style="text-decoration:underline;">The winter 2014 issue is life, you can reach it:</span>
 
-I also want to mention that I am honored to have been invited by&nbsp;[Douwe Pieter van den Bos](http://nl.linkedin.com/in/douwepietervandenbos "Douwe's LinkedIn Profile")&nbsp;to write an article for this Winter 2014 issue:&nbsp;It's about "ASM metrics", you can read it [here](http://www.otechmag.com/magazine/2014/winter/OTech%20Magazine%20-%20Winter%202014.pdf#page=114).
+-   [here](http://www.otechmag.com/2014/otech-magazine-winter-2014/ "OTech Magazine Winter 2014 issue") for OTech Magazine.
+-   [here](http://www.otechmag.com/magazine/2014/winter/OTech%20Magazine%20-%20Winter%202014.pdf "PDF Version of OTech Magazine Winter 2014 issue") for direct pdf version.
+
+I also want to mention that I am honored to have been invited by [Douwe Pieter van den Bos](http://nl.linkedin.com/in/douwepietervandenbos "Douwe's LinkedIn Profile") to write an article for this Winter 2014 issue: It's about "ASM metrics", you can read it [here](http://www.otechmag.com/magazine/2014/winter/OTech%20Magazine%20-%20Winter%202014.pdf#page=114).
 
 Enjoy reading !
 
-&nbsp;
+ 
 
-&nbsp;
+ 
 
-&nbsp;
+ 
 
 ### 

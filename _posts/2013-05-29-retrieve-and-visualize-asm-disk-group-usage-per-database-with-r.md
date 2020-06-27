@@ -26,38 +26,48 @@ author:
   last_name: ''
 permalink: "/2013/05/29/retrieve-and-visualize-asm-disk-group-usage-per-database-with-r/"
 ---
+
 If you are using Oracle Enterprise Manager and ASM, then you may already be familiar with the following page that displays the Disk Group Usage per database for a particular Disk Group:
 
-[![oem_archive_dg_usage]({{ site.baseurl }}/assets/images/oem_archive_dg_usage.png)](http://bdrouvot.files.wordpress.com/2013/05/oem_archive_dg_usage.png)  
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/oem_archive_dg_usage.png" class="aligncenter size-full wp-image-1022" width="620" height="160" alt="oem_archive_dg_usage" />](http://bdrouvot.files.wordpress.com/2013/05/oem_archive_dg_usage.png)  
 And it is most likely that you don't need to read this little post, as it provides a R script to achieve more or less the same result ;-).
 
 But if you are not using Oracle Enterprise Manager, then you may find this post useful.
 
-I created a **R script "graph\_asm\_dg\_usage.r "&nbsp;** (You can download it from this [repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit "Perl Scripts Shared Directory")) **&nbsp;that provides:**
+I created a **R script "<span style="color:#0000ff;">graph\_asm\_dg\_usage.r</span> " **(You can download it from this [repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit "Perl Scripts Shared Directory"))** that provides:**
 
-1. **A graph** similar to the OEM one.
-2. **A pdf file** that contains the graph.
-3. **A text file** that contains the values used to build the graph.
+1.  **A graph** similar to the OEM one.
+2.  **A pdf file** that contains the graph.
+3.  **A text file** that contains the values used to build the graph.
 
-The graph is available from both outputs (X11 and the pdf file). In case the X11 environment&nbsp;does not work, **the pdf file is generated anyway**.
+The graph is available from both outputs (X11 and the pdf file). In case the X11 environment does not work, **the pdf file is generated anyway**.
 
-Let's launch it to see the result:
+<span style="text-decoration:underline;">Let's launch it to see the result:</span>
 
-```
-./graph\_asm\_dg\_usage.r Building the thin jdbc connection string.... host ?: bdt\_host port ?: 1521 service\_name for ASM ?: +ASM sys as sysasm password ?: dontreadthis Display which disk group (no quotation marks, no +) ?: ARCHIVE Loading required package: methods Loading required package: DBI Loading required package: rJava Please enter any key to exit:
-```
+    ./graph_asm_dg_usage.r 
+    Building the thin jdbc connection string....
 
-The output is the following:
+    host ?: bdt_host
+    port ?: 1521
+    service_name for ASM ?: +ASM
+    sys as sysasm password ?: dontreadthis
+    Display which disk group (no quotation marks, no +) ?: ARCHIVE
+    Loading required package: methods
+    Loading required package: DBI
+    Loading required package: rJava
+    Please enter any key to exit:
 
-[![archive_dg_usage]({{ site.baseurl }}/assets/images/archive_dg_usage.png)](http://bdrouvot.files.wordpress.com/2013/05/archive_dg_usage.png)
+<span style="text-decoration:underline;">The output is the following:</span>
 
-As you can see you are prompted for:
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/archive_dg_usage.png" class="aligncenter size-full wp-image-1024" width="620" height="475" alt="archive_dg_usage" />](http://bdrouvot.files.wordpress.com/2013/05/archive_dg_usage.png)
 
-- jdbc thin “like” details to connect to the ASM instance (You can launch the R script outside the host hosting the ASM instance).
-- oracle sys user password.
-- The ASM disk group you want to focus on.
+<span style="text-decoration:underline;">As you can see you are prompted for:</span>
 
-**Remarks:**
+-   jdbc thin “like” details to connect to the ASM instance (You can launch the R script outside the host hosting the ASM instance).
+-   oracle sys user password.
+-   The ASM disk group you want to focus on.
 
-- It has been tested on a 11.2.0.3 asm instance.
-- If you want to install R, you should begin to read &nbsp;"Getting Starting” from&nbsp;[this link](http://www.r-project.org/).
+<span style="text-decoration:underline;">**Remarks:**</span>
+
+-   It has been tested on a 11.2.0.3 asm instance.
+-   If you want to install R, you should begin to read  "Getting Starting” from [this link](http://www.r-project.org/).

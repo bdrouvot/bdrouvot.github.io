@@ -35,20 +35,21 @@ author:
   last_name: ''
 permalink: "/2018/07/14/postgresql-active-session-history-extension-is-now-publicly-available/"
 ---
+
 ### Publicly available
 
 A quick one to let you know that the pgsentinel extension providing active session history sampling is now publicly available.
 
-You can find more details on it into [this previous blog post](https://bdrouvot.wordpress.com/2018/07/07/postgresql-active-session-history-ash-welcome-to-the-pg_active_session_history-view-part-of-the-pgsentinel-extension/)&nbsp;and also from some early beta testers:
+You can find more details on it into [this previous blog post](https://bdrouvot.wordpress.com/2018/07/07/postgresql-active-session-history-ash-welcome-to-the-pg_active_session_history-view-part-of-the-pgsentinel-extension/) and also from some early beta testers:
 
-- [Active session history in PostgreSQL: Say hello to pgSentinel](https://blog.dbi-services.com/active-session-history-in-postgresql-say-hello-to-pgsentinel/)
-- [pgSentinel: the sampling approach for PostgreSQL](https://blog.dbi-services.com/pgsentinel-the-sampling-approach-for-postgresql/)
+-   [Active session history in PostgreSQL: Say hello to pgSentinel](https://blog.dbi-services.com/active-session-history-in-postgresql-say-hello-to-pgsentinel/)
+-   [pgSentinel: the sampling approach for PostgreSQL](https://blog.dbi-services.com/pgsentinel-the-sampling-approach-for-postgresql/)
 
-Thank you [Franck Pachot](https://twitter.com/FranckPachot) and [Daniel Westermann](https://twitter.com/westermanndanie)&nbsp;for beta testing and sharing.
+Thank you [Franck Pachot](https://twitter.com/FranckPachot) and [Daniel Westermann](https://twitter.com/westermanndanie) for beta testing and sharing.
 
 ### Where to find it?
 
-The extension is available from the [pgsentinel github repository](https://github.com/pgsentinel/pgsentinel). Please keep in mind that at the time of this writing the extension is still in beta so may contain some bugs: don't hesitate to raise&nbsp;[issues at github&nbsp;](https://github.com/pgsentinel/pgsentinel/issues)with your bug report.
+The extension is available from the [pgsentinel github repository](https://github.com/pgsentinel/pgsentinel). Please keep in mind that at the time of this writing the extension is still in beta so may contain some bugs: don't hesitate to raise [issues at github ](https://github.com/pgsentinel/pgsentinel/issues)with your bug report.
 
 ### Where to follow pgsentinel stuff?
 
@@ -57,4 +58,3 @@ On the [website](https://www.pgsentinel.com/), [twitter](https://twitter.com/Pg_
 ### Please do contribute
 
 If you're lacking of some functionality, then you're welcome to make pull requests.
-

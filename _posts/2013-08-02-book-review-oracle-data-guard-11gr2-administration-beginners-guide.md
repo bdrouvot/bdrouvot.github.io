@@ -27,15 +27,16 @@ author:
   last_name: ''
 permalink: "/2013/08/02/book-review-oracle-data-guard-11gr2-administration-beginners-guide/"
 ---
-As you know Oracle Data Guard provides&nbsp;high availability, data protection, and disaster recovery. It provides a comprehensive set of services that create, maintain, manage, and monitor one or more standby databases.
+
+As you know Oracle Data Guard provides high availability, data protection, and disaster recovery. It provides a comprehensive set of services that create, maintain, manage, and monitor one or more standby databases.
 
 If you begin working with Data Guard and you want to learn quickly, I would like to mention a book around this area that I just finished to review:
 
 **Oracle Data Guard 11gR2 Administration Beginner's Guide**
 
-[![Oracle data guard image]({{ site.baseurl }}/assets/images/oracle-data-guard-image.jpg)](http://bdrouvot.files.wordpress.com/2013/08/oracle-data-guard-image.jpg)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/oracle-data-guard-image.jpg" width="500" height="617" alt="Oracle data guard image" />](http://bdrouvot.files.wordpress.com/2013/08/oracle-data-guard-image.jpg)
 
-This book has been written by&nbsp;[Emre Baransel](http://emrebaransel.blogspot.fr/)&nbsp;and&nbsp;[Nassyam Basha](http://www.oracle-ckpt.com/).
+This book has been written by [Emre Baransel](http://emrebaransel.blogspot.fr/) and [Nassyam Basha](http://www.oracle-ckpt.com/).
 
 From my point of view this is a very good book to start around this subject. It is easy to read and provides also useful real-word practices and issues.
 
@@ -65,5 +66,4 @@ Preface Chapter
 
 11: Data Guard Best Practices Pop Quiz Answers
 
-You can find [some sample chapters here](http://www.packtpub.com/sites/default/files/9781849687904_Chapter_11.pdf?utm_source=packtpub&utm_medium=free&utm_campaign=pdf)&nbsp;or&nbsp;the [whole book here](http://www.packtpub.com/oracle-data-guard-11gr2-administration-beginners-guide/book?utm_source=mention.com&utm_medium=blog&utm_campaign=book_mention).
-
+You can find [some sample chapters here](http://www.packtpub.com/sites/default/files/9781849687904_Chapter_11.pdf?utm_source=packtpub&utm_medium=free&utm_campaign=pdf) or the [whole book here](http://www.packtpub.com/oracle-data-guard-11gr2-administration-beginners-guide/book?utm_source=mention.com&utm_medium=blog&utm_campaign=book_mention).

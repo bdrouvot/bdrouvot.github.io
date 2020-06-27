@@ -27,10 +27,10 @@ author:
   last_name: ''
 permalink: "/2013/12/05/ukoug-tech13-slides/"
 ---
+
 A quick post to share the presentations I did during [UKOUG TECH 13](http://www.tech13.ukoug.org/).
 
-- [Exadata real time metrics extraction](http://www.slideshare.net/BertrandDrouvot/exadata-real-time-ukoug-2013) (It was a live demo so there is not a lot of slides).
-- [Examples of R usage with the oracle database](http://www.slideshare.net/BertrandDrouvot/example-r-usage-for-oracle-dba-ukoug-2013).
+-   [Exadata real time metrics extraction](http://www.slideshare.net/BertrandDrouvot/exadata-real-time-ukoug-2013) (It was a live demo so there is not a lot of slides).
+-   [Examples of R usage with the oracle database](http://www.slideshare.net/BertrandDrouvot/example-r-usage-for-oracle-dba-ukoug-2013).
 
 It was my first time presenting, I really enjoyed it (even if it was a little bit scary :-) ). For sure I will try to renew this experience.
-

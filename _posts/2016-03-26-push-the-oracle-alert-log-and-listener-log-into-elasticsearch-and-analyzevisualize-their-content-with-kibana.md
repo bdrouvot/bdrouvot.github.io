@@ -34,313 +34,363 @@ author:
   last_name: ''
 permalink: "/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/"
 ---
-## Introduction
 
-The oracle _alert.log_ and _listener.log_ contain useful information to provide answer to questions like:
+Introduction
+------------
 
-- When did the Instance&nbsp;start?
-- When has the Instance been shutdown?
-- When did ORA- occur? With which code?
-- Which IP client did connect to the Instance? With which user?
-- How did it connect? Through a service? Through the SID?
-- Which program has been used to connect?
-- A connection storm occurred, what is the source of it?
+The oracle *alert.log* and *listener.log* contain useful information to provide answer to questions like:
 
-What about having all this information centralized? What about having the possibility to&nbsp;gather, format, search, analyze and visualize this information in real time?
+-   When did the Instance start?
+-   When has the Instance been shutdown?
+-   When did ORA- occur? With which code?
+-   Which IP client did connect to the Instance? With which user?
+-   How did it connect? Through a service? Through the SID?
+-   Which program has been used to connect?
+-   A connection storm occurred, what is the source of it?
+
+What about having all this information centralized? What about having the possibility to gather, format, search, analyze and visualize this information in real time?
 
 To achieve this, let's use the [ELK stack](https://www.elastic.co/products):
 
-- [Logstash](https://www.elastic.co/products/logstash) to collect the information the way we want to.
-- [Elasticsearch](https://www.elastic.co/products/elasticsearch)&nbsp;as an analytics engine.
-- [Kibana](https://www.elastic.co/products/kibana) to visualize the data.
+-   [Logstash](https://www.elastic.co/products/logstash) to collect the information the way we want to.
+-   [Elasticsearch](https://www.elastic.co/products/elasticsearch) as an analytics engine.
+-   [Kibana](https://www.elastic.co/products/kibana) to visualize the data.
 
-## Installation
+Installation
+------------
 
 The installation is very simple.
 
-- Install elasticsearch
+-   Install elasticsearch
 
-```
-[root@elk ~]# wget https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.2.1/elasticsearch-2.2.1.rpm [root@elk ~]# yum localinstall elasticsearch-2.2.1.rpm
-```
+<!-- -->
 
-- Edit the configuration file to mention on which host&nbsp;it has been installed (namely&nbsp;_elk_ in my case):
+    [root@elk ~]# wget https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.2.1/elasticsearch-2.2.1.rpm
+    [root@elk ~]# yum localinstall elasticsearch-2.2.1.rpm
 
-```
-[root@elk ~]# grep network.host /etc/elasticsearch/elasticsearch.yml network.host: elk
-```
+-   Edit the configuration file to mention on which host it has been installed (namely *elk* in my case):
 
-- Start elasticsearch:
+<!-- -->
 
-```
-[root@elk ~]# /etc/init.d/elasticsearch start Starting elasticsearch: [OK]
-```
+    [root@elk ~]# grep network.host /etc/elasticsearch/elasticsearch.yml
+    network.host: elk
 
-- Install Kibana:
+-   Start elasticsearch:
 
-```
-[root@elk ~]# wget https://download.elastic.co/kibana/kibana/kibana-4.4.2-linux-x64.tar.gz [root@elk ~]# tar -xf kibana-4.4.2-linux-x64.tar.gz --directory /opt [root@elk ~]# mv /opt/kibana-4.4.2-linux-x64 /opt/kibana
-```
+<!-- -->
 
-- Edit the configuration file so that the url is updated accordingly:
+    [root@elk ~]# /etc/init.d/elasticsearch start
+    Starting elasticsearch: [ OK ]
 
-```
-[root@elk ~]# grep elasticsearch.url /opt/kibana/config/kibana.yml elasticsearch.url: "http://elk:9200"
-```
+-   Install Kibana:
 
-- Start Kibana:
+<!-- -->
 
-```
-[root@elk ~]# /opt/kibana/bin/kibana
-```
+    [root@elk ~]# wget https://download.elastic.co/kibana/kibana/kibana-4.4.2-linux-x64.tar.gz
+    [root@elk ~]# tar -xf kibana-4.4.2-linux-x64.tar.gz --directory /opt
+    [root@elk ~]# mv /opt/kibana-4.4.2-linux-x64 /opt/kibana
 
-- Install logstash on the oracle host (namely _dprima_ in my case):
+-   Edit the configuration file so that the url is updated accordingly:
 
-```
-[root@dprima ~]# wget https://download.elastic.co/logstash/logstash/packages/centos/logstash-2.2.2-1.noarch.rpm [root@dprima ~]# yum localinstall logstash-2.2.2-1.noarch.rpm
-```
+<!-- -->
 
-## Configure logstash to push and format the alert.log to elasticsearch the way we want to
+    [root@elk ~]# grep elasticsearch.url /opt/kibana/config/kibana.yml
+    elasticsearch.url: "http://elk:9200"
+
+-   Start Kibana:
+
+<!-- -->
+
+    [root@elk ~]# /opt/kibana/bin/kibana
+
+-   Install logstash on the oracle host (namely *dprima* in my case):
+
+<!-- -->
+
+    [root@dprima ~]# wget https://download.elastic.co/logstash/logstash/packages/centos/logstash-2.2.2-1.noarch.rpm
+    [root@dprima ~]# yum localinstall logstash-2.2.2-1.noarch.rpm
+
+Configure logstash to push and format the alert.log to elasticsearch the way we want to
+---------------------------------------------------------------------------------------
 
 So that:
 
-- The @timestamp field is reflecting the timestamp at which the log entry was created (rather than when logstash read the log entry).
-- It traps ORA- entries and creates a field _ORA-_ when it occurs.
-- It traps the start of the Instance (and fill a field _oradb\_status_ accordingly).
-- It traps the shutdown of the Instance (and fill a field _oradb\_status_ accordingly).
-- It traps the fact that the Instance is running&nbsp;(and fill a field _oradb\_status_ accordingly).
+-   The @timestamp field is reflecting the timestamp at which the log entry was created (rather than when logstash read the log entry).
+-   It traps ORA- entries and creates a field *ORA-* when it occurs.
+-   It traps the start of the Instance (and fill a field *oradb\_status* accordingly).
+-   It traps the shutdown of the Instance (and fill a field *oradb\_status* accordingly).
+-   It traps the fact that the Instance is running (and fill a field *oradb\_status* accordingly).
 
 New fields are being created **so that we can analyze/visualize** them later on with Kibana.
 
-- To trap and format this information, let's create an&nbsp;_alert\_log.conf_ configuration file that looks like (the filter part contains the important stuff):
+-   To trap and format this information, let's create an *alert\_log.conf* configuration file that looks like (the filter part contains the important stuff):
 
-[sourcecode language="python" wraplines="false" collapse="false"]  
+\[sourcecode language="python" wraplines="false" collapse="false"\]  
 input {  
- file {  
- path =\> "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert\_PBDT.log"  
- }  
+file {  
+path =&gt; "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert\_PBDT.log"  
+}  
 }
 
 filter {
 
-# Join lines based on the time  
- multiline {  
- pattern =\> "%{DAY} %{MONTH} %{MONTHDAY} %{TIME} %{YEAR}"  
- negate =\> true  
- what =\> "previous"  
- }
-
-# Create new field: oradb\_status: starting,running,shutdown  
- if [message] =~ /Starting ORACLE instance/ {  
- mutate {  
- add\_field =\> ["oradb\_status", "starting"]  
- }  
- } else if [message] =~ /Instance shutdown complete/ {  
- mutate {  
- add\_field =\> ["oradb\_status", "shutdown"]  
- }  
- } else {  
- mutate {  
- add\_field =\> ["oradb\_status", "running"]  
- }  
- }
-
-# Search for ORA- and create field if match
-
-if [message] =~ /ORA-/ {  
- grok {  
- match =\> ["message","(?\<ORA-\>ORA-[0-9]\*)" ]  
- }  
+\# Join lines based on the time  
+multiline {  
+pattern =&gt; "%{DAY} %{MONTH} %{MONTHDAY} %{TIME} %{YEAR}"  
+negate =&gt; true  
+what =&gt; "previous"  
 }
 
-# Extract the date and the rest from the message  
- grok {  
- match =\> ["message","%{DAY:day} %{MONTH:month} %{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}(?\<log\_message\>.\*$)"]  
- }
+\# Create new field: oradb\_status: starting,running,shutdown  
+if \[message\] =~ /Starting ORACLE instance/ {  
+mutate {  
+add\_field =&gt; \[ "oradb\_status", "starting" \]  
+}  
+} else if \[message\] =~ /Instance shutdown complete/ {  
+mutate {  
+add\_field =&gt; \[ "oradb\_status", "shutdown" \]  
+}  
+} else {  
+mutate {  
+add\_field =&gt; \[ "oradb\_status", "running" \]  
+}  
+}
+
+\# Search for ORA- and create field if match
+
+if \[message\] =~ /ORA-/ {  
+grok {  
+match =&gt; \[ "message","(?&lt;ORA-&gt;ORA-\[0-9\]\*)" \]  
+}  
+}
+
+\# Extract the date and the rest from the message  
+grok {  
+match =&gt; \[ "message","%{DAY:day} %{MONTH:month} %{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}(?&lt;log\_message&gt;.\*$)" \]  
+}
 
 mutate {  
- add\_field =\> {  
- "timestamp" =\> "%{year} %{month} %{monthday} %{time}"  
- }  
- }  
-# replace the timestamp by the one coming from the alert.log  
- date {  
- locale =\> "en"  
- match =\> ["timestamp" , "yyyy MMM dd HH:mm:ss"]  
- }
+add\_field =&gt; {  
+"timestamp" =&gt; "%{year} %{month} %{monthday} %{time}"  
+}  
+}  
+\# replace the timestamp by the one coming from the alert.log  
+date {  
+locale =&gt; "en"  
+match =&gt; \[ "timestamp" , "yyyy MMM dd HH:mm:ss" \]  
+}
 
-# replace the message (remove the date)  
- mutate { replace =\> ["message", "%{log\_message}"] }
+\# replace the message (remove the date)  
+mutate { replace =&gt; \[ "message", "%{log\_message}" \] }
 
 mutate {  
- remove\_field =\> ["time" ,"month","monthday","year","timestamp","day","log\_message"]  
- }
+remove\_field =&gt; \[ "time" ,"month","monthday","year","timestamp","day","log\_message"\]  
+}
 
 }
 
 output {  
 elasticsearch {  
-hosts =\> ["elk:9200"]  
-index =\> "oracle-%{+YYYY.MM.dd}"  
+hosts =&gt; \["elk:9200"\]  
+index =&gt; "oracle-%{+YYYY.MM.dd}"  
 }  
 }  
-[/sourcecode]
+\[/sourcecode\]
 
-- Start logstash with this configuration file:
+-   Start logstash with this configuration file:
 
-```
-[root@dprima ~]# /opt/logstash/bin/logstash -f /etc/logstash/conf.d/alert\_log.conf
-```
+<!-- -->
 
-- So that for example an entry in the _alert.log_ file like:
+    [root@dprima ~]# /opt/logstash/bin/logstash -f /etc/logstash/conf.d/alert_log.conf
 
-```
-Sat Mar 26 08:30:26 2016 ORA-1653: unable to extend table SYS.BDT by 8 in tablespace BDT
-```
+-   So that for example an entry in the *alert.log* file like:
+
+<!-- -->
+
+    Sat Mar 26 08:30:26 2016
+    ORA-1653: unable to extend table SYS.BDT by 8 in                 tablespace BDT
 
 will be formatted and send to elasticsearch that way:
 
-```
-{ "message" =\> "\nORA-1653: unable to extend table SYS.BDT by 8 in tablespace BDT ", "@version" =\> "1", "@timestamp" =\> "2016-03-26T08:30:26.000Z", "path" =\> "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert\_PBDT.log", "host" =\> "Dprima", "tags" =\> [[0] "multiline" ], "oradb\_status" =\> "running", "ORA-" =\> "ORA-1653" }
-```
+    {
+             "message" => "\nORA-1653: unable to extend table SYS.BDT by 8 in                 tablespace BDT ",
+            "@version" => "1",
+          "@timestamp" => "2016-03-26T08:30:26.000Z",
+                "path" => "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert_PBDT.log",
+                "host" => "Dprima",
+                "tags" => [
+            [0] "multiline"
+        ],
+        "oradb_status" => "running",
+                "ORA-" => "ORA-1653"
+    }
 
-## Configure logstash to push and format the listener.log to elasticsearch the way we want to
+Configure logstash to push and format the listener.log to elasticsearch the way we want to
+------------------------------------------------------------------------------------------
 
 So that:
 
-- The @timestamp field is reflecting the timestamp at which the log entry was created (rather than when logstash read the log entry).
-- It traps the connections and records the program&nbsp;into a dedicated field&nbsp;_program_.
-- It traps the connections and records the user&nbsp;into a dedicated field&nbsp;_user_.
-- It traps the connections and records the ip of the client&nbsp;into a dedicated field&nbsp;_ip\_client._
-- It traps the connections and records the destination into a dedicated field _dest_.
-- It traps the connections and records the destination type (SID or service\_name) into a dedicated field _dest\_type_.
-- It traps the command (stop, status, reload) and records it into a dedicated field _command_.
+-   The @timestamp field is reflecting the timestamp at which the log entry was created (rather than when logstash read the log entry).
+-   It traps the connections and records the program into a dedicated field *program*.
+-   It traps the connections and records the user into a dedicated field *user*.
+-   It traps the connections and records the ip of the client into a dedicated field *ip\_client.*
+-   It traps the connections and records the destination into a dedicated field *dest*.
+-   It traps the connections and records the destination type (SID or service\_name) into a dedicated field *dest\_type*.
+-   It traps the command (stop, status, reload) and records it into a dedicated field *command*.
 
 New fields are being created **so that we can analyze/visualize** them later on with Kibana.
 
-- To trap and format this information, let's create a&nbsp;_lsnr\_log.conf_ configuration file that looks like (the filter part contains the important stuff):
+-   To trap and format this information, let's create a *lsnr\_log.conf* configuration file that looks like (the filter part contains the important stuff):
 
-[sourcecode language="python" wraplines="false" collapse="false"]  
+\[sourcecode language="python" wraplines="false" collapse="false"\]  
 input {  
- file {  
- path =\> "/u01/app/oracle/diag/tnslsnr/Dprima/listener/trace/listener.log"  
- }  
+file {  
+path =&gt; "/u01/app/oracle/diag/tnslsnr/Dprima/listener/trace/listener.log"  
+}  
 }
 
 filter {
 
-if [message] =~ /(?i)CONNECT\_DATA/ {
+if \[message\] =~ /(?i)CONNECT\_DATA/ {
 
-# Extract the date and the rest from the message  
- grok {  
- match =\> ["message","(?\<the\_date\>.\*%{TIME})(?\<lsnr\_message\>.\*$)"]  
- }
+\# Extract the date and the rest from the message  
+grok {  
+match =&gt; \[ "message","(?&lt;the\_date&gt;.\*%{TIME})(?&lt;lsnr\_message&gt;.\*$)" \]  
+}
 
-# Extract COMMAND (like status,reload,stop) and add a field  
- if [message] =~ /(?i)COMMAND=/ {
+\# Extract COMMAND (like status,reload,stop) and add a field  
+if \[message\] =~ /(?i)COMMAND=/ {
 
 grok {  
- match =\> ["lsnr\_message","^.\*(?i)COMMAND=(?\<command\>.\*?)\).\*$"]  
- }
+match =&gt; \[ "lsnr\_message","^.\*(?i)COMMAND=(?&lt;command&gt;.\*?)\\).\*$" \]  
+}
 
 } else {
 
-# Extract useful Info (USER,PROGRAM,IPCLIENT) and add fields  
- grok {  
- match =\> ["lsnr\_message","^.\*PROGRAM=(?\<program\>.\*?)\).\*USER=(?\<user\>.\*?)\).\*ADDRESS.\*HOST=(?\<ip\_client\>%{IP}).\*$"]  
- }  
- }
+\# Extract useful Info (USER,PROGRAM,IPCLIENT) and add fields  
+grok {  
+match =&gt; \[ "lsnr\_message","^.\*PROGRAM=(?&lt;program&gt;.\*?)\\).\*USER=(?&lt;user&gt;.\*?)\\).\*ADDRESS.\*HOST=(?&lt;ip\_client&gt;%{IP}).\*$" \]  
+}  
+}
 
-# replace the timestamp by the one coming from the listener.log  
- date {  
- locale =\> "en"  
- match =\> ["the\_date" , "dd-MMM-yyyy HH:mm:ss"]  
- }
+\# replace the timestamp by the one coming from the listener.log  
+date {  
+locale =&gt; "en"  
+match =&gt; \[ "the\_date" , "dd-MMM-yyyy HH:mm:ss" \]  
+}
 
-# replace the message (remove the date)  
- mutate { replace =\> ["message", "%{lsnr\_message}"] }
+\# replace the message (remove the date)  
+mutate { replace =&gt; \[ "message", "%{lsnr\_message}" \] }
 
-# remove temporary fields  
- mutate { remove\_field =\> ["the\_date","lsnr\_message"] }
+\# remove temporary fields  
+mutate { remove\_field =&gt; \[ "the\_date","lsnr\_message"\] }
 
-# search for SID or SERVICE\_NAME, collect dest and add dest type  
- if [message] =~ /(?i)SID=/ {  
- grok { match =\> ["message","^.\*(?i)SID=(?\<dest\>.\*?)\).\*$"] }  
- mutate { add\_field =\> ["dest\_type", "SID"] }  
- }
+\# search for SID or SERVICE\_NAME, collect dest and add dest type  
+if \[message\] =~ /(?i)SID=/ {  
+grok { match =&gt; \[ "message","^.\*(?i)SID=(?&lt;dest&gt;.\*?)\\).\*$" \] }  
+mutate { add\_field =&gt; \[ "dest\_type", "SID" \] }  
+}
 
-if [message] =~ /(?i)SERVICE\_NAME=/ {  
- grok { match =\> ["message","^.\*(?i)SERVICE\_NAME=(?\<dest\>.\*?)\).\*$"] }  
- mutate { add\_field =\> ["dest\_type", "SERVICE"] }  
- }
+if \[message\] =~ /(?i)SERVICE\_NAME=/ {  
+grok { match =&gt; \[ "message","^.\*(?i)SERVICE\_NAME=(?&lt;dest&gt;.\*?)\\).\*$" \] }  
+mutate { add\_field =&gt; \[ "dest\_type", "SERVICE" \] }  
+}
 
 } else {  
- drop {}  
- }  
+drop {}  
+}  
 }
 
 output {  
 elasticsearch {  
-hosts =\> ["elk:9200"]  
-index =\> "oracle-%{+YYYY.MM.dd}"  
+hosts =&gt; \["elk:9200"\]  
+index =&gt; "oracle-%{+YYYY.MM.dd}"  
 }  
 }  
-[/sourcecode]
+\[/sourcecode\]
 
-- Start logstash with this configuration file:
+-   Start logstash with this configuration file:
 
-```
-[root@Dprima conf.d]# /opt/logstash/bin/logstash -f /etc/logstash/conf.d/lsnr\_log.conf
-```
+<!-- -->
 
-- So that for example an entry in the _listener.log_ file like:
+    [root@Dprima conf.d]# /opt/logstash/bin/logstash -f /etc/logstash/conf.d/lsnr_log.conf
 
-```
-26-MAR-2016 08:34:57 \* (CONNECT\_DATA=(SID=PBDT)(CID=(PROGRAM=SQL Developer)(HOST=\_\_jdbc\_\_)(USER=bdt))) \* (ADDRESS=(PROTOCOL=tcp)(HOST=192.168.56.1)(PORT=50379)) \* establish \* PBDT \* 0
-```
+-   So that for example an entry in the *listener.log* file like:
+
+<!-- -->
+
+    26-MAR-2016 08:34:57 * (CONNECT_DATA=(SID=PBDT)(CID=(PROGRAM=SQL Developer)(HOST=__jdbc__)(USER=bdt))) * (ADDRESS=(PROTOCOL=tcp)(HOST=192.168.56.1)(PORT=50379)) * establish * PBDT * 0
 
 will be formatted and send to elasticsearch that way:
 
-```
-{ "message" =\> " \* (CONNECT\_DATA=(SID=PBDT)(CID=(PROGRAM=SQL Developer)(HOST=\_\_jdbc\_\_)(USER=bdt))) \* (ADDRESS=(PROTOCOL=tcp)(HOST=192.168.56.1)(PORT=50380)) \* establish \* PBDT \* 0", "@version" =\> "1", "@timestamp" =\> "2016-03-26T08:34:57.000Z", "path" =\> "/u01/app/oracle/diag/tnslsnr/Dprima/listener/trace/listener.log", "host" =\> "Dprima", "program" =\> "SQL Developer", "user" =\> "bdt", "ip\_client" =\> "192.168.56.1", "dest" =\> "PBDT", "dest\_type" =\> "SID" }
-```
+    {
+           "message" => " * (CONNECT_DATA=(SID=PBDT)(CID=(PROGRAM=SQL Developer)(HOST=__jdbc__)(USER=bdt))) * (ADDRESS=(PROTOCOL=tcp)(HOST=192.168.56.1)(PORT=50380)) * establish * PBDT * 0",
+          "@version" => "1",
+        "@timestamp" => "2016-03-26T08:34:57.000Z",
+              "path" => "/u01/app/oracle/diag/tnslsnr/Dprima/listener/trace/listener.log",
+              "host" => "Dprima",
+           "program" => "SQL Developer",
+              "user" => "bdt",
+         "ip_client" => "192.168.56.1",
+              "dest" => "PBDT",
+         "dest_type" => "SID"
+    }
 
-## Analyze and Visualize the data with Kibana
+Analyze and Visualize the data with Kibana
+------------------------------------------
 
-- Connect to the elk host, (http://elk:5601) and create an index pattern (Pic 1):
+-   Connect to the elk host, (http://elk:5601) and create an index pattern (Pic 1):
 
-[![elk-index-pattern]({{ site.baseurl }}/assets/images/elk-index-pattern.png)](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/elk-index-pattern/)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/elk-index-pattern.png" class="aligncenter size-full wp-image-3009" width="640" height="335" alt="elk-index-pattern" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/elk-index-pattern/)
 
-- Check that all our custom&nbsp;fields have been indexed (this is the default behaviour) (Pic 2):
+-   Check that all our custom fields have been indexed (this is the default behaviour) (Pic 2):
 
-[![all_indices]({{ site.baseurl }}/assets/images/all_indices3.png)](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/all_indices-3/)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/all_indices3.png" class="aligncenter size-full wp-image-3037" width="640" height="351" alt="all_indices" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/all_indices-3/)
 
 so that we can now visualize them.
 
-- Example 1: thanks to the _listener.log_ data, let's graph the connection repartition to our databases by _program_ and by _dest\_type (Pic 3)_:
+-   Example 1: thanks to the *listener.log* data, let's graph the connection repartition to our databases by *program* and by *dest\_type (Pic 3)*:
 
-[![kibana_example]({{ site.baseurl }}/assets/images/kibana_example.png)](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/kibana_example/)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/kibana_example.png" class="aligncenter size-full wp-image-3021" width="640" height="338" alt="kibana_example" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/kibana_example/)
 
-- Example 2:&nbsp;thanks to the _listener.log_ data, visualize when a connection "storm" occurred and where it came&nbsp;from (_ip\_client_ field):
+-   Example 2: thanks to the *listener.log* data, visualize when a connection "storm" occurred and where it came from (*ip\_client* field):
 
-[![storm]({{ site.baseurl }}/assets/images/storm1.png)](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/storm-2/)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/storm1.png" class="aligncenter size-full wp-image-3048" width="640" height="339" alt="storm" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/storm-2/)
 
-## Remarks
+Remarks
+-------
 
-- As you can see (into the Pic 2) the index&nbsp;on the _program_ field has&nbsp;not been analyzed. By doing so, a connection to&nbsp;the database with "SQL Developer" will be&nbsp;stored in the index as "SQL Developer" and this is what we want. While an analyzed index would have stored 2 distincts values ("SQL" and "Developer"). The same apply for the _ORA-_ field: ORA-1653 would store ORA and 1653 if analyzed (This is why it is specified as not analyzed as well). You can find more details [here](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping-intro.html).
+-   As you can see (into the Pic 2) the index on the *program* field has not been analyzed. By doing so, a connection to the database with "SQL Developer" will be stored in the index as "SQL Developer" and this is what we want. While an analyzed index would have stored 2 distincts values ("SQL" and "Developer"). The same apply for the *ORA-* field: ORA-1653 would store ORA and 1653 if analyzed (This is why it is specified as not analyzed as well). You can find more details [here](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping-intro.html).
 
-- To get the indexes on the&nbsp;_program_ and _ORA-_&nbsp;fields not analyzed, a template has been created that way:
+<!-- -->
 
-```
-curl -XDELETE elk:9200/oracle\* curl -XPUT elk:9200/\_template/oracle\_template -d ' { "template" : "oracle\*", "settings" : { "number\_of\_shards" : 1 }, "mappings" : { "oracle" : { "properties" : { "program" : {"type" : "string", "index": "not\_analyzed" }, "ORA-" : {"type" : "string", "index": "not\_analyzed" } } } } }'
-```
+-   To get the indexes on the *program* and *ORA-* fields not analyzed, a template has been created that way:
 
-- The configuration files are using grok. You can find more information about it&nbsp;[here](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html).
-- You can find much more informations about the ELK stack (and another way to use it) into this [blog post](http://www.rittmanmead.com/2014/10/monitoring-obiee-with-elasticsearch-logstash-and-kibana/) from Robin Moffatt
-- All you need to do to visualize the data is to extract the fields of interest from the log files and be sure an index is created on each field you want to visualize.
-- All this information coming from all the&nbsp;machines of a datacenter being centralized into a single place is a gold mine from my point of view.
+<!-- -->
 
-## Conclusion
+    curl -XDELETE elk:9200/oracle*
 
-Thanks to the ELK stack you&nbsp;can gather, centralize, analyze and visualize the content of the _alert.log_ and&nbsp;_listener.log_&nbsp;files for&nbsp;your&nbsp;whole datacenter the way you&nbsp;want to. This information is a gold mine and the&nbsp;imagination is the only limit.
+    curl -XPUT elk:9200/_template/oracle_template -d ' {
+     "template" : "oracle*",
+     "settings" : {
+       "number_of_shards" : 1
+       },
+     "mappings" : {
+      "oracle" : {
+       "properties" : {
+        "program" : {"type" : "string", "index": "not_analyzed" },
+        "ORA-" : {"type" : "string", "index": "not_analyzed" }
+        }
+       }
+      }
+    }'
 
+-   The configuration files are using grok. You can find more information about it [here](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html).
+-   You can find much more informations about the ELK stack (and another way to use it) into this [blog post](http://www.rittmanmead.com/2014/10/monitoring-obiee-with-elasticsearch-logstash-and-kibana/) from Robin Moffatt
+-   All you need to do to visualize the data is to extract the fields of interest from the log files and be sure an index is created on each field you want to visualize.
+-   All this information coming from all the machines of a datacenter being centralized into a single place is a gold mine from my point of view.
+
+Conclusion
+----------
+
+Thanks to the ELK stack you can gather, centralize, analyze and visualize the content of the *alert.log* and *listener.log* files for your whole datacenter the way you want to. This information is a gold mine and the imagination is the only limit.

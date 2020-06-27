@@ -32,66 +32,136 @@ author:
   last_name: ''
 permalink: "/2015/07/07/exadata-cell-metrics-join-the-metrics-and-their-descriptions-on-the-fly/"
 ---
-## Introduction
+
+Introduction
+------------
 
 Cells metrics are very useful but their name are not so friendly. The name is a concatenation of abbreviations for the type of component, delimited by the underscore character. Then you have to understand the naming convention to understand the meaning of the metric name.
 
 For example, knowing that:
 
-- CD stands for "Cell Disks metrics"
-- IO\_BY stands for "Number of megabytes"
-- R stands for Read
-- LG stands for Large
+-   CD stands for "Cell Disks metrics"
+-   IO\_BY stands for "Number of megabytes"
+-   R stands for Read
+-   LG stands for Large
 
-You can conclude&nbsp;that the CD\_IO\_BY\_R\_LG metric is linked to the "Number of megabytes read in large blocks from a cell disk".
+You can conclude that the CD\_IO\_BY\_R\_LG metric is linked to the "Number of megabytes read in large blocks from a cell disk".
 
-Hopefully the metrics are explained into the [Oracle Documentation](http://docs.oracle.com/cd/E50790_01/doc/doc.121/e50471/monitoring.htm#SAGUG20463)&nbsp;and you can also retrieve their description from cellcli:
+Hopefully the metrics are explained into the [Oracle Documentation](http://docs.oracle.com/cd/E50790_01/doc/doc.121/e50471/monitoring.htm#SAGUG20463) and you can also retrieve their description from cellcli:
 
-```
-$ cellcli -e "list metricdefinition attributes name,description where name='CD\_IO\_BY\_R\_LG'" CD\_IO\_BY\_R\_LG "Number of megabytes read in large blocks from a cell disk"
-```
+    $ cellcli -e "list metricdefinition attributes name,description where name='CD_IO_BY_R_LG'"
 
-## Lack of description
+    CD_IO_BY_R_LG    "Number of megabytes read in large blocks from a cell disk"
 
-That said, as an example, let's query the current metric values for a particular&nbsp;database that way:
+Lack of description
+-------------------
 
-```
-$ cellcli -e "list metriccurrent attributes metricObjectName,name,metricValue where name like 'DB.\*' and metricObjectName='BDT'" BDT DB\_FC\_IO\_BY\_SEC 0 MB/sec BDT DB\_FC\_IO\_RQ 47,638 IO requests BDT DB\_FC\_IO\_RQ\_SEC 2.1 IO/sec BDT DB\_FD\_IO\_BY\_SEC 0 MB/sec BDT DB\_FD\_IO\_LOAD 19,885 BDT DB\_FD\_IO\_RQ\_LG 36 IO requests BDT DB\_FD\_IO\_RQ\_LG\_SEC 0.0 IO/sec BDT DB\_FD\_IO\_RQ\_SM 47,602 IO requests BDT DB\_FD\_IO\_RQ\_SM\_SEC 2.1 IO/sec BDT DB\_FL\_IO\_BY 0.000 MB BDT DB\_FL\_IO\_BY\_SEC 0.000 MB/sec BDT DB\_FL\_IO\_RQ 0 IO requests BDT DB\_FL\_IO\_RQ\_SEC 0.0 IO/sec BDT DB\_IO\_BY\_SEC 0 MB/sec BDT DB\_IO\_LOAD 0.0 BDT DB\_IO\_RQ\_LG 0 IO requests BDT DB\_IO\_RQ\_LG\_SEC 0.0 IO/sec BDT DB\_IO\_RQ\_SM 19 IO requests BDT DB\_IO\_RQ\_SM\_SEC 0.0 IO/sec BDT DB\_IO\_UTIL\_LG 0 % BDT DB\_IO\_UTIL\_SM 0 % BDT DB\_IO\_WT\_LG 0 ms BDT DB\_IO\_WT\_LG\_RQ 0.0 ms/request BDT DB\_IO\_WT\_SM 0 ms BDT DB\_IO\_WT\_SM\_RQ 0.0 ms/request
-```
+That said, as an example, let's query the current metric values for a particular database that way:
 
-As you can see the metric description is not there and there is no way to retrieve it from&nbsp;metriccurrent (or&nbsp;metrichistory) because this is not an attribute:
+    $ cellcli -e "list metriccurrent attributes metricObjectName,name,metricValue where name like 'DB.*' and metricObjectName='BDT'"
 
-```
-$ cellcli -e "describe metriccurrent" name alertState collectionTime metricObjectName metricType metricValue objectType $ cellcli -e "describe metrichistory" name alertState collectionTime metricObjectName metricType metricValue metricValueAvg metricValueMax metricValueMin objectType
-```
+         BDT     DB_FC_IO_BY_SEC     0 MB/sec
+         BDT     DB_FC_IO_RQ         47,638 IO requests
+         BDT     DB_FC_IO_RQ_SEC     2.1 IO/sec
+         BDT     DB_FD_IO_BY_SEC     0 MB/sec
+         BDT     DB_FD_IO_LOAD       19,885
+         BDT     DB_FD_IO_RQ_LG      36 IO requests
+         BDT     DB_FD_IO_RQ_LG_SEC  0.0 IO/sec
+         BDT     DB_FD_IO_RQ_SM      47,602 IO requests
+         BDT     DB_FD_IO_RQ_SM_SEC  2.1 IO/sec
+         BDT     DB_FL_IO_BY         0.000 MB
+         BDT     DB_FL_IO_BY_SEC     0.000 MB/sec
+         BDT     DB_FL_IO_RQ         0 IO requests
+         BDT     DB_FL_IO_RQ_SEC     0.0 IO/sec
+         BDT     DB_IO_BY_SEC        0 MB/sec
+         BDT     DB_IO_LOAD          0.0
+         BDT     DB_IO_RQ_LG         0 IO requests
+         BDT     DB_IO_RQ_LG_SEC     0.0 IO/sec
+         BDT     DB_IO_RQ_SM         19 IO requests
+         BDT     DB_IO_RQ_SM_SEC     0.0 IO/sec
+         BDT     DB_IO_UTIL_LG       0 %
+         BDT     DB_IO_UTIL_SM       0 %
+         BDT     DB_IO_WT_LG         0 ms
+         BDT     DB_IO_WT_LG_RQ      0.0 ms/request
+         BDT     DB_IO_WT_SM         0 ms
+         BDT     DB_IO_WT_SM_RQ      0.0 ms/request
 
-But if you send&nbsp;the result of our example to&nbsp;someone that don't know (or don't remember) the naming convention (or if you are not 100% sure of the definition of a particular metric) then he/you'll have to:
+As you can see the metric description is not there and there is no way to retrieve it from metriccurrent (or metrichistory) because this is not an attribute:
 
-- go back to the oracle documentation
-- query the&nbsp;metricdefinition with cellcli
+    $ cellcli -e "describe metriccurrent"
+        name
+        alertState
+        collectionTime
+        metricObjectName
+        metricType
+        metricValue
+        objectType
 
-## New script:&nbsp;_exadata\_metrics\_desc.pl_
+    $ cellcli -e "describe metrichistory"
+        name
+        alertState
+        collectionTime
+        metricObjectName
+        metricType
+        metricValue
+        metricValueAvg
+        metricValueMax
+        metricValueMin
+        objectType
 
-Thanks to the&nbsp;_exadata\_metrics\_desc.pl_ script, you can&nbsp;add (to the cellcli output) the description of the metric on the fly.
+But if you send the result of our example to someone that don't know (or don't remember) the naming convention (or if you are not 100% sure of the definition of a particular metric) then he/you'll have to:
 
-Let's launch the same query (as the one used in the previous example) and add a call to&nbsp;_exadata\_metrics\_desc.pl_ that way_:_
+-   go back to the oracle documentation
+-   query the metricdefinition with cellcli
 
-```
-$ cellcli -e "list metriccurrent attributes metricObjectName,name,metricValue where name like 'DB.\*' and metricObjectName='BDT'" | ./exadata\_metrics\_desc.pl BDT DB\_FC\_IO\_BY\_SEC (Number of megabytes of I/O per second for this database to flash cache) 0 MB/sec BDT DB\_FC\_IO\_RQ (Number of IO requests issued by a database to flash cache) 48,123 IO requests BDT DB\_FC\_IO\_RQ\_SEC (Number of IO requests issued by a database to flash cache per second) 2.1 IO/sec BDT DB\_FD\_IO\_BY\_SEC (Number of megabytes of I/O per second for this database to flash disks) 0 MB/sec BDT DB\_FD\_IO\_LOAD (Average I/O load from this database for flash disks) 4,419 BDT DB\_FD\_IO\_RQ\_LG (Number of large IO requests issued by a database to flash disks) 36 IO requests BDT DB\_FD\_IO\_RQ\_LG\_SEC (Number of large IO requests issued by a database to flash disks per second) 0.0 IO/sec BDT DB\_FD\_IO\_RQ\_SM (Number of small IO requests issued by a database to flash disks) 48,087 IO requests BDT DB\_FD\_IO\_RQ\_SM\_SEC (Number of small IO requests issued by a database to flash disks per second) 2.1 IO/sec BDT DB\_FL\_IO\_BY (The number of MB written to the Flash Log) 0.000 MB BDT DB\_FL\_IO\_BY\_SEC (The number of MB written per second to the Flash Log) 0.000 MB/sec BDT DB\_FL\_IO\_RQ (The number of I/O requests issued to the Flash Log) 0 IO requests BDT DB\_FL\_IO\_RQ\_SEC (The number of I/O requests per second issued to the Flash Log) 0.0 IO/sec BDT DB\_IO\_BY\_SEC (Number of megabytes of I/O per second for this database to hard disks) 0 MB/sec BDT DB\_IO\_LOAD (Average I/O load from this database for hard disks) 0.0 BDT DB\_IO\_RQ\_LG (Number of large IO requests issued by a database to hard disks) 0 IO requests BDT DB\_IO\_RQ\_LG\_SEC (Number of large IO requests issued by a database to hard disks per second) 0.0 IO/sec BDT DB\_IO\_RQ\_SM (Number of small IO requests issued by a database to hard disks) 19 IO requests BDT DB\_IO\_RQ\_SM\_SEC (Number of small IO requests issued by a database to hard disks per second) 0.0 IO/sec BDT DB\_IO\_UTIL\_LG (Percentage of disk resources utilized by large requests from this database) 0 % BDT DB\_IO\_UTIL\_SM (Percentage of disk resources utilized by small requests from this database) 0 % BDT DB\_IO\_WT\_LG (IORM wait time for large IO requests issued by a database) 0 ms BDT DB\_IO\_WT\_LG\_RQ (Average IORM wait time per request for large IO requests issued by a database) 0.0 ms/request BDT DB\_IO\_WT\_SM (IORM wait time for small IO requests issued by a database) 0 ms BDT DB\_IO\_WT\_SM\_RQ (Average IORM wait time per request for small IO requests issued by a database) 0.0 ms/request
-```
+New script: *exadata\_metrics\_desc.pl*
+---------------------------------------
+
+Thanks to the *exadata\_metrics\_desc.pl* script, you can add (to the cellcli output) the description of the metric on the fly.
+
+Let's launch the same query (as the one used in the previous example) and add a call to *exadata\_metrics\_desc.pl* that way*:*
+
+    $ cellcli -e "list metriccurrent attributes metricObjectName,name,metricValue where name like 'DB.*' and metricObjectName='BDT'" | ./exadata_metrics_desc.pl
+
+      BDT   DB_FC_IO_BY_SEC (Number of megabytes of I/O per second for this database to flash cache)          0 MB/sec
+      BDT   DB_FC_IO_RQ (Number of IO requests issued by a database to flash cache)                           48,123 IO requests
+      BDT   DB_FC_IO_RQ_SEC (Number of IO requests issued by a database to flash cache per second)            2.1 IO/sec
+      BDT   DB_FD_IO_BY_SEC (Number of megabytes of I/O per second for this database to flash disks)          0 MB/sec
+      BDT   DB_FD_IO_LOAD (Average I/O load from this database for flash disks)                               4,419
+      BDT   DB_FD_IO_RQ_LG (Number of large IO requests issued by a database to flash disks)                  36 IO requests
+      BDT   DB_FD_IO_RQ_LG_SEC (Number of large IO requests issued by a database to flash disks per second)   0.0 IO/sec
+      BDT   DB_FD_IO_RQ_SM (Number of small IO requests issued by a database to flash disks)                  48,087 IO requests
+      BDT   DB_FD_IO_RQ_SM_SEC (Number of small IO requests issued by a database to flash disks per second)   2.1 IO/sec
+      BDT   DB_FL_IO_BY (The number of MB written to the Flash Log)                                           0.000 MB
+      BDT   DB_FL_IO_BY_SEC (The number of MB written per second to the Flash Log)                            0.000 MB/sec
+      BDT   DB_FL_IO_RQ (The number of I/O requests issued to the Flash Log)                                  0 IO requests
+      BDT   DB_FL_IO_RQ_SEC (The number of I/O requests per second issued to the Flash Log)                   0.0 IO/sec
+      BDT   DB_IO_BY_SEC (Number of megabytes of I/O per second for this database to hard disks)              0 MB/sec
+      BDT   DB_IO_LOAD (Average I/O load from this database for hard disks)                                   0.0
+      BDT   DB_IO_RQ_LG (Number of large IO requests issued by a database to hard disks)                      0 IO requests
+      BDT   DB_IO_RQ_LG_SEC (Number of large IO requests issued by a database to hard disks per second)       0.0 IO/sec
+      BDT   DB_IO_RQ_SM (Number of small IO requests issued by a database to hard disks)                      19 IO requests
+      BDT   DB_IO_RQ_SM_SEC (Number of small IO requests issued by a database to hard disks per second)       0.0 IO/sec
+      BDT   DB_IO_UTIL_LG (Percentage of disk resources utilized by large requests from this database)        0 %
+      BDT   DB_IO_UTIL_SM (Percentage of disk resources utilized by small requests from this database)        0 %
+      BDT   DB_IO_WT_LG (IORM wait time for large IO requests issued by a database)                           0 ms
+      BDT   DB_IO_WT_LG_RQ (Average IORM wait time per request for large IO requests issued by a database)    0.0 ms/request
+      BDT   DB_IO_WT_SM (IORM wait time for small IO requests issued by a database)                           0 ms
+      BDT   DB_IO_WT_SM_RQ (Average IORM wait time per request for small IO requests issued by a database)    0.0 ms/request
 
 As you can see the description of each metric being part of the initial output has been added.
 
-## Remarks
+Remarks
+-------
 
-- You can download the script from&nbsp;[this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit)&nbsp;or from [GitHub](https://github.com/bdrouvot/exadata_metrics_desc).
-- Feel free to build the query you want on the metrics. You just need to add a call to&nbsp;_exadata\_metrics\_desc.pl&nbsp;_to see the metric description being added on the fly (as long as the metric name appears in the output of your initial query).
-- The idea of this script is all to credit to [Martin Bach](https://martincarstenbach.wordpress.com/).
-- This script works with any input (could be a text file):
+-   You can download the script from [this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit) or from [GitHub](https://github.com/bdrouvot/exadata_metrics_desc).
+-   Feel free to build the query you want on the metrics. You just need to add a call to *exadata\_metrics\_desc.pl *to see the metric description being added on the fly (as long as the metric name appears in the output of your initial query).
+-   The idea of this script is all to credit to [Martin Bach](https://martincarstenbach.wordpress.com/).
+-   This script works with any input (could be a text file):
 
-[![Screen Shot 2015-09-14 at 15.34.36]({{ site.baseurl }}/assets/images/screen-shot-2015-09-14-at-15-34-36.png?w=300)](https://bdrouvot.files.wordpress.com/2015/07/screen-shot-2015-09-14-at-15-34-36.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2015-09-14-at-15-34-36.png?w=300" class="size-medium wp-image-2897 aligncenter" width="300" height="227" alt="Screen Shot 2015-09-14 at 15.34.36" />](https://bdrouvot.files.wordpress.com/2015/07/screen-shot-2015-09-14-at-15-34-36.png)
 
-## Conclusion
+Conclusion
+----------
 
-The&nbsp;_exadata\_metrics\_desc.pl&nbsp;_can be used to join on the fly the metric name, its value (and whatever attribute you would love to see) with its&nbsp;associated description.
-
+The *exadata\_metrics\_desc.pl *can be used to join on the fly the metric name, its value (and whatever attribute you would love to see) with its associated description.

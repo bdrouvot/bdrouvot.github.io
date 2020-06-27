@@ -27,11 +27,12 @@ author:
   last_name: ''
 permalink: "/2013/12/08/main-pages-for-exadata_metrics-pl-and-asm_metrics-pl/"
 ---
+
 A quick post as I realized that I wrote a lot of blog posts related to those 2 scripts (New features, examples, findings...).
 
 For centralization/simplicity I just created 2 main pages for those utilities:
 
-[![Screen Shot 2013-12-08 at 8.07.51 PM]({{ site.baseurl }}/assets/images/screen-shot-2013-12-08-at-8-07-51-pm.png)](http://bdrouvot.files.wordpress.com/2013/12/screen-shot-2013-12-08-at-8-07-51-pm.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2013-12-08-at-8-07-51-pm.png" class="aligncenter size-full wp-image-1546" width="603" height="131" alt="Screen Shot 2013-12-08 at 8.07.51 PM" />](http://bdrouvot.files.wordpress.com/2013/12/screen-shot-2013-12-08-at-8-07-51-pm.png)
 
-- The one related to exadata\_metrics.pl: [here](http://bdrouvot.wordpress.com/exadata_metrics_script/ "exadata\_metrics")
-- The one related to asm\_metrics.pl: [here](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm\_metrics")
+-   The one related to exadata\_metrics.pl: [here](http://bdrouvot.wordpress.com/exadata_metrics_script/ "exadata_metrics")
+-   The one related to asm\_metrics.pl: [here](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm_metrics")

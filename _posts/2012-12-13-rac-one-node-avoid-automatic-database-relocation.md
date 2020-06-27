@@ -28,54 +28,52 @@ author:
   last_name: ''
 permalink: "/2012/12/13/rac-one-node-avoid-automatic-database-relocation/"
 ---
-Imagine you need to ensure that one of your many&nbsp;RAC One Node database:
 
-1. Should re-start&nbsp;automatically&nbsp;on the current node in case of database or node crash.
-2. Does not relocate&nbsp;automatically on other nodes.
+Imagine you need to ensure that <span style="color:#0000ff;">one of your many</span> <span style="color:#0000ff;">RAC One Node</span> database:
 
-So, you need somehow to "stick" this particular RAC One Node database to one node of your cluster.
+1.  Should re-start automatically on the current node in case of database or node crash.
+2.  Does not relocate automatically on other nodes.
+
+So, you need somehow to "<span style="color:#0000ff;">stick</span>" this particular RAC One Node database to one node of your cluster.
 
 For a good understanding of what RAC One Node is, you can have a look to [Martin's post](http://martincarstenbach.wordpress.com/2011/02/16/rac-one-node-and-database-protection/).
 
-Disabling the database will not help as it will not satisfy the second point&nbsp;mentioned above.
+Disabling the database will not help as it will not satisfy the second point mentioned above.
 
-To answer this need, I'll modify one property of the database's server pool (database is administrator managed):
+To answer this need, I'll modify one <span style="color:#0000ff;">property of the database's server pool</span> (database is administrator managed):
 
-To which pool belongs the db ?
+<span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">To which pool belongs the db ?</span></span>
 
-```
-crsctl status resource ora.BDTO.db -p | grep -i pool SERVER\_POOLS=ora.BDTO
-```
+    crsctl status resource ora.BDTO.db -p | grep -i pool 
+    SERVER_POOLS=ora.BDTO
 
-Which servers are part of this pool ?
+<span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">Which servers are part of this pool ?</span></span>
 
-```
-crsctl status serverpool ora.BDTO -p | grep -i server SERVER\_NAMES=bdtnode1 bdtnode2
-```
+    crsctl status serverpool ora.BDTO -p | grep -i server
+    SERVER_NAMES=bdtnode1 bdtnode2
 
-Modify the server pool to "stick" the database to one node (bdtnode2 for example):
+<span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">Modify the server pool to "stick" the database to one node (bdtnode2 for example):</span></span>
 
-```
-crsctl modify serverpool ora.BDTO -attr SERVER\_NAMES="bdtnode2" crsctl status serverpool ora.BDTO -p | grep -i server SERVER\_NAMES=bdtnode2
-```
+    crsctl modify serverpool ora.BDTO -attr SERVER_NAMES="bdtnode2"
+    crsctl status serverpool ora.BDTO -p | grep -i server
+    SERVER_NAMES=bdtnode2
 
-Now the BDTO RAC One Node database:
+<span style="text-decoration:underline;color:#0000ff;">Now the BDTO RAC One Node database:</span>
 
-- will not be re-started&nbsp;automatically on node bdtnode1 in case bdtnode2 crash.
-- will be re-started&nbsp;automatically&nbsp;on node bdtnode2 as soon as it will be again available.
+-   will not be re-started automatically on node bdtnode1 in case bdtnode2 crash.
+-   will be re-started automatically on node bdtnode2 as soon as it will be again available.
 
-Remarks:
+<span style="text-decoration:underline;"><span style="color:#0000ff;text-decoration:underline;">Remarks:</span></span>
 
-1. If the server pool "host" many databases, all of them will be affected by the change.
-2. If you try to relocate manually the database on the "excluded" node:
+1.  If the server pool "host" many databases, all of them will be affected by the change.
+2.  If you try to <span style="color:#0000ff;">relocate manually</span> the database on the "excluded" node:
 
-```
-srvctl relocate database -d BDTO -n bdtnode1
-```
+<!-- -->
 
-It will be done and the "excluded" bdtnode1 will be again member of the server pool (as a consequence the database is not sticked to bdtnode2 anymore).
+    srvctl relocate database -d BDTO -n bdtnode1
+
+It will be done and the "excluded" bdtnode1 will be <span style="color:#ff0000;">again member</span> of the server pool (as a consequence the database is <span style="color:#ff0000;">not sticked to bdtnode2 anymore</span>).
 
 If you need another behaviour (create a preferred node), then you have to change the PLACEMENT attribute of the database ([see this post](http://bdrouvot.wordpress.com/2012/12/20/rac-one-node-create-preferred-node/ "Rac One Node : Create preferred node")).
 
 **Conclusion:** The purpose of this post is not to explain why you could choose to stick one RAC One Node database to a particular node of your cluster, it just provide a way to do so :-)
-

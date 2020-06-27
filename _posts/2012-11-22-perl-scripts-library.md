@@ -27,11 +27,11 @@ author:
   last_name: ''
 permalink: "/2012/11/22/perl-scripts-library/"
 ---
-A small post to let you know that this [page](http://bdrouvot.wordpress.com/perl-scripts-2/ "Perl Scripts")&nbsp;has been added to the blog.
 
-This page reference all the perl scripts that will be used into this Blog and each of them will be linked to &nbsp;a practical case.
+A small post to let you know that this [page](http://bdrouvot.wordpress.com/perl-scripts-2/ "Perl Scripts") has been added to the blog.
 
-As the main purpose of the blog is to share experience, you can get the source code of the scripts (explanation into the page).
+This page reference all the perl scripts that will be used into this Blog and each of them will be linked to  a practical case.
 
-I hope this will be&nbsp;useful&nbsp;for you.
+As the main purpose of the blog is to share experience, you can <span style="color:#0000ff;">get the source code</span> of the scripts (explanation into the page).
 
+I hope this will be useful for you.

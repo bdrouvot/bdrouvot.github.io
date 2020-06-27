@@ -31,6 +31,7 @@ author:
   last_name: ''
 permalink: "/2020/01/18/retrieve-postgresql-variable-length-storage-information-thanks-to-pageinspect/"
 ---
+
 ### Introduction
 
 In PostgreSQL a variable-length datatype value can be stored in-line or out-of-line (as a TOAST). It can also be compressed or not (see the [documentation](https://www.postgresql.org/docs/current/storage-toast.html) for more details).

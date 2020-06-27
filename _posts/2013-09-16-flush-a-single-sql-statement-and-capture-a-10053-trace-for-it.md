@@ -25,23 +25,24 @@ author:
   last_name: ''
 permalink: "/2013/09/16/flush-a-single-sql-statement-and-capture-a-10053-trace-for-it/"
 ---
+
 Just a quick one, to share a simple sql script in case you need to trace the optimizer computations for a single SQL statement.
 
 As you know, Oracle Database 11g, introduced a new diagnostic events infrastructure, which greatly simplifies the task of generating a 10053 trace for a specific SQL statement.
 
 We can capture a 10053 trace for a specific sql\_id that way:
 
-**alter system set events 'trace[RDBMS.SQL\_Optimizer.\*][sql:\<YOUR\_SQL\_ID\>]';**
+**alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&lt;YOUR\_SQL\_ID&gt;\]';**
 
-But the trace will be&nbsp; **triggered&nbsp;after a hard parse**. So, if the sql is already in the shared pool we have 2 choices:
+<span style="text-decoration:underline;">But the trace will be **triggered after a hard parse**. So, if the sql is already in the shared pool we have 2 choices:</span>
 
-1. **Wait until** the statement is hard parsed again (because it has been aged out of the shared pool, because of a new child cursor creation..).
-2. **Flush the sql** from the shared pool (See [Kerry Osborne's post](http://kerryosborne.oracle-guy.com/2008/09/flush-a-single-sql-statement/)) so that the next execution will generate a hard parse.
+1.  **Wait until** the statement is hard parsed again (because it has been aged out of the shared pool, because of a new child cursor creation..).
+2.  **Flush the sql** from the shared pool (See [Kerry Osborne's post](http://kerryosborne.oracle-guy.com/2008/09/flush-a-single-sql-statement/)) so that the next execution will generate a hard parse.
 
-So, If you can't be patient, then you can use this script to **flush the sql and enable the 10053 trace** :
+So, If you can't be patient, then you can use this script to **flush the sql and enable the 10053 trace**:
 
-[code language="sql"]  
-SQL\> !cat enable\_10053\_sql\_id.sql  
+\[code language="sql"\]  
+SQL&gt; !cat enable\_10053\_sql\_id.sql  
 set serveroutput on  
 set pagesize 9999  
 set linesize 155  
@@ -61,25 +62,25 @@ dbms\_shared\_pool.purge(:name,'C',1);
 END;  
 /
 
-alter system set events 'trace[RDBMS.SQL\_Optimizer.\*][sql:&&sql\_id]';
+alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&&sql\_id\]';
 
 undef sql\_id  
 undef name  
-[/code]
+\[/code\]
 
 Then just wait for the next execution and you'll get the trace file.
 
-To disable the trace:
+<span style="text-decoration:underline;">To disable the trace:</span>
 
-[code language="sql"]  
-SQL\> !cat disable\_10053\_sql\_id.sql  
+\[code language="sql"\]  
+SQL&gt; !cat disable\_10053\_sql\_id.sql  
 prompt DISABLING 10053 trace
 
 accept sql\_id prompt 'Enter value for sql\_id: '
 
-alter system set events 'trace[RDBMS.SQL\_Optimizer.\*][sql:&&sql\_id] off';  
-[/code]
+alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&&sql\_id\] off';  
+\[/code\]
 
-**Remark:**
+<span style="text-decoration:underline;">**Remark:**</span>
 
-- Starting in 11gR2 you can use&nbsp;DBMS\_SQLDIAG.DUMP\_TRACE as&nbsp;it doesn’t require you to re-execute the statement to get the trace (It&nbsp;will automatically trigger a hard parse, see MOS&nbsp;225598.1).
+-   Starting in 11gR2 you can use DBMS\_SQLDIAG.DUMP\_TRACE as it doesn’t require you to re-execute the statement to get the trace (It will automatically trigger a hard parse, see MOS 225598.1).

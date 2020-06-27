@@ -28,95 +28,122 @@ author:
   last_name: ''
 permalink: "/2013/05/04/diagnose-adaptive-cursor-sharing-acs-per-execution-for-non-monitored-sql/"
 ---
-<p>Into this blog post: <a title="Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2" href="http://bdrouvot.wordpress.com/2013/05/01/diagnose-adaptive-cursor-sharing-acs-per-execution-in-11-2/" target="_blank">Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2</a>  I provided a way to check if ACS came into play per execution of a given sql.</p>
-<p>You should read the previous post to understand this one.</p>
-<p>As you can see I retrieved for the bind variables the "<strong>peeked</strong>" and the "<strong>passed</strong>" values.</p>
-<p>The "<strong>passed</strong>" values come from the <strong>v$sql_monitor.binds_xml</strong> column:  This information could be useful but is not mandatory to check if ACS came into play (<strong>as the check rely on the</strong> "<strong>peeked</strong>" values).</p>
-<p>So <strong>we can get rid of the "passed" </strong>values (and then of the v$sql_monitor view) to check where ACS came into play per execution for non monitored sql.</p>
-<p>For this purpose, let's modify the sql introduced into the previous post that way:</p>
-<p>[code language="sql"]<br />
-SQL&gt; !cat binds_peeked_acs.sql<br />
-set linesi 200 pages 999 feed off verify off<br />
-col bind_name format a20<br />
-col end_time format a19<br />
-col start_time format a19<br />
-col peeked format a20</p>
-<p>alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';<br />
-alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';</p>
-<p>select<br />
-pee.sql_id,<br />
-ash.starting_time,<br />
-ash.end_time,<br />
-(EXTRACT(HOUR FROM ash.run_time) * 3600<br />
-                    + EXTRACT(MINUTE FROM ash.run_time) * 60<br />
-                    + EXTRACT(SECOND FROM ash.run_time)) run_time_sec,<br />
-pee.plan_hash_value,<br />
-pee.bind_name,<br />
-pee.bind_pos,<br />
-pee.bind_data peeked,<br />
---first_value(pee.bind_data) over (partition by pee.sql_id,pee.bind_name,pee.bind_pos order by end_time rows 1 preceding) previous_peeked,<br />
-case when pee.bind_data =  first_value(pee.bind_data) over (partition by pee.sql_id,pee.bind_name,pee.bind_pos order by end_time rows 1 preceding) then 'NO' else 'YES' end &quot;ACS&quot;<br />
-from<br />
-(<br />
-select<br />
-p.sql_id,<br />
-p.child_number,<br />
-p.child_address,<br />
-c.bind_name,<br />
-c.bind_pos,<br />
-p.plan_hash_value,<br />
-case<br />
-     when c.bind_type = 1 then utl_raw.cast_to_varchar2(c.bind_data)<br />
-     when c.bind_type = 2 then to_char(utl_raw.cast_to_number(c.bind_data))<br />
-     when c.bind_type = 96 then to_char(utl_raw.cast_to_varchar2(c.bind_data))<br />
-     else 'Sorry: Not printable try with DBMS_XPLAN.DISPLAY_CURSOR'<br />
-end bind_data<br />
-from<br />
-v$sql_plan p,<br />
-xmltable<br />
-(<br />
-'/*/peeked_binds/bind' passing xmltype(p.other_xml)<br />
-columns bind_name varchar2(30) path '/bind/@nam',<br />
-bind_pos number path '/bind/@pos',<br />
-bind_type number path '/bind/@dty',<br />
-bind_data  raw(2000) path '/bind'<br />
-) c<br />
-where<br />
-p.other_xml is not null<br />
-) pee,<br />
-(<br />
-select<br />
-sql_id,<br />
-sql_child_number,<br />
-sql_exec_id,<br />
-max(sample_time - sql_exec_start) run_time,<br />
-max(sample_time) end_time,<br />
-sql_exec_start starting_time<br />
-from<br />
-v$active_session_history<br />
-group by sql_id,sql_child_number,sql_exec_id,sql_exec_start<br />
-) ash<br />
-where<br />
-pee.sql_id=ash.sql_id and<br />
-pee.child_number=ash.sql_child_number and<br />
-pee.sql_id like nvl('&amp;sql_id',pee.sql_id)<br />
-order by 1,2,3,7 ;<br />
-[/code]</p>
-<p>Let's see the result with the same test as <a title="Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2" href="http://bdrouvot.wordpress.com/2013/05/01/diagnose-adaptive-cursor-sharing-acs-per-execution-in-11-2/" target="_blank">Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2:</a></p>
-<pre style="padding-left:30px;">SQL&gt; @binds_peeked_acs.sql
-Enter value for sql_id: bu9367qrhq28t
 
-SQL_ID        STARTING_TIME       END_TIME            RUN_TIME_SEC PLAN_HASH_VALUE BIND_NAME              BIND_POS PEEKED               ACS
-------------- ------------------- ------------------- ------------ --------------- -------------------- ---------- -------------------- ---
-bu9367qrhq28t 2013/05/03 14:17:59 2013/05/03 14:18:05 6.788 1047781245 :MY\_OWNER 1 BDT NO bu9367qrhq28t 2013/05/03 14:17:59 2013/05/03 14:18:05 6.788 1047781245 :MY\_DATE 2 01-jan-2001 NO bu9367qrhq28t 2013/05/03 14:17:59 2013/05/03 14:18:05 6.788 1047781245 :MY\_OBJECT\_ID 3 1 NO bu9367qrhq28t 2013/05/03 14:21:05 2013/05/03 14:21:13 8.005 1047781245 :MY\_OWNER 1 BDT NO bu9367qrhq28t 2013/05/03 14:21:05 2013/05/03 14:21:13 8.005 1047781245 :MY\_DATE 2 01-jan-2001 NO bu9367qrhq28t 2013/05/03 14:21:05 2013/05/03 14:21:13 8.005 1047781245 :MY\_OBJECT\_ID 3 1 NO bu9367qrhq28t 2013/05/03 14:27:14 2013/05/03 14:27:15 1.448 2372635759 :MY\_OWNER 1 ME YES bu9367qrhq28t 2013/05/03 14:27:14 2013/05/03 14:27:15 1.448 2372635759 :MY\_DATE 2 01-jan-2001 NO bu9367qrhq28t 2013/05/03 14:27:14 2013/05/03 14:27:15 1.448 2372635759 :MY\_OBJECT\_ID 3 1 NO bu9367qrhq28t 2013/05/03 14:32:49 2013/05/03 14:32:55 6.859 1047781245 :MY\_OWNER 1 BDT YES bu9367qrhq28t 2013/05/03 14:32:49 2013/05/03 14:32:55 6.859 1047781245 :MY\_DATE 2 01-jan-2001 NO bu9367qrhq28t 2013/05/03 14:32:49 2013/05/03 14:32:55 6.859 1047781245 :MY\_OBJECT\_ID 3 1 NO bu9367qrhq28t 2013/05/03 14:33:05 2013/05/03 14:33:06 1.879 2372635759 :MY\_OWNER 1 ME YES bu9367qrhq28t 2013/05/03 14:33:05 2013/05/03 14:33:06 1.879 2372635759 :MY\_DATE 2 01-jan-2001 NO bu9367qrhq28t 2013/05/03 14:33:05 2013/05/03 14:33:06 1.879 2372635759 :MY\_OBJECT\_ID 3 1 NO bu9367qrhq28t 2013/05/03 14:33:12 2013/05/03 14:33:13 1.879 2372635759 :MY\_OWNER 1 ME NO bu9367qrhq28t 2013/05/03 14:33:12 2013/05/03 14:33:13 1.879 2372635759 :MY\_DATE 2 01-jan-2001 NO bu9367qrhq28t 2013/05/03 14:33:12 2013/05/03 14:33:13 1.879 2372635759 :MY\_OBJECT\_ID 3 1 NO
+Into this blog post: [Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2](http://bdrouvot.wordpress.com/2013/05/01/diagnose-adaptive-cursor-sharing-acs-per-execution-in-11-2/ "Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2")  I provided a way to check if ACS came into play per execution of a given sql.
+
+You should read the previous post to understand this one.
+
+As you can see I retrieved for the bind variables the "**peeked**" and the "**passed**" values.
+
+The "**passed**" values come from the **v$sql\_monitor.binds\_xml** column:  This information could be useful but is not mandatory to check if ACS came into play (**as the check rely on the** "**peeked**" values).
+
+So **we can get rid of the "passed"** values (and then of the v$sql\_monitor view) to check where ACS came into play per execution for non monitored sql.
+
+For this purpose, let's modify the sql introduced into the previous post that way:
+
+\[code language="sql"\]  
+SQL&gt; !cat binds\_peeked\_acs.sql  
+set linesi 200 pages 999 feed off verify off  
+col bind\_name format a20  
+col end\_time format a19  
+col start\_time format a19  
+col peeked format a20
+
+alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
+
+select  
+pee.sql\_id,  
+ash.starting\_time,  
+ash.end\_time,  
+(EXTRACT(HOUR FROM ash.run\_time) \* 3600  
++ EXTRACT(MINUTE FROM ash.run\_time) \* 60  
++ EXTRACT(SECOND FROM ash.run\_time)) run\_time\_sec,  
+pee.plan\_hash\_value,  
+pee.bind\_name,  
+pee.bind\_pos,  
+pee.bind\_data peeked,  
+--first\_value(pee.bind\_data) over (partition by pee.sql\_id,pee.bind\_name,pee.bind\_pos order by end\_time rows 1 preceding) previous\_peeked,  
+case when pee.bind\_data = first\_value(pee.bind\_data) over (partition by pee.sql\_id,pee.bind\_name,pee.bind\_pos order by end\_time rows 1 preceding) then 'NO' else 'YES' end "ACS"  
+from  
+(  
+select  
+p.sql\_id,  
+p.child\_number,  
+p.child\_address,  
+c.bind\_name,  
+c.bind\_pos,  
+p.plan\_hash\_value,  
+case  
+when c.bind\_type = 1 then utl\_raw.cast\_to\_varchar2(c.bind\_data)  
+when c.bind\_type = 2 then to\_char(utl\_raw.cast\_to\_number(c.bind\_data))  
+when c.bind\_type = 96 then to\_char(utl\_raw.cast\_to\_varchar2(c.bind\_data))  
+else 'Sorry: Not printable try with DBMS\_XPLAN.DISPLAY\_CURSOR'  
+end bind\_data  
+from  
+v$sql\_plan p,  
+xmltable  
+(  
+'/\*/peeked\_binds/bind' passing xmltype(p.other\_xml)  
+columns bind\_name varchar2(30) path '/bind/@nam',  
+bind\_pos number path '/bind/@pos',  
+bind\_type number path '/bind/@dty',  
+bind\_data raw(2000) path '/bind'  
+) c  
+where  
+p.other\_xml is not null  
+) pee,  
+(  
+select  
+sql\_id,  
+sql\_child\_number,  
+sql\_exec\_id,  
+max(sample\_time - sql\_exec\_start) run\_time,  
+max(sample\_time) end\_time,  
+sql\_exec\_start starting\_time  
+from  
+v$active\_session\_history  
+group by sql\_id,sql\_child\_number,sql\_exec\_id,sql\_exec\_start  
+) ash  
+where  
+pee.sql\_id=ash.sql\_id and  
+pee.child\_number=ash.sql\_child\_number and  
+pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
+order by 1,2,3,7 ;  
+\[/code\]
+
+Let's see the result with the same test as [Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2:](http://bdrouvot.wordpress.com/2013/05/01/diagnose-adaptive-cursor-sharing-acs-per-execution-in-11-2/ "Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2")
+
+    SQL> @binds_peeked_acs.sql
+    Enter value for sql_id: bu9367qrhq28t
+
+    SQL_ID        STARTING_TIME       END_TIME            RUN_TIME_SEC PLAN_HASH_VALUE BIND_NAME              BIND_POS PEEKED               ACS
+    ------------- ------------------- ------------------- ------------ --------------- -------------------- ---------- -------------------- ---
+    bu9367qrhq28t 2013/05/03 14:17:59 2013/05/03 14:18:05        6.788      1047781245 :MY_OWNER                     1 BDT                  NO
+    bu9367qrhq28t 2013/05/03 14:17:59 2013/05/03 14:18:05        6.788      1047781245 :MY_DATE                      2 01-jan-2001          NO
+    bu9367qrhq28t 2013/05/03 14:17:59 2013/05/03 14:18:05        6.788      1047781245 :MY_OBJECT_ID                 3 1                    NO
+    bu9367qrhq28t 2013/05/03 14:21:05 2013/05/03 14:21:13        8.005      1047781245 :MY_OWNER                     1 BDT                  NO
+    bu9367qrhq28t 2013/05/03 14:21:05 2013/05/03 14:21:13        8.005      1047781245 :MY_DATE                      2 01-jan-2001          NO
+    bu9367qrhq28t 2013/05/03 14:21:05 2013/05/03 14:21:13        8.005      1047781245 :MY_OBJECT_ID                 3 1                    NO
+    bu9367qrhq28t 2013/05/03 14:27:14 2013/05/03 14:27:15        1.448      2372635759 :MY_OWNER                     1 ME                   YES
+    bu9367qrhq28t 2013/05/03 14:27:14 2013/05/03 14:27:15        1.448      2372635759 :MY_DATE                      2 01-jan-2001          NO
+    bu9367qrhq28t 2013/05/03 14:27:14 2013/05/03 14:27:15        1.448      2372635759 :MY_OBJECT_ID                 3 1                    NO
+    bu9367qrhq28t 2013/05/03 14:32:49 2013/05/03 14:32:55        6.859      1047781245 :MY_OWNER                     1 BDT                  YES
+    bu9367qrhq28t 2013/05/03 14:32:49 2013/05/03 14:32:55        6.859      1047781245 :MY_DATE                      2 01-jan-2001          NO
+    bu9367qrhq28t 2013/05/03 14:32:49 2013/05/03 14:32:55        6.859      1047781245 :MY_OBJECT_ID                 3 1                    NO
+    bu9367qrhq28t 2013/05/03 14:33:05 2013/05/03 14:33:06        1.879      2372635759 :MY_OWNER                     1 ME                   YES
+    bu9367qrhq28t 2013/05/03 14:33:05 2013/05/03 14:33:06        1.879      2372635759 :MY_DATE                      2 01-jan-2001          NO
+    bu9367qrhq28t 2013/05/03 14:33:05 2013/05/03 14:33:06        1.879      2372635759 :MY_OBJECT_ID                 3 1                    NO
+    bu9367qrhq28t 2013/05/03 14:33:12 2013/05/03 14:33:13        1.879      2372635759 :MY_OWNER                     1 ME                   NO
+    bu9367qrhq28t 2013/05/03 14:33:12 2013/05/03 14:33:13        1.879      2372635759 :MY_DATE                      2 01-jan-2001          NO
+    bu9367qrhq28t 2013/05/03 14:33:12 2013/05/03 14:33:13        1.879      2372635759 :MY_OBJECT_ID                 3 1                    NO
 
 So, same result as in the previous post except that the bind variable "passed" values have been lost.
 
-**Conclusion:**
+<span style="text-decoration:underline;">**Conclusion:**</span>
 
 We are able to check for which execution ACS came into play for non monitored sql (as we get rid of the bind variable "passed" values and as a consequence we don't query the v$sql\_monitor view anymore).
 
-**Remark:**
+<span style="text-decoration:underline;">**Remark:**</span>
 
 You need to purchase the Diagnostic Pack in order to be allowed to query the “v$active\_session\_history” view
-

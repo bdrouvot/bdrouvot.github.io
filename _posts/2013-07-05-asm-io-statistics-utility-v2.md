@@ -27,77 +27,74 @@ author:
   last_name: ''
 permalink: "/2013/07/05/asm-io-statistics-utility-v2/"
 ---
+
 Some days ago I wrote about a side effect of Flex ASM 12c (12.1) that I called "[unpreferred read](http://bdrouvot.wordpress.com/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unpreferred-read/ "Flex ASM 12c (12.1) and Extended Rac: be careful to “unpreferred” read !")". While I was writing this post I thought that the side effect demonstration will be even more clear if my asmiostat utility could display database Instances as well.
 
-This is done with my asmiostat utility V2 which provides those new features:
+<span style="text-decoration:underline;">This is done with my asmiostat utility V2 which provides those new features:</span>
 
-- Ability to display database instances (as of 11gr1).
-- Ability to sort based on the number of reads.
-- Ability to sort based on the number of writes.
+-   Ability to display database instances (as of 11gr1).
+-   Ability to sort based on the number of reads.
+-   Ability to sort based on the number of writes.
 
-The following metrics are still collected:
+<span style="text-decoration:underline;">The following metrics are still collected:</span>
 
-- Reads/s: Number of read per second.
-- KbyRead/s: Kbytes read per second.
-- Avg ms/Read: ms per read in average.
-- AvgBy/Read: Average Bytes per read.
-- Same metrics are provided for Write Operations.
+-   Reads/s: Number of read per second.
+-   KbyRead/s: Kbytes read per second.
+-   Avg ms/Read: ms per read in average.
+-   AvgBy/Read: Average Bytes per read.
+-   Same metrics are provided for Write Operations.
 
-Of course the old features remain (see [this post](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility") for more details about the previous features):
+<span style="text-decoration:underline;">Of course the old features remain (see [this post](http://bdrouvot.wordpress.com/2013/02/15/asm-io-statistics-utility/ "ASM I/O Statistics Utility") for more details about the previous features):</span>
 
-- Ability to display/aggregate/filter following your needs on ASM instances, diskgroup, failgroup and disks (And now on database instances as well).
-- Ability to display Exadata Cells IPs instead of ASM Failgroup.
+-   Ability to display/aggregate/filter following your needs on ASM instances, diskgroup, failgroup and disks (And now on database instances as well).
+-   Ability to display Exadata Cells IPs instead of ASM Failgroup.
 
-Let's have a look to 2 examples using the V2 features:
+<span style="text-decoration:underline;">Let's have a look to 2 examples using the V2 features:</span>
 
-**First one:&nbsp;** I want to know which database Instance is generating most of the Read IO requests per ASM instance, and I also want to see the performance metrics.
+<span style="text-decoration:underline;">**First one: **</span>I want to know which database Instance is generating most of the Read IO requests per ASM instance, and I also want to see the performance metrics.
 
 Fine, let's launch my utility that way:
 
-```
-./real\_time.pl -type=asmiostat -show=inst,dbinst -sort\_field=reads
-```
+    ./real_time.pl -type=asmiostat -show=inst,dbinst -sort_field=reads
 
 With the following output:
 
-[![asmiostatv2_most_reads]({{ site.baseurl }}/assets/images/asmiostatv2_most_reads.png)](http://bdrouvot.files.wordpress.com/2013/07/asmiostatv2_most_reads.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asmiostatv2_most_reads.png" class="aligncenter size-full wp-image-1189" width="620" height="269" alt="asmiostatv2_most_reads" />](http://bdrouvot.files.wordpress.com/2013/07/asmiostatv2_most_reads.png)
 
 As you can see the BDTO\_2 database instance is generating the most part of the read IO request using +ASM1.
 
-**Second one** : I want to see Flex ASM 12c (12.1) "unpreferred" read in action.
+<span style="text-decoration:underline;">**Second one**</span>: I want to see Flex ASM 12c (12.1) "unpreferred" read in action.
 
 Well, I am using the same setup as the one described into the "[unpreferred read](http://bdrouvot.wordpress.com/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unpreferred-read/ "Flex ASM 12c (12.1) and Extended Rac: be careful to “unpreferred” read !")" post.
 
 I launch Kevin Closson's [SLOB2 Kit](http://kevinclosson.wordpress.com/2013/05/02/slob-2-a-significant-update-links-are-here/) to generate Physical IO locally on the NOPBDT3 database instance. I check the behavior with my asmiostat utility that way:
 
-```
-./real\_time.pl -type=asmiostat -show=inst,dbinst,dg,fg -dg=DATAP -dbinst='%NOP%'
-```
+    ./real_time.pl -type=asmiostat -show=inst,dbinst,dg,fg -dg=DATAP -dbinst='%NOP%'
 
 With the following output:
 
-[![asmiostatv2_unpreff_reads]({{ site.baseurl }}/assets/images/asmiostatv2_unpreff_reads.png)](http://bdrouvot.files.wordpress.com/2013/07/asmiostatv2_unpreff_reads.png)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asmiostatv2_unpreff_reads.png" class="aligncenter size-full wp-image-1190" width="620" height="323" alt="asmiostatv2_unpreff_reads" />](http://bdrouvot.files.wordpress.com/2013/07/asmiostatv2_unpreff_reads.png)
 
 As you can see the NOPBDT3 database instance (located in SITEB) is using the ASM1 instance which prefers to read from SITEA. Then the NOPBDT3 database instance is reading from SITEA which is bad.
 
-Remarks and conclusion:
+<span style="text-decoration:underline;">Remarks and conclusion:</span>
 
-- My asmiostat utility V2 is helpful to see which database instance is using which ASM instance (and also collect the performance metrics).
-- This will be very useful with [Flex ASM](http://www.oracle.com/technetwork/products/cloud-storage/oracle-12c-asm-overview-1965430.pdf) in place but it can also be used with non Flex ASM (See the first example).
-- You can download my asmiostat utility (which is part of the real\_time.pl script) from [this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit).
-- The utility V2 still works with 10gr2 ASM but the "Database instance" feature is triggered as of 11gr1 (as it is based on the gv$asm\_disk\_iostat view).
-- I did not had the chance to play with pluggable databases yet: This will be the next step around my utility.
-- If you hit this issue:
+-   My asmiostat utility V2 is helpful to see which database instance is using which ASM instance (and also collect the performance metrics).
+-   This will be very useful with [Flex ASM](http://www.oracle.com/technetwork/products/cloud-storage/oracle-12c-asm-overview-1965430.pdf) in place but it can also be used with non Flex ASM (See the first example).
+-   You can download my asmiostat utility (which is part of the real\_time.pl script) from [this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit).
+-   The utility V2 still works with 10gr2 ASM but the "Database instance" feature is triggered as of 11gr1 (as it is based on the gv$asm\_disk\_iostat view).
+-   I did not had the chance to play with pluggable databases yet: This will be the next step around my utility.
+-   If you hit this issue:
 
-```
-./real\_time.pl : No such file or directory
-```
+<!-- -->
 
-- Then launch it that way:
+    ./real_time.pl 
+    : No such file or directory
 
-```
-perl ./real\_time.pl
-```
+-   Then launch it that way:
 
-**UPDATE:** &nbsp;The asmiostat utility is not part of the real\_time.pl script anymore. A new utility called **asm\_metrics.pl** has been created. See "[ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time](http://bdrouvot.wordpress.com/2013/10/04/asm-metrics-are-a-gold-mine-welcome-to-asm_metrics-pl-a-new-utility-to-extract-and-to-manipulate-them-in-real-time/ "ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time")" for more information.
+<!-- -->
 
+    perl ./real_time.pl
+
+**UPDATE:** The asmiostat utility is not part of the real\_time.pl script anymore. A new utility called **asm\_metrics.pl** has been created. See "[ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time](http://bdrouvot.wordpress.com/2013/10/04/asm-metrics-are-a-gold-mine-welcome-to-asm_metrics-pl-a-new-utility-to-extract-and-to-manipulate-them-in-real-time/ "ASM metrics are a gold mine. Welcome to asm_metrics.pl, a new utility to extract and to manipulate them in real time")" for more information.

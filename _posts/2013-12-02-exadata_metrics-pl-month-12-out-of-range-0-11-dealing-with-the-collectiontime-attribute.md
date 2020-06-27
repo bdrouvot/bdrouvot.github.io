@@ -30,19 +30,18 @@ author:
   last_name: ''
 permalink: "/2013/12/02/exadata_metrics-pl-month-12-out-of-range-0-11-dealing-with-the-collectiontime-attribute/"
 ---
-Yesterday was the first of December and I detected an issue with the&nbsp;[exadata\_metrics.pl](http://bdrouvot.wordpress.com/2013/11/01/exadata_metrics-pl-new-feature-to-collect-real-time-metrics-extracted-from-cumulative-metrics/ "exadata\_metrics.pl: New feature to collect real-time metrics extracted from cumulative metrics")&nbsp;script when dealing with the&nbsp;[collectionTime attribute](http://bdrouvot.wordpress.com/2013/09/13/exadata-cell-metrics-collectiontime-attribute-something-that-matters/ "Exadata Cell metrics: collectionTime attribute, something that matters").
 
-It produced:
+Yesterday was the first of December and I detected an issue with the [exadata\_metrics.pl](http://bdrouvot.wordpress.com/2013/11/01/exadata_metrics-pl-new-feature-to-collect-real-time-metrics-extracted-from-cumulative-metrics/ "exadata_metrics.pl: New feature to collect real-time metrics extracted from cumulative metrics") script when dealing with the [collectionTime attribute](http://bdrouvot.wordpress.com/2013/09/13/exadata-cell-metrics-collectiontime-attribute-something-that-matters/ "Exadata Cell metrics: collectionTime attribute, something that matters").
 
-```
-Month '12' out of range 0..11 at ./exadata\_metrics.pl line 255
-```
+<span style="text-decoration:underline;">It produced:</span>
+
+    Month '12' out of range 0..11 at ./exadata_metrics.pl line 255
 
 This is due to the fact that when using perl localtime/timegm the valid range for a month is 0-11 with 0 indicating January and 11 indicating December (while the collectiontime attribute is using 1-12)
 
-The exadata\_metrics.pl script **has been updated to take care of this rule** (It&nbsp;can be downloaded from&nbsp;[this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit)).
+The exadata\_metrics.pl script **has been updated to take care of this rule** (It can be downloaded from [this repository](https://docs.google.com/folder/d/0B7Jf_4JdsptpRHdyOWk1VTdUdEU/edit)).
 
-**Remarks:**
+<span style="text-decoration:underline;">**Remarks:**</span>
 
-1. Without this update the script did not produce wrong values for the DELTA(s) field (It was simply not possible to launch the script during December).
-2. Guess when I discovered the issue? When I was speaking about my [exadata\_metrics.pl](http://bdrouvot.wordpress.com/2013/11/01/exadata_metrics-pl-new-feature-to-collect-real-time-metrics-extracted-from-cumulative-metrics/ "exadata\_metrics.pl: New feature to collect real-time metrics extracted from cumulative metrics") script during the [UKOUG TECH13](http://www.tech13.ukoug.org/) conference. Live demo never works as expected :-), but with the help of some attendees (Big thanks to [Martin Nash](https://twitter.com/mpnsh)) we managed to bypass the issue during the live demo.
+1.  Without this update the script did not produce wrong values for the DELTA(s) field (It was simply not possible to launch the script during December).
+2.  Guess when I discovered the issue? When I was speaking about my [exadata\_metrics.pl](http://bdrouvot.wordpress.com/2013/11/01/exadata_metrics-pl-new-feature-to-collect-real-time-metrics-extracted-from-cumulative-metrics/ "exadata_metrics.pl: New feature to collect real-time metrics extracted from cumulative metrics") script during the [UKOUG TECH13](http://www.tech13.ukoug.org/) conference. Live demo never works as expected :-), but with the help of some attendees (Big thanks to [Martin Nash](https://twitter.com/mpnsh)) we managed to bypass the issue during the live demo.

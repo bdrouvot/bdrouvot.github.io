@@ -78,106 +78,114 @@ author:
   last_name: ''
 permalink: "/2018/07/07/postgresql-active-session-history-ash-welcome-to-the-pg_active_session_history-view-part-of-the-pgsentinel-extension/"
 ---
-<h2>Why active session history?</h2>
-<p>What if you could record and query an history of the active sessions? Would not it be useful for performance tuning activities?</p>
-<p>With active session history in place you could have a look to the "near" past database activity. You could answer questions like:</p>
-<ul>
-<li>What wait events type were taking most time?</li>
-<li>What wait events were taking most time?</li>
-<li>Which application name was taking most time?</li>
-<li>What was a session doing?</li>
-<li>What does a SQL statement wait for?</li>
-<li>How many sessions were running in CPU?</li>
-<li>Which database was taking most time?</li>
-<li>Which backend type was taking most time?</li>
-<li>On which wait event was the session waiting for?</li>
-<li>And so on....</li>
-</ul>
-<h2>How does it look like?</h2>
-<p>Let's have a look to the pg_active_session_history view (more details on how to create it later on):</p>
-<pre style="padding-left:30px;">                   View "public.pg_active_session_history"
-      Column      |           Type           | Collation | Nullable | Default
-------------------+--------------------------+-----------+----------+---------
- ash_time         | timestamp with time zone |           |          |
- datid            | oid                      |           |          |
- datname          | text                     |           |          |
- pid              | integer                  |           |          |
- usesysid         | oid                      |           |          |
- usename          | text                     |           |          |
- application_name | text                     |           |          |
- client_addr      | text                     |           |          |
- client_hostname  | text                     |           |          |
- client_port      | integer                  |           |          |
- backend_start    | timestamp with time zone |           |          |
- xact_start       | timestamp with time zone |           |          |
- query_start      | timestamp with time zone |           |          |
- state_change     | timestamp with time zone |           |          |
- wait_event_type  | text                     |           |          |
- wait_event       | text                     |           |          |
- state            | text                     |           |          |
- backend_xid      | xid                      |           |          |
- backend_xmin     | xid                      |           |          |
- top_level_query  | text                     |           |          |
- query            | text                     |           |          |
- cmdtype          | text                     |           |          |
- queryid          | bigint                   |           |          |
- backend_type     | text                     |           |          |
-</pre>
-You could see it as samplings of&nbsp;[pg\_stat\_activity](https://www.postgresql.org/docs/current/static/monitoring-stats.html#PG-STAT-ACTIVITY-VIEW)&nbsp;(one second interval) providing more information:
 
-- **ash\_time** : the sampling time
-- **top\_level\_query** : the top level statement (in case&nbsp;PL/pgSQL is used)
-- **query** : the statement being executed (not normalised, as it is in [pg\_stat\_statements](https://www.postgresql.org/docs/current/static/pgstatstatements.html), means you see the values)
-- **queryid** : the queryid of the statement (the one coming from [pg\_stat\_statements](https://www.postgresql.org/docs/current/static/pgstatstatements.html))
+Why active session history?
+---------------------------
+
+What if you could record and query an history of the active sessions? Would not it be useful for performance tuning activities?
+
+With active session history in place you could have a look to the "near" past database activity. You could answer questions like:
+
+-   What wait events type were taking most time?
+-   What wait events were taking most time?
+-   Which application name was taking most time?
+-   What was a session doing?
+-   What does a SQL statement wait for?
+-   How many sessions were running in CPU?
+-   Which database was taking most time?
+-   Which backend type was taking most time?
+-   On which wait event was the session waiting for?
+-   And so on....
+
+How does it look like?
+----------------------
+
+Let's have a look to the pg\_active\_session\_history view (more details on how to create it later on):
+
+    postgres@pgu:~$ /usr/local/pgsql/bin/psql -c "\d pg_active_session_history"
+                       View "public.pg_active_session_history"
+          Column      |           Type           | Collation | Nullable | Default
+    ------------------+--------------------------+-----------+----------+---------
+     ash_time         | timestamp with time zone |           |          |
+     datid            | oid                      |           |          |
+     datname          | text                     |           |          |
+     pid              | integer                  |           |          |
+     usesysid         | oid                      |           |          |
+     usename          | text                     |           |          |
+     application_name | text                     |           |          |
+     client_addr      | text                     |           |          |
+     client_hostname  | text                     |           |          |
+     client_port      | integer                  |           |          |
+     backend_start    | timestamp with time zone |           |          |
+     xact_start       | timestamp with time zone |           |          |
+     query_start      | timestamp with time zone |           |          |
+     state_change     | timestamp with time zone |           |          |
+     wait_event_type  | text                     |           |          |
+     wait_event       | text                     |           |          |
+     state            | text                     |           |          |
+     backend_xid      | xid                      |           |          |
+     backend_xmin     | xid                      |           |          |
+     top_level_query  | text                     |           |          |
+     query            | text                     |           |          |
+     queryid          | bigint                   |           |          |
+     backend_type     | text                     |           |          |
+
+You could see it as samplings of [pg\_stat\_activity](https://www.postgresql.org/docs/current/static/monitoring-stats.html#PG-STAT-ACTIVITY-VIEW) (one second interval) providing more information:
+
+-   **ash\_time**: the sampling time
+-   **top\_level\_query**: the top level statement (in case PL/pgSQL is used)
+-   **query**: the statement being executed (not normalised, as it is in [pg\_stat\_statements](https://www.postgresql.org/docs/current/static/pgstatstatements.html), means you see the values)
+-   **queryid**: the queryid of the statement (the one coming from [pg\_stat\_statements](https://www.postgresql.org/docs/current/static/pgstatstatements.html))
 
 Thanks to the queryid field you will be able to link the session activity with the sql activity (then addressing the point reported by Franck Pachot into this blog post: [PGIO, PG\_STAT\_ACTIVITY and PG\_STAT\_STATEMENTS](https://blog.dbi-services.com/pgio-pg_stat_activity-and-pg_stat_statements/))
 
-## Installation
+Installation
+------------
 
-pgsentinel uses the&nbsp;[pg\_stat\_statements](http://www.postgresql.org/docs/current/static/pgstatstatements.html)&nbsp;extension (officially bundled with PostgreSQL) for tracking which queries get executed in your database.
+pgsentinel uses the [pg\_stat\_statements](http://www.postgresql.org/docs/current/static/pgstatstatements.html) extension (officially bundled with PostgreSQL) for tracking which queries get executed in your database.
 
 So, add the following entries to your postgres.conf:
 
-```
-shared_preload_libraries = 'pg_stat_statements,pgsentinel'
+    shared_preload_libraries = 'pg_stat_statements,pgsentinel'
 
-# Increase the max size of the query strings Postgres records
-track_activity_query_size = 2048
+    # Increase the max size of the query strings Postgres records
+    track_activity_query_size = 2048
 
-# Track statements generated by stored procedures as well
-pg_stat_statements.track = all
-```
+    # Track statements generated by stored procedures as well
+    pg_stat_statements.track = all
 
 restart the postgresql daemon and create the extension:
 
-```
-postgres@pgu:~$ /usr/local/pgsql/bin/psql -c "create extension pgsentinel;"
-CREATE EXTENSION
-```
+    postgres@pgu:~$ /usr/local/pgsql/bin/psql -c "create extension pgsentinel;"
+    CREATE EXTENSION
 
 Now, the pg\_active\_session\_history view has been created and the activity is being recorded in it.
 
-## Let's see the extension in action during a 2 minutes&nbsp;[pgio](https://kevinclosson.net/2018/05/22/sneak-preview-of-pgio-the-slob-method-for-postgressql-part-i-the-beta-pgio-readme-file/) run:
+Let's see the extension in action during a 2 minutes [pgio](https://kevinclosson.net/2018/05/22/sneak-preview-of-pgio-the-slob-method-for-postgressql-part-i-the-beta-pgio-readme-file/) run:
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-[Video](https://vimeo.com/278781365)
+https://vimeo.com/278781365
 
-## Remarks
+Remarks
+-------
 
-- No objects are created into the PostgreSQL instance (except the view). The data being queried through the pg\_active\_session\_history view are fully in memory
-- You are able to choose the maximum number of records, once reached, then the data rotate (oldest records are aged out)
+-   No objects are created into the PostgreSQL instance (except the view). The data being queried through the pg\_active\_session\_history view are fully in memory
+-   You are able to choose the maximum number of records, once reached, then the data rotate (oldest records are aged out)
 
-## Next Steps
+Next Steps
+----------
 
-- The library and the source code will be available soon on github in the [pgsentinel github repository](https://github.com/pgsentinel/pgsentinel) (under the GNU Affero General Public License v3.0): please do contribute!
-- Once the source code is published, more information on how to create the pgsentinel library will be available
-- Once the source code is published, more information on how to define the maximum of records will be available
-- The extension is named "pgsentinel" because more cool stuff will be added in it in the near future
+-   The library and the source code will be available soon on github in the [pgsentinel github repository](https://github.com/pgsentinel/pgsentinel) (under the GNU Affero General Public License v3.0): please do contribute!
+-   Once the source code is published, more information on how to create the pgsentinel library will be available
+-   Once the source code is published, more information on how to define the maximum of records will be available
+-   The extension is named "pgsentinel" because more cool stuff will be added in it in the near future
 
-## Conclusion
+Conclusion
+----------
 
 At [pgsentinel](https://www.pgsentinel.com/) we really love performance tuning activity. We will do our best to add valuable performance tuning stuff to the postgresql community: stay tuned
 
-## Update 07/14/2018:
+Update 07/14/2018:
+------------------
 
 [The extension is now publicly available](https://bdrouvot.wordpress.com/2018/07/14/postgresql-active-session-history-extension-is-now-publicly-available/).
-

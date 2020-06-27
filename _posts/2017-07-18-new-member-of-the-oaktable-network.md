@@ -33,9 +33,9 @@ author:
   last_name: ''
 permalink: "/2017/07/18/new-member-of-the-oaktable-network/"
 ---
+
 A quick one to say that I am very happy to be a new member of the OakTable Network.
 
-[![]({{ site.baseurl }}/assets/images/oak_logo.jpg)](https://bdrouvot.wordpress.com/2017/07/18/new-member-of-the-oaktable-network/oak_logo/)
+[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/oak_logo.jpg" class="aligncenter size-full wp-image-3196" width="150" height="89" />](https://bdrouvot.wordpress.com/2017/07/18/new-member-of-the-oaktable-network/oak_logo/)
 
-Thanks&nbsp;[Kevin Closson](http://www.oaktable.net/users/kevinclosson)&nbsp;for my nomination, I feel deeply honored!
-
+Thanks [Kevin Closson](http://www.oaktable.net/users/kevinclosson) for my nomination, I feel deeply honored!
