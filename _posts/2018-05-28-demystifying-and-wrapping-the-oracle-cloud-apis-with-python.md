@@ -73,7 +73,7 @@ and update the header with the content-type and the X-ID-TENANT-NAME:
 ```
 client.headers.update(  
 {'content-type': 'application/json'  
-'X-ID-TENANT-NAME':'{0}'.format(IDENTITY\_DOMAIN\_ID)})  
+'X-ID-TENANT-NAME':'{0}'.format(IDENTITY_DOMAIN_ID)})  
 ```
 
 Now, let's create the body. In this example the JSON data has been extracted from a file (*prov\_database.json*) that contains:
@@ -104,7 +104,7 @@ Now, let's create the body. In this example the JSON data has been extracted fro
 It has been extracted in the Python wrapper that way:
 
 ```
-data = json.load(open('{0}/prov\_database.json'.format(dir\_path), 'r'))  
+data = json.load(open('{0}/prov_database.json'.format(dir_path), 'r'))  
 ```
 
 Now that we have defined the authorization, the header and the body, all we have to do is to post to http.
@@ -114,7 +114,7 @@ The url structure is described [here:](https://docs.oracle.com/en/cloud/paas/dat
 So that the post is launched that way with Python:
 
 ```
-response = client.post("https://dbcs.emea.oraclecloud.com/paas/service/dbcs/api/v1.1/instances/{0}".format(IDENTITY\_DOMAIN\_ID), json=data)  
+response = client.post("https://dbcs.emea.oraclecloud.com/paas/service/dbcs/api/v1.1/instances/{0}".format(IDENTITY_DOMAIN_ID), json=data)  
 ```
 
 As you can see the IDENTITY\_DOMAIN\_ID is also a path parameter and the data is part of the request. That's it!
@@ -134,11 +134,11 @@ As you can see the IDENTITY\_DOMAIN\_ID is also a path parameter and the data is
 and has been extracted that way:
 
 ```
-f = open('{0}/.oracleapi\_config.yml'.format(dir\_path), 'r')  
-config = safe\_load(f)  
-IDENTITY\_DOMAIN\_ID = config\['identityDomainId'\]  
-USERNAME = config\['username'\]  
-PASSWORD = config\['password'\]  
+f = open('{0}/.oracleapi_config.yml'.format(dir_path), 'r')  
+config = safe_load(f)  
+IDENTITY_DOMAIN_ID = config['identityDomainId']  
+USERNAME = config['username']  
+PASSWORD = config['password']  
 ```
 
 -   More fun:  
@@ -187,12 +187,12 @@ During the instance creation, you could also check the progress through the web 
 ### Source code:
 
 ```
-\# Author: Bertrand Drouvot  
-\# Blog : http://bdrouvot.wordpress.com/  
-\# opc\_api\_wrapper.py : V1.0 (2018/05)  
-\# Oracle cloud API wrapper
+# Author: Bertrand Drouvot  
+# Blog : http://bdrouvot.wordpress.com/  
+# opc_api_wrapper.py : V1.0 (2018/05)  
+# Oracle cloud API wrapper
 
-from yaml import safe\_load  
+from yaml import safe_load  
 import os  
 from os import path  
 import logging  
@@ -206,7 +206,7 @@ FORMAT = '%(asctime)s - %(name)s - %(levelname)-s %(message)s'
 help = ''' Oracle Public Cloud Wrapper
 
 Usage:  
-opc\_api\_wrapper.py &lt;service\_name&gt; create\_instance
+opc_api_wrapper.py &lt;service_name&gt; create_instance
 
 Options:  
 -h Help message
@@ -216,101 +216,101 @@ Returns .....
 
 class APIError(Exception):
 
-def \_\_init\_\_(self, message, status\_code=None, payload=None):  
-Exception.\_\_init\_\_(self)  
+def __init__(self, message, status_code=None, payload=None):  
+Exception.__init__(self)  
 self.message = message  
-self.status\_code = 415
+self.status_code = 415
 
-def to\_dict(self):  
+def to_dict(self):  
 rv = dict()  
-rv\['message'\] = self.message  
+rv['message'] = self.message  
 return rv
 
-def launch\_actions(kwargs):
+def launch_actions(kwargs):
 
-dir\_path = os.path.dirname(os.path.realpath(\_\_file\_\_))  
+dir_path = os.path.dirname(os.path.realpath(__file__))  
 try:  
-f = open('{0}/.oracleapi\_config.yml'.format(dir\_path), 'r')  
-config = safe\_load(f)  
+f = open('{0}/.oracleapi_config.yml'.format(dir_path), 'r')  
+config = safe_load(f)  
 except:  
-raise ValueError("This script requires a .oracleapi\_config.yml file")  
+raise ValueError("This script requires a .oracleapi_config.yml file")  
 exit(-1)
 
-if kwargs\['create\_instance'\]:  
-create\_instance(kwargs\['service\_name'\],dir\_path,config)
+if kwargs['create_instance']:  
+create_instance(kwargs['service_name'],dir_path,config)
 
-def return\_last\_from\_list(v\_list):  
-for msg in (v\_list\[0\], v\_list\[-1\]):  
+def return_last_from_list(v_list):  
+for msg in (v_list[0], v_list[-1]):  
 pass  
 return msg
 
-def print\_all\_from\_list(v\_list):  
-for mmsg in v\_list:  
+def print_all_from_list(v_list):  
+for mmsg in v_list:  
 print mmsg
 
-def check\_job(config,joburl):
+def check_job(config,joburl):
 
-IDENTITY\_DOMAIN\_ID = config\['identityDomainId'\]  
-USERNAME = config\['username'\]  
-PASSWORD = config\['password'\]
+IDENTITY_DOMAIN_ID = config['identityDomainId']  
+USERNAME = config['username']  
+PASSWORD = config['password']
 
 client = requests.Session()  
 client.auth = (USERNAME, PASSWORD)  
-client.headers.update({'X-ID-TENANT-NAME': '{0}'.format(IDENTITY\_DOMAIN\_ID)})
+client.headers.update({'X-ID-TENANT-NAME': '{0}'.format(IDENTITY_DOMAIN_ID)})
 
 response = client.get("{0}".format(joburl))  
 jsontext= json.loads(response.text)  
 client.close()  
-return (jsontext\['job\_status'\],jsontext\['message'\])
+return (jsontext['job_status'],jsontext['message'])
 
-def create\_instance(service\_name,dir\_path,config):
+def create_instance(service_name,dir_path,config):
 
-logfile = config\['logfile'\]  
+logfile = config['logfile']  
 logging.basicConfig(filename=logfile, format=FORMAT, level=logging.INFO)
 
-IDENTITY\_DOMAIN\_ID = config\['identityDomainId'\]  
-USERNAME = config\['username'\]  
-PASSWORD = config\['password'\]
+IDENTITY_DOMAIN_ID = config['identityDomainId']  
+USERNAME = config['username']  
+PASSWORD = config['password']
 
-data = json.load(open('{0}/prov\_database.json'.format(dir\_path), 'r'))  
-data\['serviceName'\] = service\_name
+data = json.load(open('{0}/prov_database.json'.format(dir_path), 'r'))  
+data['serviceName'] = service_name
 
-print "creating opc instance {0}...".format(service\_name)
+print "creating opc instance {0}...".format(service_name)
 
 client = requests.Session()  
 client.auth = (USERNAME, PASSWORD)  
 client.headers.update(  
 {'content-type': 'application/json',  
-'X-ID-TENANT-NAME':'{0}'.format(IDENTITY\_DOMAIN\_ID)})
+'X-ID-TENANT-NAME':'{0}'.format(IDENTITY_DOMAIN_ID)})
 
-response = client.post("https://dbcs.emea.oraclecloud.com/paas/service/dbcs/api/v1.1/instances/{0}".format(IDENTITY\_DOMAIN\_ID), json=data)  
-if response.status\_code != 202:  
-raise APIError(response.json()\['message'\])  
-jobburl = response.headers\['Location'\]  
+response = client.post("https://dbcs.emea.oraclecloud.com/paas/service/dbcs/api/v1.1/instances/{0}".format(IDENTITY_DOMAIN_ID), json=data)  
+if response.status_code != 202:  
+raise APIError(response.json()['message'])  
+jobburl = response.headers['Location']  
 jobsstatus = "InProgress"  
 while (jobsstatus == "InProgress"):  
 time.sleep(120)  
-jobsstatus,jobmessage = check\_job(config,jobburl)  
-print "{0} ({1})".format(jobsstatus,return\_last\_from\_list(jobmessage))  
+jobsstatus,jobmessage = check_job(config,jobburl)  
+print "{0} ({1})".format(jobsstatus,return_last_from_list(jobmessage))  
 client.close()  
 print ""  
-print "opc instance {0} created:".format(service\_name)  
+print "opc instance {0} created:".format(service_name)  
 print ""  
-print\_all\_from\_list(jobmessage)
+print_all_from_list(jobmessage)
 
-\#  
-\# Main  
-\#
+#  
+# Main  
+#
 
 def main():
 
 arguments = docopt(help)  
 for key in arguments.keys():  
-arguments\[key.replace('&lt;','').replace('&gt;','')\] = arguments.pop(key)
+arguments[key.replace('&lt;','').replace('&gt;','')] = arguments.pop(key)
 
-launch\_actions(arguments)
+launch_actions(arguments)
 
-if \_\_name\_\_ == '\_\_main\_\_':  
+if __name__ == '__main__':  
 main()  
 ```
 
