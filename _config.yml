@@ -60,13 +60,12 @@ author:
 social-network-links:
   rss: true
   github: bdrouvot
-  twitter: bertranddrouvot
   linkedin: bdrouvot
+  twitter: bertranddrouvot
 
 # Select which share links to show in posts
 share-links-active:
   twitter: true
-  linkedin: true
   github: true
 
 # Excerpt Word Length
