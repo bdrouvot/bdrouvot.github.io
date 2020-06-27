@@ -52,7 +52,7 @@ To try to answer this question I decided to use strace (the Linux system call tr
 - That a very large majority (more than 80% in my case) of the IOs are submitted that way:
 
 ```
-io\_submit(140691479359488, 4, {{0x7ff547f6c210, 0, 0, 0, 261}, {0x7ff547f6d0b0, 0, 0, 0, 261}, {0x7ff547f6c960, 0, 0, 0, 261}, {0x7ff547f6cbd0, 0, 0, 0, 261}}) = **4**
+io\_submit(140691479359488, 4, \{\{0x7ff547f6c210, 0, 0, 0, 261\}, \{0x7ff547f6d0b0, 0, 0, 0, 261\}, \{0x7ff547f6c960, 0, 0, 0, 261\}, \{0x7ff547f6cbd0, 0, 0, 0, 261\}\}) = **4**
 ```
 
 We can see that **4** IOs have been submitted **at the same time** (with a single io\_submit call).
