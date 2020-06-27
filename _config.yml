@@ -9,6 +9,8 @@ description: Sharing stuff (by Bertrand Drouvot)
 # url is the the website domain URL without a trailing slash
 url: "https://bdrouvot.github.io"
 
+search: true
+
 # baseurl should be an empty string
 baseurl: ""
 
