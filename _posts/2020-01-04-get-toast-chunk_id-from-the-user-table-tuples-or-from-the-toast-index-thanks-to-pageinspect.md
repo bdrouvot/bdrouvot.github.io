@@ -76,7 +76,7 @@ check the toast and toast index names:
 
 The chunk\_id is part of the tuple's data as explained in this slide (coming from this [presentation](https://pgconf.ru/media/2016/05/13/tuple-internals.pdf)):
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/toasted_attributes.png" class="aligncenter size-full wp-image-3542" width="1100" height="777" />](https://bdrouvot.wordpress.com/2020/01/04/get-toast-chunk_id-from-the-user-table-tuples-or-from-the-toast-index-thanks-to-pageinspect/toasted_attributes/)
+[<img src="{{ site.baseurl }}/assets/images/toasted_attributes.png" class="aligncenter size-full wp-image-3542" width="1100" height="777" />](https://bdrouvot.wordpress.com/2020/01/04/get-toast-chunk_id-from-the-user-table-tuples-or-from-the-toast-index-thanks-to-pageinspect/toasted_attributes/)
 
 Note that the toast relation id is also part of the tuple data.
 
