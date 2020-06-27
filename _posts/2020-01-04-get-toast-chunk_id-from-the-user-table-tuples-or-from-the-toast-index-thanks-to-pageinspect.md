@@ -203,7 +203,8 @@ substr(page_item_attrs.t_attrs[2]::text,3,2)='01' and ('x'||regexp_replace(subst
 
  t_ctid |                t_attrs                 | substr_for_chunk_id | chunk_id | substr_for_toast_relid | toast_relid
 --------+----------------------------------------+---------------------+----------+------------------------+-------------
-(0,9) | \x011214270000102700007ff1020074f10200 | 7ff10200 | 192895 | 74f10200 | 192884 (1 row)</pre>
+(0,9)   | \x011214270000102700007ff1020074f10200 | 7ff10200            | 192895   | 74f10200               | 192884
+ (1 row)</pre>
 
 so that we know that this tuple with ctid (0,9) is linked to the corrupted toast page.
 
