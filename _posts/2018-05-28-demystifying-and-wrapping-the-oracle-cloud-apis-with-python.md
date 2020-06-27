@@ -58,23 +58,23 @@ import requests
 ```
 and then create the http session:
 
-\[sourcecode language="python"\]  
+```
 client = requests.Session()  
-\[/sourcecode\]
+```
 
 Once done, we can add the authorization:
 
-\[sourcecode language="python"\]  
+```
 client.auth = (USERNAME, PASSWORD)  
-\[/sourcecode\]
+```
 
 and update the header with the content-type and the X-ID-TENANT-NAME:
 
-\[sourcecode language="python"\]  
+```
 client.headers.update(  
 {'content-type': 'application/json'  
 'X-ID-TENANT-NAME':'{0}'.format(IDENTITY\_DOMAIN\_ID)})  
-\[/sourcecode\]
+```
 
 Now, let's create the body. In this example the JSON data has been extracted from a file (*prov\_database.json*) that contains:
 
@@ -103,9 +103,9 @@ Now, let's create the body. In this example the JSON data has been extracted fro
 
 It has been extracted in the Python wrapper that way:
 
-\[sourcecode language="python"\]  
+```
 data = json.load(open('{0}/prov\_database.json'.format(dir\_path), 'r'))  
-\[/sourcecode\]
+```
 
 Now that we have defined the authorization, the header and the body, all we have to do is to post to http.
 
@@ -113,9 +113,9 @@ The url structure is described [here:](https://docs.oracle.com/en/cloud/paas/dat
 
 So that the post is launched that way with Python:
 
-\[sourcecode language="python"\]  
+```
 response = client.post("https://dbcs.emea.oraclecloud.com/paas/service/dbcs/api/v1.1/instances/{0}".format(IDENTITY\_DOMAIN\_ID), json=data)  
-\[/sourcecode\]
+```
 
 As you can see the IDENTITY\_DOMAIN\_ID is also a path parameter and the data is part of the request. That's it!
 
@@ -133,13 +133,13 @@ As you can see the IDENTITY\_DOMAIN\_ID is also a path parameter and the data is
 
 and has been extracted that way:
 
-\[sourcecode language="python"\]  
+```
 f = open('{0}/.oracleapi\_config.yml'.format(dir\_path), 'r')  
 config = safe\_load(f)  
 IDENTITY\_DOMAIN\_ID = config\['identityDomainId'\]  
 USERNAME = config\['username'\]  
 PASSWORD = config\['password'\]  
-\[/sourcecode\]
+```
 
 -   More fun:  
     You may have noticed that the http post's response provides a link to an URL you can use to check the progress of the creation
@@ -186,7 +186,7 @@ During the instance creation, you could also check the progress through the web 
 
 ### Source code:
 
-\[sourcecode language="python"\]  
+```
 \# Author: Bertrand Drouvot  
 \# Blog : http://bdrouvot.wordpress.com/  
 \# opc\_api\_wrapper.py : V1.0 (2018/05)  
@@ -312,7 +312,7 @@ launch\_actions(arguments)
 
 if \_\_name\_\_ == '\_\_main\_\_':  
 main()  
-\[/sourcecode\]
+```
 
 ### Conclusion
 

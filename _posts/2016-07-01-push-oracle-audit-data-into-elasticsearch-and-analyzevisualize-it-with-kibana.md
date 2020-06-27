@@ -69,7 +69,7 @@ To achieve this we'll use the logstash’s JDBC input (Robin Moffatt provided an
 
 To trap and format this information, let’s create an *audit\_database.conf* configuration file that looks like:
 
-\[sourcecode language="python" wraplines="false" collapse="false"\]  
+```
 input {  
 jdbc {  
 jdbc\_validate\_connection =&gt; true  
@@ -112,7 +112,7 @@ hosts =&gt; \["elk:9200"\]
 index =&gt; "audit\_databases\_oracle-%{+YYYY.MM.dd}"  
 }  
 }  
-\[/sourcecode\]
+```
 
 so that an entry into *dba\_audit\_trail* like:
 
@@ -146,7 +146,7 @@ So that:
 
 To trap and format this information, let’s create an *audit\_files.conf* configuration file that looks like:
 
-\[sourcecode language="python" wraplines="false" collapse="false"\]  
+```
 input {  
 file {  
 path =&gt; "/u01/app/oracle/admin/PBDT/adump/\*.aud"  
@@ -196,7 +196,7 @@ hosts =&gt; \["elk:9200"\]
 index =&gt; "audit\_databases\_oracle-%{+YYYY.MM.dd}"  
 }  
 }  
-\[/sourcecode\]
+```
 
 so that an audit file content like:
 

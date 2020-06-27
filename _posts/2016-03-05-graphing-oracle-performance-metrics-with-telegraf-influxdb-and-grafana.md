@@ -88,7 +88,7 @@ Setup
 
     [oracle@Dprima scripts]$ cat oracle_metrics.py
 
-\[sourcecode language="python" wraplines="false" collapse="false"\]  
+```
 import os  
 import sys  
 import cx\_Oracle  
@@ -161,7 +161,7 @@ args = parser.parse\_args()
 stats = OraMetrics(args.user, args.passwd, args.sid)  
 stats.waitclassstats(args.user, args.passwd, args.sid)  
 stats.waitstats(args.user, args.passwd, args.sid)  
-\[/sourcecode\]
+```
 
 The output looks like (the output format is the InfluxDB [line-protocol](https://docs.influxdata.com/influxdb/v0.9/write_protocols/line/)):
 

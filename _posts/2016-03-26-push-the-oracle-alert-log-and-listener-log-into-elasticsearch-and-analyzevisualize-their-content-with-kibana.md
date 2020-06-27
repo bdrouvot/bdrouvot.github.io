@@ -125,7 +125,7 @@ New fields are being created **so that we can analyze/visualize** them later on 
 
 -   To trap and format this information, let's create an *alert\_log.conf* configuration file that looks like (the filter part contains the important stuff):
 
-\[sourcecode language="python" wraplines="false" collapse="false"\]  
+```
 input {  
 file {  
 path =&gt; "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert\_PBDT.log"  
@@ -195,7 +195,7 @@ hosts =&gt; \["elk:9200"\]
 index =&gt; "oracle-%{+YYYY.MM.dd}"  
 }  
 }  
-\[/sourcecode\]
+```
 
 -   Start logstash with this configuration file:
 
@@ -242,7 +242,7 @@ New fields are being created **so that we can analyze/visualize** them later on 
 
 -   To trap and format this information, let's create a *lsnr\_log.conf* configuration file that looks like (the filter part contains the important stuff):
 
-\[sourcecode language="python" wraplines="false" collapse="false"\]  
+```
 input {  
 file {  
 path =&gt; "/u01/app/oracle/diag/tnslsnr/Dprima/listener/trace/listener.log"  
@@ -307,7 +307,7 @@ hosts =&gt; \["elk:9200"\]
 index =&gt; "oracle-%{+YYYY.MM.dd}"  
 }  
 }  
-\[/sourcecode\]
+```
 
 -   Start logstash with this configuration file:
 

@@ -95,7 +95,7 @@ So that the appco service:
 
 Now let's create a JAVA application that will be used to test the Application Continuity:
 
-\[sourcecode language="java"\]  
+```
 import java.sql.\*;  
 import oracle.jdbc.pool.\*;  
 import oracle.jdbc.\*;  
@@ -174,7 +174,7 @@ e.printStackTrace();
 }  
 }  
 }  
-\[/sourcecode\]
+```
 
 The important parts are:
 
