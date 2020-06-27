@@ -51,9 +51,9 @@ Tests
 For the test, I used two tables on a 11.2.0.4 database. One table is made of 2 partitions and one is not partitioned (then 3 segments):
 
 ```
-BDT:BDT1&gt; select SEGMENT\_NAME,PARTITION\_NAME from dba\_segments where segment\_name in ('BDT1','BDT2');
+BDT:BDT1> select SEGMENT_NAME,PARTITION_NAME from dba_segments where segment_name in ('BDT1','BDT2');
 
-SEGMENT\_NAME PARTITION\_NAME  
+SEGMENT_NAME PARTITION_NAME  
 ------------ --------------  
 BDT2  
 BDT1 P2  
@@ -63,19 +63,19 @@ BDT1 P1
 The rows distribution across segments, blocks and file relative numbers is the following:
 
 ```
-BDT:BDT1&gt; l  
-1 select u.object\_name,u.subobject\_name,dbms\_rowid.rowid\_block\_number(BDT1.rowid) BLOCK\_NUMBER, dbms\_rowid.rowid\_relative\_fno(BDT1.rowid) FNO  
-2 from BDT1, user\_objects u  
-3 where dbms\_rowid.rowid\_object(BDT1.rowid) = u.object\_id  
+BDT:BDT1> l  
+1 select u.object_name,u.subobject_name,dbms_rowid.rowid_block_number(BDT1.rowid) BLOCK_NUMBER, dbms_rowid.rowid_relative_fno(BDT1.rowid) FNO  
+2 from BDT1, user_objects u  
+3 where dbms_rowid.rowid_object(BDT1.rowid) = u.object_id  
 4 union all  
-5 select u.object\_name,u.subobject\_name,dbms\_rowid.rowid\_block\_number(BDT2.rowid) BLOCK\_NUMBER, dbms\_rowid.rowid\_relative\_fno(BDT2.rowid) FNO  
-6 from BDT2, user\_objects u  
-7 where dbms\_rowid.rowid\_object(BDT2.rowid) = u.object\_id  
+5 select u.object_name,u.subobject_name,dbms_rowid.rowid_block_number(BDT2.rowid) BLOCK_NUMBER, dbms_rowid.rowid_relative_fno(BDT2.rowid) FNO  
+6 from BDT2, user_objects u  
+7 where dbms_rowid.rowid_object(BDT2.rowid) = u.object_id  
 8 order by 1,2  
-9\*  
-BDT:BDT1&gt; /
+9*  
+BDT:BDT1> /
 
-OBJECT\_NAME SUBOBJECT\_NAME BLOCK\_NUMBER FNO  
+OBJECT_NAME SUBOBJECT_NAME BLOCK_NUMBER FNO  
 ------------ --------------- ------------ -----------  
 BDT1 P1 2509842 5  
 BDT1 P1 2509842 5  
@@ -96,7 +96,8 @@ BDT2 1359091 5
 BDT2 1359091 5  
 BDT2 1359091 5
 
-18 rows selected.```
+18 rows selected.
+```
 
 so that all the rows of the segment:
 
@@ -111,11 +112,11 @@ BDT1:P&lt;N&gt; stands for table BDT1 partition &lt;N&gt;
 Now, let's update both tables (**without** committing):
 
 ```
-BDT:BDT1&gt; update BDT1 set ID2=100;
+BDT:BDT1> update BDT1 set ID2=100;
 
 9 rows updated.
 
-BDT:BDT1&gt; update BDT2 set ID2=100;
+BDT:BDT1> update BDT2 set ID2=100;
 
 9 rows updated.  
 ```
@@ -125,13 +126,13 @@ As I do not commit (nor rollback), then those **3 blocks in memory contain an a
 In another session, let's force serial direct path read and read partition **P1** from **BDT1 only**:
 
 ```
-BDT:BDT1&gt; alter session set "\_serial\_direct\_read"=always;
+BDT:BDT1> alter session set "_serial_direct_read"=always;
 
 Session altered.
 
-BDT:BDT1&gt; select count(\*) from BDT1 partition (P1);
+BDT:BDT1> select count(*) from BDT1 partition (P1);
 
-COUNT(\*)  
+COUNT(*)  
 -----------  
 4  
 ```
@@ -139,20 +140,20 @@ COUNT(\*)
 Now, check its wait events and related statistics with snapper. A cool thing with snapper is that I can get wait events and statistics from one tool.
 
 ```
-SYS:BDT1&gt; @snapper all,end 5 1 20  
+SYS:BDT1> @snapper all,end 5 1 20  
 Sampling SID 20 with interval 5 seconds, taking 1 snapshots...
 
 -- Session Snapper v4.22 - by Tanel Poder ( http://blog.tanelpoder.com/snapper ) - Enjoy the Most Advanced Oracle Troubleshooting Script on the Planet! :)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
-SID @INST, USERNAME , TYPE, STATISTIC , DELTA, HDELTA/SEC, %TIME, GRAPH , NUM\_WAITS, WAITS/SEC, AVERAGES  
+SID @INST, USERNAME , TYPE, STATISTIC , DELTA, HDELTA/SEC, %TIME, GRAPH , NUM_WAITS, WAITS/SEC, AVERAGES  
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 20 @1, BDT , STAT, physical reads direct , 1, .02, , , , , .5 per execution  
-20 @1, BDT , WAIT, enq: KO - fast object checkpoint , 1117, 18.12us, .0%, \[ \], 1, .02, 1.12ms average wait
+20 @1, BDT , WAIT, enq: KO - fast object checkpoint , 1117, 18.12us, .0%, [ ], 1, .02, 1.12ms average wait
 
 -- End of Stats snap 1, end=2015-04-29 08:25:20, seconds=61.7
 
--- End of ASH snap 1, end=, seconds=, samples\_taken=0, AAS=(No ASH sampling in begin/end snapshot mode)
+-- End of ASH snap 1, end=, seconds=, samples_taken=0, AAS=(No ASH sampling in begin/end snapshot mode)
 
 PL/SQL procedure successfully completed.  
 ```
@@ -164,16 +165,16 @@ As we can see, the direct path read has been used and the "fast object checkpoin
 Now let's check which block(s) has/have been flushed to disk: to do so, I'll dump those 3 blocks from disk and check **if** they contain an active transaction (as the ones in memory).
 
 ```
-BDT:BDT1&gt; !cat dump\_blocks.sql  
+BDT:BDT1> !cat dump_blocks.sql  
 -- BDT2  
 alter system dump datafile 5 block 1359091;  
 -- BDT1:P2  
 alter system dump datafile 5 block 2510866;  
 -- BDT1:P1  
 alter system dump datafile 5 block 2509842;  
-select value from v$diag\_info where name like 'Default%';
+select value from v$diag_info where name like 'Default%';
 
-BDT:BDT1&gt; @dump\_blocks.sql
+BDT:BDT1> @dump_blocks.sql
 
 System altered.
 
@@ -183,9 +184,9 @@ System altered.
 
 VALUE  
 ------------------------------  
-/u01/app/oracle/diag/rdbms/bdt/BDT1/trace/BDT1\_ora\_91815.trc
+/u01/app/oracle/diag/rdbms/bdt/BDT1/trace/BDT1_ora_91815.trc
 
-BDT:BDT1&gt; !view /u01/app/oracle/diag/rdbms/bdt/BDT1/trace/BDT1\_ora\_91815.trc  
+BDT:BDT1> !view /u01/app/oracle/diag/rdbms/bdt/BDT1/trace/BDT1_ora_91815.trc  
 ```
 
 The Interested Transaction List (ITL) for the first block that has been dumped from disk (BDT2 Table) looks like:

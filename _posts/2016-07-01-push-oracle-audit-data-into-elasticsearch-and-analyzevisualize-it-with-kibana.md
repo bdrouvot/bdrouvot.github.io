@@ -72,44 +72,44 @@ To trap and format this information, let’s create an *audit\_database.conf* c
 ```
 input {  
 jdbc {  
-jdbc\_validate\_connection =&gt; true  
-jdbc\_connection\_string =&gt; "jdbc:oracle:thin:@localhost:1521/PBDT"  
-jdbc\_user =&gt; "system"  
-jdbc\_password =&gt; "bdtbdt"  
-jdbc\_driver\_library =&gt; "/u01/app/oracle/product/11.2.0/dbhome\_1/jdbc/lib/ojdbc6.jar"  
-jdbc\_driver\_class =&gt; "Java::oracle.jdbc.driver.OracleDriver"  
-statement =&gt; "select os\_username,username,userhost,timestamp,action\_name,comment\_text,sessionid,returncode,priv\_used,global\_uid from dba\_audit\_trail where timestamp &gt; :sql\_l  
-ast\_value"  
-schedule =&gt; "\*/2 \* \* \* \*"  
+jdbc_validate_connection =&gt; true  
+jdbc_connection_string =&gt; "jdbc:oracle:thin:@localhost:1521/PBDT"  
+jdbc_user =&gt; "system"  
+jdbc_password =&gt; "bdtbdt"  
+jdbc_driver_library =&gt; "/u01/app/oracle/product/11.2.0/dbhome_1/jdbc/lib/ojdbc6.jar"  
+jdbc_driver_class =&gt; "Java::oracle.jdbc.driver.OracleDriver"  
+statement =&gt; "select os_username,username,userhost,timestamp,action_name,comment_text,sessionid,returncode,priv_used,global_uid from dba_audit_trail where timestamp &gt; :sql_l  
+ast_value"  
+schedule =&gt; "*/2 * * * *"  
 }  
 }
 
 filter {  
-\# Set the timestamp to the one of dba\_audit\_trail  
-mutate { convert =&gt; \[ "timestamp" , "string" \]}  
-date { match =&gt; \["timestamp", "ISO8601"\]}
+# Set the timestamp to the one of dba_audit_trail  
+mutate { convert =&gt; [ "timestamp" , "string" ]}  
+date { match =&gt; ["timestamp", "ISO8601"]}
 
-if \[comment\_text\] =~ /(?i)Authenticated by/ {
+if [comment_text] =~ /(?i)Authenticated by/ {
 
 grok {  
-match =&gt; \[ "comment\_text","^.\*(?i)Authenticated by: (?&lt;authenticated\_by&gt;.\*?)\\;.\*$" \]  
+match =&gt; [ "comment_text","^.*(?i)Authenticated by: (?&lt;authenticated_by&gt;.*?);.*$" ]  
 }
 
-if \[comment\_text\] =~ /(?i)EXTERNAL NAME/ {  
+if [comment_text] =~ /(?i)EXTERNAL NAME/ {  
 grok {  
-match =&gt; \[ "comment\_text","^.\*(?i)EXTERNAL NAME: (?&lt;external\_name&gt;.\*?)\\;.\*$" \]  
+match =&gt; [ "comment_text","^.*(?i)EXTERNAL NAME: (?&lt;external_name&gt;.*?);.*$" ]  
 }  
 }  
 }
 
-\# remove temporary fields  
-mutate { remove\_field =&gt; \["timestamp"\] }  
+# remove temporary fields  
+mutate { remove_field =&gt; ["timestamp"] }  
 }
 
 output {  
 elasticsearch {  
-hosts =&gt; \["elk:9200"\]  
-index =&gt; "audit\_databases\_oracle-%{+YYYY.MM.dd}"  
+hosts =&gt; ["elk:9200"]  
+index =&gt; "audit_databases_oracle-%{+YYYY.MM.dd}"  
 }  
 }  
 ```
@@ -149,51 +149,51 @@ To trap and format this information, let’s create an *audit\_files.conf* conf
 ```
 input {  
 file {  
-path =&gt; "/u01/app/oracle/admin/PBDT/adump/\*.aud"  
+path =&gt; "/u01/app/oracle/admin/PBDT/adump/*.aud"  
 }  
 }
 
 filter {
 
-\# Join lines based on the time  
+# Join lines based on the time  
 multiline {  
-pattern =&gt; "%{DAY} %{MONTH} \*%{MONTHDAY} %{TIME} %{YEAR}.\*"  
+pattern =&gt; "%{DAY} %{MONTH} *%{MONTHDAY} %{TIME} %{YEAR}.*"  
 negate =&gt; true  
 what =&gt; "previous"  
 }
 
-\# Extract the date and the rest from the message  
+# Extract the date and the rest from the message  
 grok {  
-match =&gt; \[ "message","%{DAY:day} %{MONTH:month} \*%{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}(?&lt;audit\_message&gt;.\*$)" \]  
+match =&gt; [ "message","%{DAY:day} %{MONTH:month} *%{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}(?&lt;audit_message&gt;.*$)" ]  
 }
 
 grok {  
-match =&gt; \[ "audit\_message","^.\*ACTION :\\\[\[0-9\]\*\\\] (?&lt;action&gt;.\*?)DATABASE USER:\\\[\[0-9\]\*\\\] (?&lt;database\_user&gt;.\*?)PRIVILEGE :\\\[\[0-9\]\*\\\] (?&lt;privilege&gt;.\*?)CLIENT USER:\\\[\[0-9\]\*\\\] (?&lt;cl ient\_user&gt;.\*?)CLIENT TERMINAL:\\\[\[0-9\]\*\\\] (?&lt;client\_terminal&gt;.\*?)STATUS:\\\[\[0-9\]\*\\\] (?&lt;status&gt;.\*?)DBID:\\\[\[0-9\]\*\\\] (?&lt;dbid&gt;.\*$?)" \]  
+match =&gt; [ "audit_message","^.*ACTION :[[0-9]*] (?&lt;action&gt;.*?)DATABASE USER:[[0-9]*] (?&lt;database_user&gt;.*?)PRIVILEGE :[[0-9]*] (?&lt;privilege&gt;.*?)CLIENT USER:[[0-9]*] (?&lt;cl ient_user&gt;.*?)CLIENT TERMINAL:[[0-9]*] (?&lt;client_terminal&gt;.*?)STATUS:[[0-9]*] (?&lt;status&gt;.*?)DBID:[[0-9]*] (?&lt;dbid&gt;.*$?)" ]  
 }
 
-if "\_grokparsefailure" in \[tags\] { drop {} }
+if "_grokparsefailure" in [tags] { drop {} }
 
 mutate {  
-add\_field =&gt; {  
+add_field =&gt; {  
 "timestamp" =&gt; "%{year} %{month} %{monthday} %{time}"  
 }  
 }
 
-\# replace the timestamp by the one coming from the audit file  
+# replace the timestamp by the one coming from the audit file  
 date {  
 locale =&gt; "en"  
-match =&gt; \[ "timestamp" , "yyyy MMM dd HH:mm:ss" \]  
+match =&gt; [ "timestamp" , "yyyy MMM dd HH:mm:ss" ]  
 }
 
-\# remove temporary fields  
-mutate { remove\_field =&gt; \["audit\_message","day","month","monthday","time","year","timestamp"\] }
+# remove temporary fields  
+mutate { remove_field =&gt; ["audit_message","day","month","monthday","time","year","timestamp"] }
 
 }
 
 output {  
 elasticsearch {  
-hosts =&gt; \["elk:9200"\]  
-index =&gt; "audit\_databases\_oracle-%{+YYYY.MM.dd}"  
+hosts =&gt; ["elk:9200"]  
+index =&gt; "audit_databases_oracle-%{+YYYY.MM.dd}"  
 }  
 }  
 ```

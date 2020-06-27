@@ -96,24 +96,24 @@ So that the appco service:
 Now let's create a JAVA application that will be used to test the Application Continuity:
 
 ```
-import java.sql.\*;  
-import oracle.jdbc.pool.\*;  
-import oracle.jdbc.\*;  
-import oracle.jdbc.replay.\*;
+import java.sql.*;  
+import oracle.jdbc.pool.*;  
+import oracle.jdbc.*;  
+import oracle.jdbc.replay.*;
 
 public class AppCont {  
 public String getInstanceName(Connection conn) throws SQLException {  
-PreparedStatement preStatement = conn.prepareStatement("select instance\_name from v$instance");  
+PreparedStatement preStatement = conn.prepareStatement("select instance_name from v$instance");  
 String r=new String();  
 ResultSet result = preStatement.executeQuery();
 
 while (result.next()){  
-r=result.getString("instance\_name");  
+r=result.getString("instance_name");  
 }  
 return r;  
 }
 
-public static void main(String args\[\]) throws SQLException {  
+public static void main(String args[]) throws SQLException {  
 Connection conn = null;  
 Statement stmt = null;  
 try {  
@@ -121,19 +121,19 @@ try {
 OracleDataSourceImpl ocpds = new OracleDataSourceImpl();  
 // Create the database URL  
 String dbURL =  
-"jdbc:oracle:thin:@(DESCRIPTION\_LIST="+  
-"(LOAD\_BALANCE=off)"+  
+"jdbc:oracle:thin:@(DESCRIPTION_LIST="+  
+"(LOAD_BALANCE=off)"+  
 "(FAILOVER=on)"+  
-"(DESCRIPTION=(CONNECT\_TIMEOUT=90) (RETRY\_COUNT=10)(RETRY\_DELAY=3)"+  
-"(ADDRESS\_LIST="+  
-"(LOAD\_BALANCE=on)"+  
+"(DESCRIPTION=(CONNECT_TIMEOUT=90) (RETRY_COUNT=10)(RETRY_DELAY=3)"+  
+"(ADDRESS_LIST="+  
+"(LOAD_BALANCE=on)"+  
 "(ADDRESS=(PROTOCOL=TCP) (HOST=rac-cluster-scan)(PORT=1521)))"+  
-"(CONNECT\_DATA=(SERVICE\_NAME=appco)))"+  
-"(DESCRIPTION=(CONNECT\_TIMEOUT=90) (RETRY\_COUNT=10)(RETRY\_DELAY=10)"+  
-"(ADDRESS\_LIST="+  
-"(LOAD\_BALANCE=on)"+  
+"(CONNECT_DATA=(SERVICE_NAME=appco)))"+  
+"(DESCRIPTION=(CONNECT_TIMEOUT=90) (RETRY_COUNT=10)(RETRY_DELAY=10)"+  
+"(ADDRESS_LIST="+  
+"(LOAD_BALANCE=on)"+  
 "(ADDRESS=(PROTOCOL=TCP)(HOST=srac-cluster-scan)(PORT=1521)))"+  
-"(CONNECT\_DATA=(SERVICE\_NAME=appco))))";
+"(CONNECT_DATA=(SERVICE_NAME=appco))))";
 
 ocpds.setURL(dbURL);  
 ocpds.setUser("bdt");  
@@ -149,13 +149,13 @@ AppCont ex = new AppCont();
 System.out.println("Instance Name = "+ex.getInstanceName(conn));
 
 System.out.println("Performing transaction");  
-/\* Don't forget to disable autocommit  
-\* And launch the transaction  
-\*/  
+/* Don't forget to disable autocommit  
+* And launch the transaction  
+*/  
 ((oracle.jdbc.replay.ReplayableConnection)conn).beginRequest();  
 conn.setAutoCommit(false);  
 stmt = conn.createStatement();  
-String updsql = "UPDATE BDT\_CONT " +  
+String updsql = "UPDATE BDT_CONT " +  
 "SET val=UPPER(val)";  
 stmt.executeUpdate(updsql);  
 conn.commit();  

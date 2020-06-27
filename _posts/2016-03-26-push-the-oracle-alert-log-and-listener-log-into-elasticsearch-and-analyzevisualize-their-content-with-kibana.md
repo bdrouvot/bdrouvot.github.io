@@ -128,70 +128,70 @@ New fields are being created **so that we can analyze/visualize** them later on 
 ```
 input {  
 file {  
-path =&gt; "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert\_PBDT.log"  
+path =&gt; "/u01/app/oracle/diag/rdbms/pbdt/PBDT/trace/alert_PBDT.log"  
 }  
 }
 
 filter {
 
-\# Join lines based on the time  
+# Join lines based on the time  
 multiline {  
 pattern =&gt; "%{DAY} %{MONTH} %{MONTHDAY} %{TIME} %{YEAR}"  
 negate =&gt; true  
 what =&gt; "previous"  
 }
 
-\# Create new field: oradb\_status: starting,running,shutdown  
-if \[message\] =~ /Starting ORACLE instance/ {  
+# Create new field: oradb_status: starting,running,shutdown  
+if [message] =~ /Starting ORACLE instance/ {  
 mutate {  
-add\_field =&gt; \[ "oradb\_status", "starting" \]  
+add_field =&gt; [ "oradb_status", "starting" ]  
 }  
-} else if \[message\] =~ /Instance shutdown complete/ {  
+} else if [message] =~ /Instance shutdown complete/ {  
 mutate {  
-add\_field =&gt; \[ "oradb\_status", "shutdown" \]  
+add_field =&gt; [ "oradb_status", "shutdown" ]  
 }  
 } else {  
 mutate {  
-add\_field =&gt; \[ "oradb\_status", "running" \]  
+add_field =&gt; [ "oradb_status", "running" ]  
 }  
 }
 
-\# Search for ORA- and create field if match
+# Search for ORA- and create field if match
 
-if \[message\] =~ /ORA-/ {  
+if [message] =~ /ORA-/ {  
 grok {  
-match =&gt; \[ "message","(?&lt;ORA-&gt;ORA-\[0-9\]\*)" \]  
+match =&gt; [ "message","(?&lt;ORA-&gt;ORA-[0-9]*)" ]  
 }  
 }
 
-\# Extract the date and the rest from the message  
+# Extract the date and the rest from the message  
 grok {  
-match =&gt; \[ "message","%{DAY:day} %{MONTH:month} %{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}(?&lt;log\_message&gt;.\*$)" \]  
+match =&gt; [ "message","%{DAY:day} %{MONTH:month} %{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}(?&lt;log_message&gt;.*$)" ]  
 }
 
 mutate {  
-add\_field =&gt; {  
+add_field =&gt; {  
 "timestamp" =&gt; "%{year} %{month} %{monthday} %{time}"  
 }  
 }  
-\# replace the timestamp by the one coming from the alert.log  
+# replace the timestamp by the one coming from the alert.log  
 date {  
 locale =&gt; "en"  
-match =&gt; \[ "timestamp" , "yyyy MMM dd HH:mm:ss" \]  
+match =&gt; [ "timestamp" , "yyyy MMM dd HH:mm:ss" ]  
 }
 
-\# replace the message (remove the date)  
-mutate { replace =&gt; \[ "message", "%{log\_message}" \] }
+# replace the message (remove the date)  
+mutate { replace =&gt; [ "message", "%{log_message}" ] }
 
 mutate {  
-remove\_field =&gt; \[ "time" ,"month","monthday","year","timestamp","day","log\_message"\]  
+remove_field =&gt; [ "time" ,"month","monthday","year","timestamp","day","log_message"]  
 }
 
 }
 
 output {  
 elasticsearch {  
-hosts =&gt; \["elk:9200"\]  
+hosts =&gt; ["elk:9200"]  
 index =&gt; "oracle-%{+YYYY.MM.dd}"  
 }  
 }  
@@ -251,49 +251,49 @@ path =&gt; "/u01/app/oracle/diag/tnslsnr/Dprima/listener/trace/listener.log"
 
 filter {
 
-if \[message\] =~ /(?i)CONNECT\_DATA/ {
+if [message] =~ /(?i)CONNECT_DATA/ {
 
-\# Extract the date and the rest from the message  
+# Extract the date and the rest from the message  
 grok {  
-match =&gt; \[ "message","(?&lt;the\_date&gt;.\*%{TIME})(?&lt;lsnr\_message&gt;.\*$)" \]  
+match =&gt; [ "message","(?&lt;the_date&gt;.*%{TIME})(?&lt;lsnr_message&gt;.*$)" ]  
 }
 
-\# Extract COMMAND (like status,reload,stop) and add a field  
-if \[message\] =~ /(?i)COMMAND=/ {
+# Extract COMMAND (like status,reload,stop) and add a field  
+if [message] =~ /(?i)COMMAND=/ {
 
 grok {  
-match =&gt; \[ "lsnr\_message","^.\*(?i)COMMAND=(?&lt;command&gt;.\*?)\\).\*$" \]  
+match =&gt; [ "lsnr_message","^.*(?i)COMMAND=(?&lt;command&gt;.*?)).*$" ]  
 }
 
 } else {
 
-\# Extract useful Info (USER,PROGRAM,IPCLIENT) and add fields  
+# Extract useful Info (USER,PROGRAM,IPCLIENT) and add fields  
 grok {  
-match =&gt; \[ "lsnr\_message","^.\*PROGRAM=(?&lt;program&gt;.\*?)\\).\*USER=(?&lt;user&gt;.\*?)\\).\*ADDRESS.\*HOST=(?&lt;ip\_client&gt;%{IP}).\*$" \]  
+match =&gt; [ "lsnr_message","^.*PROGRAM=(?&lt;program&gt;.*?)).*USER=(?&lt;user&gt;.*?)).*ADDRESS.*HOST=(?&lt;ip_client&gt;%{IP}).*$" ]  
 }  
 }
 
-\# replace the timestamp by the one coming from the listener.log  
+# replace the timestamp by the one coming from the listener.log  
 date {  
 locale =&gt; "en"  
-match =&gt; \[ "the\_date" , "dd-MMM-yyyy HH:mm:ss" \]  
+match =&gt; [ "the_date" , "dd-MMM-yyyy HH:mm:ss" ]  
 }
 
-\# replace the message (remove the date)  
-mutate { replace =&gt; \[ "message", "%{lsnr\_message}" \] }
+# replace the message (remove the date)  
+mutate { replace =&gt; [ "message", "%{lsnr_message}" ] }
 
-\# remove temporary fields  
-mutate { remove\_field =&gt; \[ "the\_date","lsnr\_message"\] }
+# remove temporary fields  
+mutate { remove_field =&gt; [ "the_date","lsnr_message"] }
 
-\# search for SID or SERVICE\_NAME, collect dest and add dest type  
-if \[message\] =~ /(?i)SID=/ {  
-grok { match =&gt; \[ "message","^.\*(?i)SID=(?&lt;dest&gt;.\*?)\\).\*$" \] }  
-mutate { add\_field =&gt; \[ "dest\_type", "SID" \] }  
+# search for SID or SERVICE_NAME, collect dest and add dest type  
+if [message] =~ /(?i)SID=/ {  
+grok { match =&gt; [ "message","^.*(?i)SID=(?&lt;dest&gt;.*?)).*$" ] }  
+mutate { add_field =&gt; [ "dest_type", "SID" ] }  
 }
 
-if \[message\] =~ /(?i)SERVICE\_NAME=/ {  
-grok { match =&gt; \[ "message","^.\*(?i)SERVICE\_NAME=(?&lt;dest&gt;.\*?)\\).\*$" \] }  
-mutate { add\_field =&gt; \[ "dest\_type", "SERVICE" \] }  
+if [message] =~ /(?i)SERVICE_NAME=/ {  
+grok { match =&gt; [ "message","^.*(?i)SERVICE_NAME=(?&lt;dest&gt;.*?)).*$" ] }  
+mutate { add_field =&gt; [ "dest_type", "SERVICE" ] }  
 }
 
 } else {  
@@ -303,7 +303,7 @@ drop {}
 
 output {  
 elasticsearch {  
-hosts =&gt; \["elk:9200"\]  
+hosts =&gt; ["elk:9200"]  
 index =&gt; "oracle-%{+YYYY.MM.dd}"  
 }  
 }  

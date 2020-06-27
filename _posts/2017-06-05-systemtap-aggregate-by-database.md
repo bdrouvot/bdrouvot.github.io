@@ -64,12 +64,12 @@ For example, this function would extract BDT from "ora\_dbw0\_BDT" or any "ora\
 The code is the following:
 
 ```
-function get\_oracle\_name\_b:string (mystr:string) %{  
-char \*ptr;  
-int ch = '\_';  
-char \*strargs = STAP\_ARG\_mystr;  
+function get_oracle_name_b:string (mystr:string) %{  
+char *ptr;  
+int ch = '_';  
+char *strargs = STAP_ARG_mystr;  
 ptr = strchr( strchr( strargs , ch) + 1 , ch);  
-snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",ptr + 1);  
+snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",ptr + 1);  
 %}  
 ```
 
@@ -80,15 +80,15 @@ For example, this function would extract BDT from "oracleBDT (LOCAL=NO)", "orac
 The code is the following:
 
 ```
-function get\_oracle\_name\_f:string (mystr:string) %{  
-char \*ptr;  
+function get_oracle_name_f:string (mystr:string) %{  
+char *ptr;  
 int ch = ' ';  
-char substr\_res\[30\];  
-char \*strargs = STAP\_ARG\_mystr;  
+char substr_res[30];  
+char *strargs = STAP_ARG_mystr;  
 ptr = strchr( strargs, ch );  
-strncpy (substr\_res,strargs+6, ptr - strargs - 6);  
-substr\_res\[ptr - strargs - 6\]='\\0';  
-snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",substr\_res);  
+strncpy (substr_res,strargs+6, ptr - strargs - 6);  
+substr_res[ptr - strargs - 6]='\0';  
+snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",substr_res);  
 %}  
 ```
 
@@ -98,24 +98,24 @@ Having in mind that the SystemTap aggregation operator is "&lt;&lt;&lt;" ([as ex
 probe tcp.recvmsg  
 {
 
-if ( isinstr(cmdline\_str() , "ora\_" ) == 1 && uid() == orauid) {  
-tcprecv\[get\_oracle\_name\_b(cmdline\_str())\] &lt;&lt;&lt; size  
-} else if ( isinstr(cmdline\_str() , "LOCAL=" ) == 1 && uid() == orauid) {  
-tcprecv\[get\_oracle\_name\_f(cmdline\_str())\] &lt;&lt;&lt; size  
+if ( isinstr(cmdline_str() , "ora_" ) == 1 && uid() == orauid) {  
+tcprecv[get_oracle_name_b(cmdline_str())] &lt;&lt;&lt; size  
+} else if ( isinstr(cmdline_str() , "LOCAL=" ) == 1 && uid() == orauid) {  
+tcprecv[get_oracle_name_f(cmdline_str())] &lt;&lt;&lt; size  
 } else {  
-tcprecv\["NOT\_A\_DB"\] &lt;&lt;&lt; size  
+tcprecv["NOT_A_DB"] &lt;&lt;&lt; size  
 }  
 }
 
 probe tcp.sendmsg  
 {
 
-if ( isinstr(cmdline\_str() , "ora\_" ) == 1 && uid() == orauid) {  
-tcpsend\[get\_oracle\_name\_b(cmdline\_str())\] &lt;&lt;&lt; size  
-} else if ( isinstr(cmdline\_str() , "LOCAL=" ) == 1 && uid() == orauid) {  
-tcpsend\[get\_oracle\_name\_f(cmdline\_str())\] &lt;&lt;&lt; size  
+if ( isinstr(cmdline_str() , "ora_" ) == 1 && uid() == orauid) {  
+tcpsend[get_oracle_name_b(cmdline_str())] &lt;&lt;&lt; size  
+} else if ( isinstr(cmdline_str() , "LOCAL=" ) == 1 && uid() == orauid) {  
+tcpsend[get_oracle_name_f(cmdline_str())] &lt;&lt;&lt; size  
 } else {  
-tcpsend\["NOT\_A\_DB"\] &lt;&lt;&lt; size  
+tcpsend["NOT_A_DB"] &lt;&lt;&lt; size  
 }  
 }  
 ```
