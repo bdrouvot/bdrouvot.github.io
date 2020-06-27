@@ -78,7 +78,7 @@ Simply start a docker container that way:
 
 The host that is running the docker engine is "docker".  You can connect to the database as you would do normally, for example, using Oracle SQL Developper:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-08-18-at-18-46-30.png" class="aligncenter size-full wp-image-3120" width="640" height="333" alt="Screen Shot 2016-08-18 at 18.46.30" />](https://bdrouvot.wordpress.com/2016/08/18/running-12-1-0-2-oracle-database-on-docker/screen-shot-2016-08-18-at-18-46-30/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-08-18-at-18-46-30.png" class="aligncenter size-full wp-image-3120" width="640" height="333" alt="Screen Shot 2016-08-18 at 18.46.30" />
 
 Note that the Hostname is "docker", that is to say the one that is hosting the docker engine.
 

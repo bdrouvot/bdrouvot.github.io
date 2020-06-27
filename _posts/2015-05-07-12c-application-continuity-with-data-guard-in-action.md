@@ -43,7 +43,7 @@ Introduction
 
 With RAC, Application Continuity can be used to launch the replay on another Instance. It can also be used with Data Guard under some circumstances and conditions (Extract from [here](http://docs.oracle.com/database/121/SBYDB/concepts.htm#SBYDB5461)):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2015-05-07-at-08-52-52.png" class="aligncenter size-full wp-image-2809" width="640" height="83" alt="Screen Shot 2015-05-07 at 08.52.52" />](https://bdrouvot.files.wordpress.com/2015/05/screen-shot-2015-05-07-at-08-52-52.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2015-05-07-at-08-52-52.png" class="aligncenter size-full wp-image-2809" width="640" height="83" alt="Screen Shot 2015-05-07 at 08.52.52" />
 
 Well, I just want to see this feature in action during a Data Guard switchover. Let's give it a try.
 

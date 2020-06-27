@@ -64,17 +64,17 @@ Once the csv file is ready (means you collected a representative workload), let'
 
 We can visualize it that way with Tableau (I keep the “columns”, “rows” and “marks” shelf into the print screen so that you can reproduce).
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-10-at-18-45-03.png" class="aligncenter size-full wp-image-2104" width="640" height="362" alt="Screen Shot 2014-08-10 at 18.45.03" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-10-at-18-45-03.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-10-at-18-45-03.png" class="aligncenter size-full wp-image-2104" width="640" height="362" alt="Screen Shot 2014-08-10 at 18.45.03" />
 
 <span style="text-decoration:underline;">For the *Reads/s* measure*:*</span>
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-07-01.png" class="aligncenter size-full wp-image-2116" width="640" height="338" alt="Screen Shot 2014-08-11 at 11.07.01" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-07-01.png)We can see the read IOPS and the throughput repartition by failgroup and ASM instances. We can see that the read IOPS and the throughput are equally distributed over the Failgroups (It is the expected behaviour without the ASM preferred read in place).
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-07-01.png" class="aligncenter size-full wp-image-2116" width="640" height="338" alt="Screen Shot 2014-08-11 at 11.07.01" />
 
 Now, **what If** we implement the ASM preferred feature? **What would** be the impact on the read IOPS and the throughput repartition?
 
 To simulate and visualize the impact, let's create this "New FG for Read operations" calculated field:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-10-01.png" class="aligncenter size-full wp-image-2118" width="640" height="217" alt="Screen Shot 2014-08-11 at 11.10.01" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-10-01.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-10-01.png" class="aligncenter size-full wp-image-2118" width="640" height="217" alt="Screen Shot 2014-08-11 at 11.10.01" />
 
 **Basically it simulates the ASM preferred Read in place by assigning the failgroup per ASM instances.**
 
@@ -82,13 +82,13 @@ Now, let's simulate and visualize the impact of the ASM preferred read feature (
 
 <span style="text-decoration:underline;">For the *Kby Read/s* measure*:*</span>
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-12-56.png" class="aligncenter size-full wp-image-2119" width="640" height="340" alt="Screen Shot 2014-08-11 at 11.12.56" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-12-56.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-12-56.png" class="aligncenter size-full wp-image-2119" width="640" height="340" alt="Screen Shot 2014-08-11 at 11.12.56" />
 
 Note that the throughput repartition would not be the same and that the peak are higher (&gt; 200 Mo/s compare to about 130 Mo/s without the ASM preferred read).
 
 <span style="text-decoration:underline;">For the *Reads/s* measure*:*</span>
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-14-31.png" class="aligncenter size-full wp-image-2120" width="640" height="340" alt="Screen Shot 2014-08-11 at 11.14.31" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-11-at-11-14-31.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-11-at-11-14-31.png" class="aligncenter size-full wp-image-2120" width="640" height="340" alt="Screen Shot 2014-08-11 at 11.14.31" />
 
 Note that the read IOPS repartition would not be the same and that the peak on the WIN failgroup is higher (about 8000 Reads/s compare to about 5000 Reads/s without the ASM preferred read).
 

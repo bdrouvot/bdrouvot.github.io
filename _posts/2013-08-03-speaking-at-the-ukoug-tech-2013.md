@@ -40,7 +40,7 @@ Last week, I had the honor to get one of my abstract accepted (The R one) and th
 
 So, I am very **surprised, honored and happy** to be speaking at UKOUG Tech 2013.
 
-[<img src="{{ site.baseurl }}/assets/images/tech13_resourcepk_isa_v1.gif" class="aligncenter size-full wp-image-1297" width="412" height="135" alt="TECH13_ResourcePk_ISA_V1" />](http://bdrouvot.files.wordpress.com/2013/08/tech13_resourcepk_isa_v1.gif)
+<img src="{{ site.baseurl }}/assets/images/tech13_resourcepk_isa_v1.gif" class="aligncenter size-full wp-image-1297" width="412" height="135" alt="TECH13_ResourcePk_ISA_V1" />
 
 -   **Surprised **as I was prepared to stay home.
 -   **Honored **as the UKOUG is a great event (I have heard only good comments about this event).

@@ -43,17 +43,17 @@ I just want to share the issue I got and the way you could workaround it. The pu
 
 So, after a 12.1.0.2 clusterware installation (on a 2 nodes RAC cluster), I decided to install the 11.2.0.4 database software. I launched the runInstaller, followed the install process until the Step 4:
 
-[<img src="{{ site.baseurl }}/assets/images/install11g_db.png" class="aligncenter size-full wp-image-2324" width="640" height="496" alt="install11g_db" />](http://bdrouvot.files.wordpress.com/2014/09/install11g_db.png)
+<img src="{{ site.baseurl }}/assets/images/install11g_db.png" class="aligncenter size-full wp-image-2324" width="640" height="496" alt="install11g_db" />
 
 As you can see the nodes that are part of the cluster **have not been proposed and clicking next would produce "CRS is not installed on any of the nodes". **
 
 <span style="text-decoration:underline;">The first question you may ask is</span>: Is the 11gR2 database compatible with CRS 12.1? Yes it is, as you can see [here](http://docs.oracle.com/database/121/CWADD/intro.htm#CWADD90955):
 
-[<img src="{{ site.baseurl }}/assets/images/crs_supported_version1.png" class="aligncenter size-full wp-image-2328" width="640" height="414" alt="crs_supported_version" />](http://bdrouvot.files.wordpress.com/2014/09/crs_supported_version1.png)
+<img src="{{ site.baseurl }}/assets/images/crs_supported_version1.png" class="aligncenter size-full wp-image-2328" width="640" height="414" alt="crs_supported_version" />
 
 As I am curious, I canceled the 11gR2 database software installation and gave a try with the 12.1.0.2 database software. The Step 4 produced:
 
-[<img src="{{ site.baseurl }}/assets/images/install12c_db.png" class="aligncenter size-full wp-image-2325" width="640" height="494" alt="install12c_db" />](http://bdrouvot.files.wordpress.com/2014/09/install12c_db.png)
+<img src="{{ site.baseurl }}/assets/images/install12c_db.png" class="aligncenter size-full wp-image-2325" width="640" height="494" alt="install12c_db" />
 
 As you can see the nodes that are part of the cluster **have been proposed**.
 
@@ -80,7 +80,7 @@ So that:
 
 Then I relaunched the 11.2.0.4 database software installation, and the Step 4 produced:
 
-[<img src="{{ site.baseurl }}/assets/images/install11g_db_fixed.png" class="aligncenter size-full wp-image-2326" width="640" height="496" alt="install11g_db_fixed" />](http://bdrouvot.files.wordpress.com/2014/09/install11g_db_fixed.png)
+<img src="{{ site.baseurl }}/assets/images/install11g_db_fixed.png" class="aligncenter size-full wp-image-2326" width="640" height="496" alt="install11g_db_fixed" />
 
 As you can see the **nodes have been proposed so that** I have been able to complete the installation successfully.
 

@@ -72,39 +72,39 @@ Then I put those data into 2 csv files (awr\_snap\_for\_june.csv and awr\_event
 
 1\) Now, launch Tableau and select the csv files and add an inner join between those files:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-13-45-19.png" class="aligncenter size-full wp-image-1985" width="640" height="226" alt="Screen Shot 2014-06-28 at 13.45.19" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-13-45-19.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-13-45-19.png" class="aligncenter size-full wp-image-1985" width="640" height="226" alt="Screen Shot 2014-06-28 at 13.45.19" />
 
 2\) Go to the worksheet and put the "begin interval time" dimension into the "column" and change it to an "exact date" (Instead of Year):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-13-48-13.png" class="aligncenter size-full wp-image-1986" width="640" height="598" alt="Screen Shot 2014-06-28 at 13.48.13" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-13-48-13.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-13-48-13.png" class="aligncenter size-full wp-image-1986" width="640" height="598" alt="Screen Shot 2014-06-28 at 13.48.13" />
 
 3\) Put the "Wait count" measure into the "Rows" and create a table calculation on it:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-13-55-33.png" class="aligncenter size-full wp-image-1988" width="640" height="401" alt="Screen Shot 2014-06-28 at 13.55.33" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-13-55-33.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-13-55-33.png" class="aligncenter size-full wp-image-1988" width="640" height="401" alt="Screen Shot 2014-06-28 at 13.55.33" />
 
 Choose "**difference**" as the "WAIT\_COUNT" field is cumulative and we want to see the **delta** between the AWR's snapshots.
 
 4\) My graph now looks like:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-02-38.png" class="aligncenter size-full wp-image-1990" width="640" height="402" alt="Screen Shot 2014-06-28 at 14.02.38" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-02-38.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-02-38.png" class="aligncenter size-full wp-image-1990" width="640" height="402" alt="Screen Shot 2014-06-28 at 14.02.38" />
 
 The Jun 14 and Jun 20 the database has been re-started and then the difference is &lt; 0.
 
 5\) Let's modify the formula to take care of database restart into the delta computation:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-04-31.png" class="aligncenter size-full wp-image-1991" width="432" height="456" alt="Screen Shot 2014-06-28 at 14.04.31" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-04-31.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-04-31.png" class="aligncenter size-full wp-image-1991" width="432" height="456" alt="Screen Shot 2014-06-28 at 14.04.31" />
 
 Customize
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-05-19.png" class="aligncenter size-full wp-image-1992" width="583" height="284" alt="Screen Shot 2014-06-28 at 14.05.19" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-05-19.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-05-19.png" class="aligncenter size-full wp-image-1992" width="583" height="284" alt="Screen Shot 2014-06-28 at 14.05.19" />
 
 Name: "Delta Wait Count" and change ZN(SUM(\[Wait Count\])) - LOOKUP(ZN(SUM(\[Wait Count\])), -1) to max(ZN(SUM(\[Wait Count\])) - LOOKUP(ZN(SUM(\[Wait Count\])), -1),0):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-07-17.png" class="aligncenter size-full wp-image-1993" width="640" height="252" alt="Screen Shot 2014-06-28 at 14.07.17" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-07-17.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-07-17.png" class="aligncenter size-full wp-image-1993" width="640" height="252" alt="Screen Shot 2014-06-28 at 14.07.17" />
 
 So that now the graph looks like:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-09-11.png" class="aligncenter size-full wp-image-1994" width="640" height="401" alt="Screen Shot 2014-06-28 at 14.09.11" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-09-11.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-09-11.png" class="aligncenter size-full wp-image-1994" width="640" height="401" alt="Screen Shot 2014-06-28 at 14.09.11" />
 
 6\) Now we have to "split" those wait count into 2 categories based on the wait\_time\_milli measure coming from dba\_hist\_event\_histogram. Let's say that:
 
@@ -113,21 +113,21 @@ So that now the graph looks like:
 
 Let's implement this in tableau with a calculated field:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-18-36.png" class="aligncenter size-full wp-image-1997" width="421" height="494" alt="Screen Shot 2014-06-28 at 14.18.36" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-18-36.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-18-36.png" class="aligncenter size-full wp-image-1997" width="421" height="494" alt="Screen Shot 2014-06-28 at 14.18.36" />
 
 Name: "IO Source" and use this formula:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-21-23.png" class="aligncenter size-full wp-image-1998" width="640" height="250" alt="Screen Shot 2014-06-28 at 14.21.23" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-21-23.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-21-23.png" class="aligncenter size-full wp-image-1998" width="640" height="250" alt="Screen Shot 2014-06-28 at 14.21.23" />
 
 Feel free to modify this formula according to your environment.
 
 Now take the "IO Source" Dimension and put it into the Color marks:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-23-37.png" class="aligncenter size-full wp-image-1999" width="161" height="277" alt="Screen Shot 2014-06-28 at 14.23.37" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-23-37.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-23-37.png" class="aligncenter size-full wp-image-1999" width="161" height="277" alt="Screen Shot 2014-06-28 at 14.23.37" />
 
 So that we can now visualize the IO source repartition:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-25-08.png" class="aligncenter size-full wp-image-2000" width="640" height="342" alt="Screen Shot 2014-06-28 at 14.25.08" />](https://bdrouvot.files.wordpress.com/2014/06/screen-shot-2014-06-28-at-14-25-08.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-06-28-at-14-25-08.png" class="aligncenter size-full wp-image-2000" width="640" height="342" alt="Screen Shot 2014-06-28 at 14.25.08" />
 
  
 

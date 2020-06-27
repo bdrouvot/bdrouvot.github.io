@@ -159,7 +159,7 @@ Remarks
 -   The idea of this script is all to credit to [Martin Bach](https://martincarstenbach.wordpress.com/).
 -   This script works with any input (could be a text file):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2015-09-14-at-15-34-36.png?w=300" class="size-medium wp-image-2897 aligncenter" width="300" height="227" alt="Screen Shot 2015-09-14 at 15.34.36" />](https://bdrouvot.files.wordpress.com/2015/07/screen-shot-2015-09-14-at-15-34-36.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2015-09-14-at-15-34-36.png?w=300" class="size-medium wp-image-2897 aligncenter" width="300" height="227" alt="Screen Shot 2015-09-14 at 15.34.36" />
 
 Conclusion
 ----------

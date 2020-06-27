@@ -98,7 +98,7 @@ Let's check which file contains the table:
 
 Let's use the utility on this file:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-23-26.png" class="aligncenter size-full wp-image-3276" width="1100" height="134" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-23-26/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-23-26.png" class="aligncenter size-full wp-image-3276" width="1100" height="134" />
 
 So one block is detected, with more than 75% of free space (so the green color), more than 50% of the rows are current (100% in our case as tx\_max = 0 for all the rows) and unused are less than 10% (0 is displayed) (0% in our case as no rows with lp\_flags = 0).
 
@@ -119,7 +119,7 @@ Let's delete, 3 rows:
 
 and launch the tool again:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-24-23.png" class="aligncenter size-full wp-image-3277" width="1100" height="132" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-24-23/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-24-23.png" class="aligncenter size-full wp-image-3277" width="1100" height="132" />
 
 As you can see we still have more than 75% of free space in the block but the way to display the color has been changed (because now **less** than 50% of the rows are current aka tx\_max = 0) and unused is still less than 10% (0 is displayed).
 
@@ -140,7 +140,7 @@ Let's vacuum the table:
 
 and launch the utility:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-25-38.png" class="aligncenter size-full wp-image-3278" width="1100" height="124" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-25-38/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-25-38.png" class="aligncenter size-full wp-image-3278" width="1100" height="124" />
 
 As you can see we still have more than 75% of free space, less than 50% of the rows are current (only one in our case) and now there is between 70 and 80% of unused rows in the block (so 7 is displayed).
 
@@ -148,19 +148,19 @@ The legend and summary are **dynamic** and depend of the contents of the scanned
 
 For example, on a newly created table (made of 355 blocks) you could end up with something like:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-29-03.png" class="aligncenter size-full wp-image-3280" width="1100" height="125" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-29-03/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-29-03.png" class="aligncenter size-full wp-image-3280" width="1100" height="125" />
 
 Then, you delete half of the rows:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-30-27.png" class="aligncenter size-full wp-image-3281" width="1100" height="144" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-30-27/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-30-27.png" class="aligncenter size-full wp-image-3281" width="1100" height="144" />
 
 Then, once the table has been vacuum:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-31-34.png" class="aligncenter size-full wp-image-3282" width="1100" height="141" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-31-34/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-31-34.png" class="aligncenter size-full wp-image-3282" width="1100" height="141" />
 
 And once new rows have been inserted:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-32-40.png" class="aligncenter size-full wp-image-3283" width="1100" height="154" />](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/screen-shot-2017-12-10-at-16-32-40/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-10-at-16-32-40.png" class="aligncenter size-full wp-image-3283" width="1100" height="154" />
 
 Remarks
 -------

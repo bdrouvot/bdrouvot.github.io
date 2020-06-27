@@ -341,21 +341,21 @@ Analyze and Visualize the data with Kibana
 
 -   Connect to the elk host, (http://elk:5601) and create an index pattern (Pic 1):
 
-[<img src="{{ site.baseurl }}/assets/images/elk-index-pattern.png" class="aligncenter size-full wp-image-3009" width="640" height="335" alt="elk-index-pattern" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/elk-index-pattern/)
+<img src="{{ site.baseurl }}/assets/images/elk-index-pattern.png" class="aligncenter size-full wp-image-3009" width="640" height="335" alt="elk-index-pattern" />
 
 -   Check that all our custom fields have been indexed (this is the default behaviour) (Pic 2):
 
-[<img src="{{ site.baseurl }}/assets/images/all_indices3.png" class="aligncenter size-full wp-image-3037" width="640" height="351" alt="all_indices" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/all_indices-3/)
+<img src="{{ site.baseurl }}/assets/images/all_indices3.png" class="aligncenter size-full wp-image-3037" width="640" height="351" alt="all_indices" />
 
 so that we can now visualize them.
 
 -   Example 1: thanks to the *listener.log* data, let's graph the connection repartition to our databases by *program* and by *dest\_type (Pic 3)*:
 
-[<img src="{{ site.baseurl }}/assets/images/kibana_example.png" class="aligncenter size-full wp-image-3021" width="640" height="338" alt="kibana_example" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/kibana_example/)
+<img src="{{ site.baseurl }}/assets/images/kibana_example.png" class="aligncenter size-full wp-image-3021" width="640" height="338" alt="kibana_example" />
 
 -   Example 2: thanks to the *listener.log* data, visualize when a connection "storm" occurred and where it came from (*ip\_client* field):
 
-[<img src="{{ site.baseurl }}/assets/images/storm1.png" class="aligncenter size-full wp-image-3048" width="640" height="339" alt="storm" />](https://bdrouvot.wordpress.com/2016/03/26/push-the-oracle-alert-log-and-listener-log-into-elasticsearch-and-analyzevisualize-their-content-with-kibana/storm-2/)
+<img src="{{ site.baseurl }}/assets/images/storm1.png" class="aligncenter size-full wp-image-3048" width="640" height="339" alt="storm" />
 
 Remarks
 -------

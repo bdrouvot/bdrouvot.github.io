@@ -116,7 +116,7 @@ index =&gt; "audit\_databases\_oracle-%{+YYYY.MM.dd}"
 
 so that an entry into *dba\_audit\_trail* like:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-07-01-at-06-58-40.png" class="aligncenter size-full wp-image-3097" width="640" height="280" alt="Screen Shot 2016-07-01 at 06.58.40" />](https://bdrouvot.wordpress.com/2016/07/01/push-oracle-audit-data-into-elasticsearch-and-analyzevisualize-it-with-kibana/screen-shot-2016-07-01-at-06-58-40/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-07-01-at-06-58-40.png" class="aligncenter size-full wp-image-3097" width="640" height="280" alt="Screen Shot 2016-07-01 at 06.58.40" />
 
 will be formatted and send to elasticsearch that way:
 
@@ -239,13 +239,13 @@ Let's see 2 examples of audit data visualisation:
 
 -   Example 1: thanks to the *dba\_audit\_trail* data, let’s graph the connection repartition to our databases by *authentification type, username* and *returncode:*
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-07-01-at-07-42-20.png" class="aligncenter size-full wp-image-3098" width="640" height="292" alt="Screen Shot 2016-07-01 at 07.42.20" />](https://bdrouvot.wordpress.com/2016/07/01/push-oracle-audit-data-into-elasticsearch-and-analyzevisualize-it-with-kibana/screen-shot-2016-07-01-at-07-42-20/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-07-01-at-07-42-20.png" class="aligncenter size-full wp-image-3098" width="640" height="292" alt="Screen Shot 2016-07-01 at 07.42.20" />
 
 As we can see most of the connections are authenticated by Directory Password and are successful.
 
 -   Example 2: thanks to the *\*.aud files *data, let’s graph the sysdba connection over time and their status:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-07-01-at-08-06-11.png" class="aligncenter size-full wp-image-3100" width="640" height="287" alt="Screen Shot 2016-07-01 at 08.06.11" />](https://bdrouvot.wordpress.com/2016/07/01/push-oracle-audit-data-into-elasticsearch-and-analyzevisualize-it-with-kibana/screen-shot-2016-07-01-at-08-06-11/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-07-01-at-08-06-11.png" class="aligncenter size-full wp-image-3100" width="640" height="287" alt="Screen Shot 2016-07-01 at 08.06.11" />
 
 As we can see, some of the sysdba connections are not successful between 07:57 am and 7:58 am. Furthermore the number of unsuccessful connections is greater than the number of successful ones.
 

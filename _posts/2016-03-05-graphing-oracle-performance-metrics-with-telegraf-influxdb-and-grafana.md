@@ -76,11 +76,11 @@ Setup
 
 -   Create a telegraf database into InfluxDB (using the web interface):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-09-06-10.png" class="aligncenter size-full wp-image-2964" width="640" height="136" alt="Screen Shot 2016-03-05 at 09.06.10" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-09-06-10/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-09-06-10.png" class="aligncenter size-full wp-image-2964" width="640" height="136" alt="Screen Shot 2016-03-05 at 09.06.10" />
 
 -   Create a root user into InfluxDB (using the web interface):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-09-08-38.png" class="aligncenter size-full wp-image-2965" width="640" height="113" alt="Screen Shot 2016-03-05 at 09.08.38" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-09-08-38/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-09-08-38.png" class="aligncenter size-full wp-image-2965" width="640" height="113" alt="Screen Shot 2016-03-05 at 09.08.38" />
 
 -   Write a script to collect the oracle metrics. I am using python but this is not mandatory at all. Only the output of the script does matter, it has to be InfluxDB [line-protocol](https://docs.influxdata.com/influxdb/v0.9/write_protocols/line/). The script query the *v$sysmetric* and *v$eventmetric* views to get the wait class and the wait event metrics during the last minute. I am not reinventing the wheel, I am using [Kyle Hailey](http://datavirtualizer.com/wait-event-and-wait-class-metrics-vs-vsystem_event/)'s queries. The python code is:
 
@@ -232,31 +232,31 @@ Graph the metrics
 
 -   First check that the metrics are stored the way we want into InfluxDB:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-09-49-09.png" class="aligncenter size-full wp-image-2971" width="640" height="454" alt="Screen Shot 2016-03-05 at 09.49.09" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-09-49-09/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-09-49-09.png" class="aligncenter size-full wp-image-2971" width="640" height="454" alt="Screen Shot 2016-03-05 at 09.49.09" />
 
  
 
 -   Configure InfluxDB as datasource in grafana:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-10-03-55.png" class="aligncenter size-full wp-image-2973" width="640" height="430" alt="Screen Shot 2016-03-05 at 10.03.55" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-10-03-55/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-10-03-55.png" class="aligncenter size-full wp-image-2973" width="640" height="430" alt="Screen Shot 2016-03-05 at 10.03.55" />
 
 -   In grafana, create a dashboard and create some variables (hosts, db and wait\_class):
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-10-59-00.png" class="aligncenter size-full wp-image-2978" width="640" height="453" alt="Screen Shot 2016-03-05 at 10.59.00" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-10-59-00/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-10-59-00.png" class="aligncenter size-full wp-image-2978" width="640" height="453" alt="Screen Shot 2016-03-05 at 10.59.00" />
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-10-59-57.png" class="aligncenter size-full wp-image-2979" width="640" height="184" alt="Screen Shot 2016-03-05 at 10.59.57" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-10-59-57/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-10-59-57.png" class="aligncenter size-full wp-image-2979" width="640" height="184" alt="Screen Shot 2016-03-05 at 10.59.57" />
 
 -   Now let's create a graph:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-11-04-09.png" class="aligncenter size-full wp-image-2982" width="425" height="307" alt="Screen Shot 2016-03-05 at 11.04.09" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-11-04-09/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-11-04-09.png" class="aligncenter size-full wp-image-2982" width="425" height="307" alt="Screen Shot 2016-03-05 at 11.04.09" />
 
 -   Get the metrics:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-11-06-18.png" class="aligncenter size-full wp-image-2983" width="640" height="119" alt="Screen Shot 2016-03-05 at 11.06.18" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-11-06-18/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-11-06-18.png" class="aligncenter size-full wp-image-2983" width="640" height="119" alt="Screen Shot 2016-03-05 at 11.06.18" />
 
 -   So that the graph looks like:
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-11-20-18.png" class="aligncenter size-full wp-image-2984" width="640" height="316" alt="Screen Shot 2016-03-05 at 11.20.18" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-03-05-at-11-20-18/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-03-05-at-11-20-18.png" class="aligncenter size-full wp-image-2984" width="640" height="316" alt="Screen Shot 2016-03-05 at 11.20.18" />
 
 Remarks
 -------
@@ -276,14 +276,14 @@ Thanks to:
 
 As another example, with more informations collected:
 
-[<img src="{{ site.baseurl }}/assets/images/dash1.png" class="aligncenter size-full wp-image-3057" width="640" height="265" alt="dash1" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/dash1/)
+<img src="{{ site.baseurl }}/assets/images/dash1.png" class="aligncenter size-full wp-image-3057" width="640" height="265" alt="dash1" />
 
-[<img src="{{ site.baseurl }}/assets/images/dash2.png" class="aligncenter size-full wp-image-3058" width="640" height="296" alt="dash2" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/dash2/)
+<img src="{{ site.baseurl }}/assets/images/dash2.png" class="aligncenter size-full wp-image-3058" width="640" height="296" alt="dash2" />
 
-[<img src="{{ site.baseurl }}/assets/images/dash3.png" class="aligncenter size-full wp-image-3059" width="640" height="264" alt="dash3" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/dash3/)
+<img src="{{ site.baseurl }}/assets/images/dash3.png" class="aligncenter size-full wp-image-3059" width="640" height="264" alt="dash3" />
 
-[<img src="{{ site.baseurl }}/assets/images/dash4.png" class="aligncenter size-full wp-image-3060" width="640" height="271" alt="dash4" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/dash4/)
+<img src="{{ site.baseurl }}/assets/images/dash4.png" class="aligncenter size-full wp-image-3060" width="640" height="271" alt="dash4" />
 
-[<img src="{{ site.baseurl }}/assets/images/dash5.png" class="aligncenter size-full wp-image-3061" width="640" height="138" alt="dash5" />](https://bdrouvot.wordpress.com/2016/03/05/graphing-oracle-performance-metrics-with-telegraf-influxdb-and-grafana/dash5/)
+<img src="{{ site.baseurl }}/assets/images/dash5.png" class="aligncenter size-full wp-image-3061" width="640" height="138" alt="dash5" />
 
  

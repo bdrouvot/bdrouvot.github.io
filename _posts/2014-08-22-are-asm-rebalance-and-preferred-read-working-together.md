@@ -88,7 +88,7 @@ Now, let's collect the [ASM metrics that way and visualize the result with Table
 
 <span style="text-decoration:underline;">**Result:**</span>
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-23-at-18-08-39.png" class="aligncenter size-full wp-image-2211" width="640" height="309" alt="Screen Shot 2014-08-23 at 18.08.39" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-23-at-18-08-39.png)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-23-at-18-08-39.png" class="aligncenter size-full wp-image-2211" width="640" height="309" alt="Screen Shot 2014-08-23 at 18.08.39" />
 
 <span style="text-decoration:underline;">As you can see:</span>
 

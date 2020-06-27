@@ -29,7 +29,7 @@ permalink: "/2013/05/29/retrieve-and-visualize-asm-disk-group-usage-per-database
 
 If you are using Oracle Enterprise Manager and ASM, then you may already be familiar with the following page that displays the Disk Group Usage per database for a particular Disk Group:
 
-[<img src="{{ site.baseurl }}/assets/images/oem_archive_dg_usage.png" class="aligncenter size-full wp-image-1022" width="620" height="160" alt="oem_archive_dg_usage" />](http://bdrouvot.files.wordpress.com/2013/05/oem_archive_dg_usage.png)  
+<img src="{{ site.baseurl }}/assets/images/oem_archive_dg_usage.png" class="aligncenter size-full wp-image-1022" width="620" height="160" alt="oem_archive_dg_usage" />
 And it is most likely that you don't need to read this little post, as it provides a R script to achieve more or less the same result ;-).
 
 But if you are not using Oracle Enterprise Manager, then you may find this post useful.
@@ -59,7 +59,7 @@ The graph is available from both outputs (X11 and the pdf file). In case the X11
 
 <span style="text-decoration:underline;">The output is the following:</span>
 
-[<img src="{{ site.baseurl }}/assets/images/archive_dg_usage.png" class="aligncenter size-full wp-image-1024" width="620" height="475" alt="archive_dg_usage" />](http://bdrouvot.files.wordpress.com/2013/05/archive_dg_usage.png)
+<img src="{{ site.baseurl }}/assets/images/archive_dg_usage.png" class="aligncenter size-full wp-image-1024" width="620" height="475" alt="archive_dg_usage" />
 
 <span style="text-decoration:underline;">As you can see you are prompted for:</span>
 

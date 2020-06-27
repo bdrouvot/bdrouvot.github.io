@@ -59,7 +59,7 @@ Fine, let's launch my utility that way:
 
 With the following output:
 
-[<img src="{{ site.baseurl }}/assets/images/asmiostatv2_most_reads.png" class="aligncenter size-full wp-image-1189" width="620" height="269" alt="asmiostatv2_most_reads" />](http://bdrouvot.files.wordpress.com/2013/07/asmiostatv2_most_reads.png)
+<img src="{{ site.baseurl }}/assets/images/asmiostatv2_most_reads.png" class="aligncenter size-full wp-image-1189" width="620" height="269" alt="asmiostatv2_most_reads" />
 
 As you can see the BDTO\_2 database instance is generating the most part of the read IO request using +ASM1.
 
@@ -73,7 +73,7 @@ I launch Kevin Closson's [SLOB2 Kit](http://kevinclosson.wordpress.com/2013/05/0
 
 With the following output:
 
-[<img src="{{ site.baseurl }}/assets/images/asmiostatv2_unpreff_reads.png" class="aligncenter size-full wp-image-1190" width="620" height="323" alt="asmiostatv2_unpreff_reads" />](http://bdrouvot.files.wordpress.com/2013/07/asmiostatv2_unpreff_reads.png)
+<img src="{{ site.baseurl }}/assets/images/asmiostatv2_unpreff_reads.png" class="aligncenter size-full wp-image-1190" width="620" height="323" alt="asmiostatv2_unpreff_reads" />
 
 As you can see the NOPBDT3 database instance (located in SITEB) is using the ASM1 instance which prefers to read from SITEA. Then the NOPBDT3 database instance is reading from SITEA which is bad.
 

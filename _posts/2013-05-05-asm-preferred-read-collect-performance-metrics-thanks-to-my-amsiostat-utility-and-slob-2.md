@@ -92,7 +92,7 @@ You can find a very good description, on how to use SLOB for PIO testing into th
 
 <span style="text-decoration:underline;">with the following result:</span>
 
-[<img src="{{ site.baseurl }}/assets/images/asm_preferred_read_slob21.png" class="aligncenter size-full wp-image-979" width="620" height="117" alt="asm_preferred_read_slob2" />](http://bdrouvot.files.wordpress.com/2013/05/asm_preferred_read_slob21.png)
+<img src="{{ site.baseurl }}/assets/images/asm_preferred_read_slob21.png" class="aligncenter size-full wp-image-979" width="620" height="117" alt="asm_preferred_read_slob2" />
 
 Great, data have been read from their preferred read failure groups ;-) We can also see their respectives performance metrics.
 

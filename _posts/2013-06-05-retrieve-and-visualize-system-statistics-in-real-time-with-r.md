@@ -73,7 +73,7 @@ So you can **choose the number of snapshots and the graphs refresh interval**.
 
 <span style="text-decoration:underline;">**When the number of snapshots is reached the output is like:**</span>
 
-[<img src="{{ site.baseurl }}/assets/images/real_time_physical_reads.png" class="aligncenter size-full wp-image-1067" width="620" height="412" alt="real_time_physical_reads" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_physical_reads.png)
+<img src="{{ site.baseurl }}/assets/images/real_time_physical_reads.png" class="aligncenter size-full wp-image-1067" width="620" height="412" alt="real_time_physical_reads" />
 
 The graphs sequence that leads to this final graph is the following (see the [real\_time\_physical\_reads](http://bdrouvot.files.wordpress.com/2013/06/real_time_physical_reads.pdf) pdf file).
 

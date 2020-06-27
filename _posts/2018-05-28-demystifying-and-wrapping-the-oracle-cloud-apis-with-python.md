@@ -43,7 +43,7 @@ The instance creation can be done manually using the Web Interface that way:
 
 It could also been done using the APIs. The APIs are described in this [link](https://apicatalog.oraclecloud.com/ui/views/apicollection/oracle-public/database/csdbr-13/serviceinstances). The one related to the Instance creation is the following:
 
-[<img src="{{ site.baseurl }}/assets/images/create_instance_api.png" class="aligncenter size-full wp-image-3351" width="1100" height="686" />](https://bdrouvot.wordpress.com/2018/05/28/demystifying-and-wrapping-the-oracle-cloud-apis-with-python/create_instance_api/)
+<img src="{{ site.baseurl }}/assets/images/create_instance_api.png" class="aligncenter size-full wp-image-3351" width="1100" height="686" />
 
 So, identityDomainId is a path parameter, the Authorization and X-ID-TENANT-NAME are header parameters and the body describes the parameters in JSON format.
 
@@ -144,7 +144,7 @@ PASSWORD = config['password']
 -   More fun:  
     You may have noticed that the http post's response provides a link to an URL you can use to check the progress of the creation
 
-[<img src="{{ site.baseurl }}/assets/images/screen-shot-2018-05-24-at-22-22-26.png" class="aligncenter size-full wp-image-3355" width="1100" height="235" />](https://bdrouvot.wordpress.com/2018/05/28/demystifying-and-wrapping-the-oracle-cloud-apis-with-python/screen-shot-2018-05-24-at-22-22-26/)
+<img src="{{ site.baseurl }}/assets/images/screen-shot-2018-05-24-at-22-22-26.png" class="aligncenter size-full wp-image-3355" width="1100" height="235" />
 
 So that we can integrate the check in our wrapper (the source code is available at the end of this post and in this [git repository](https://github.com/bdrouvot/opc_api_wrapper)).
 

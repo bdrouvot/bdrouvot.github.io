@@ -43,7 +43,7 @@ The purpose is to give a way to see this feature in action and collect related p
 
 Let's run SLOB to generate IOs Read from a database located on the same Host as the +ASM1 Instance. The result of "*./real\_time.pl -type=asmiostat -show=inst,fg -dg=data*" is the following:
 
-[<img src="{{ site.baseurl }}/assets/images/asm_prefer1.png" class="aligncenter size-full wp-image-730" width="620" height="285" alt="asm_prefer1" />](http://bdrouvot.files.wordpress.com/2013/02/asm_prefer1.png)
+<img src="{{ site.baseurl }}/assets/images/asm_prefer1.png" class="aligncenter size-full wp-image-730" width="620" height="285" alt="asm_prefer1" />
 
 As you can see the Read IOs come from the WIN failgroup (as expected). You also get the performance metrics of the failgroup.
 
@@ -51,7 +51,7 @@ As you can see the Read IOs come from the WIN failgroup (as expected). You also 
 
 Let's run SLOB to generate IOs Read from a database located on the same Host as the +ASM2 Instance. The result of "*./real\_time.pl -type=asmiostat -show=inst,fg -dg=data*" is the following:
 
-[<img src="{{ site.baseurl }}/assets/images/asm_prefer2.png" class="aligncenter size-full wp-image-731" width="620" height="187" alt="asm_prefer2" />](http://bdrouvot.files.wordpress.com/2013/02/asm_prefer2.png)
+<img src="{{ site.baseurl }}/assets/images/asm_prefer2.png" class="aligncenter size-full wp-image-731" width="620" height="187" alt="asm_prefer2" />
 
 As you can see the Read IOs come from the JMO failgroup (as expected). You also get the performance metrics of the failgroup.
 

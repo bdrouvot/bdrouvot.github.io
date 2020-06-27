@@ -34,7 +34,7 @@ The starting point of this blog post is a talk that I had with my twitter friend
 
 <span style="text-decoration:underline;">As the documentation states:</span>
 
-[<img src="{{ site.baseurl }}/assets/images/asm_diskstring_121.png" class="aligncenter size-full wp-image-1219" width="620" height="272" alt="asm_diskstring_121" />](http://bdrouvot.files.wordpress.com/2013/07/asm_diskstring_121.png)
+<img src="{{ site.baseurl }}/assets/images/asm_diskstring_121.png" class="aligncenter size-full wp-image-1219" width="620" height="272" alt="asm_diskstring_121" />
 
 Different nodes might see the same disks under different names, however each instance must be able to use its ASM\_DISKSTRING to discover the same physical media as the other nodes in the cluster.
 
@@ -153,7 +153,7 @@ Now, launch SLOB and check the I/O metrics thanks to my [asmiostat utility](http
 
 With the following output:
 
-[<img src="{{ site.baseurl }}/assets/images/metrics_not_recorded.png" class="aligncenter size-full wp-image-1230" width="620" height="128" alt="metrics_not_recorded" />](http://bdrouvot.files.wordpress.com/2013/07/metrics_not_recorded.png)
+<img src="{{ site.baseurl }}/assets/images/metrics_not_recorded.png" class="aligncenter size-full wp-image-1230" width="620" height="128" alt="metrics_not_recorded" />
 
 As you can see the metrics have not been recorded, while the IOPs have been done (/dev/asm3-disk10 is /dev/sdm):
 
@@ -165,7 +165,7 @@ As you can see the metrics have not been recorded, while the IOPs have been done
 
 Of course the same test launched from the NOPBDT2 database instance linked to the +ASM2 instance,would produce the following output:
 
-[<img src="{{ site.baseurl }}/assets/images/metrics_recorded.png" class="aligncenter size-full wp-image-1233" width="620" height="127" alt="metrics_recorded" />](http://bdrouvot.files.wordpress.com/2013/07/metrics_recorded.png)
+<img src="{{ site.baseurl }}/assets/images/metrics_recorded.png" class="aligncenter size-full wp-image-1233" width="620" height="127" alt="metrics_recorded" />
 
 So the metrics are recorded as the database Instance is doing the IOPS on devices that the ASM instance is aware of (NOPBDT2 linked to +ASM1 would produce the "invisible" metrics).
 
