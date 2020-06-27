@@ -78,38 +78,38 @@ Functions
 ### get\_pg\_dbname:
 
 ```
-function get\_pg\_dbname:string (mystr:string) %{  
-char \*ptr;  
-char \*ptr2;
+function get_pg_dbname:string (mystr:string) %{  
+char *ptr;  
+char *ptr2;
 
 int ch = ' ';  
-char substr\_res\[500\];  
-char \*strargs = STAP\_ARG\_mystr;  
+char substr_res[500];  
+char *strargs = STAP_ARG_mystr;  
 ptr = strchr( strchr( strargs , ch) + 1 , ch);  
 ptr2 = strchr( ptr + 1 , ch);  
-strncpy (substr\_res,ptr, ptr2 - ptr);  
-substr\_res\[ptr2 - ptr\]='\\0';  
-snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",substr\_res+1);  
+strncpy (substr_res,ptr, ptr2 - ptr);  
+substr_res[ptr2 - ptr]='\0';  
+snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",substr_res+1);  
 %}  
 ```
 
 This function extracts the **database** from any "postgres: user **database** host activity" string
 
-### get\_pg\_user\_proc:
+### get_pg_user_proc:
 
 ```
-function get\_pg\_user\_proc:string (mystr:string) %{  
-char \*ptr;  
-char \*ptr2;
+function get_pg_user_proc:string (mystr:string) %{  
+char *ptr;  
+char *ptr2;
 
 int ch = ' ';  
-char substr\_res\[500\];  
-char \*strargs = STAP\_ARG\_mystr;  
+char substr_res[500];  
+char *strargs = STAP_ARG_mystr;  
 ptr = strchr( strargs , ch);  
 ptr2 = strchr( ptr + 1 , ch);  
-strncpy (substr\_res,ptr, ptr2 - ptr);  
-substr\_res\[ptr2 - ptr\]='\\0';  
-snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",substr\_res+1);  
+strncpy (substr_res,ptr, ptr2 - ptr);  
+substr_res[ptr2 - ptr]='\0';  
+snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",substr_res+1);  
 %}  
 ```
 
