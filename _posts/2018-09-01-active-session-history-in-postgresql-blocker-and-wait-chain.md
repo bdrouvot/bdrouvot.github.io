@@ -92,7 +92,7 @@ Let's see how we could display some interesting information in case of blocked s
 
 As PostgreSQL provides [recursive query](https://www.postgresql.org/docs/current/static/queries-with.html) and [window functions](https://www.postgresql.org/docs/current/static/tutorial-window.html), let's make use of them to write this query:
 
-\[code language="sql"\]  
+```
 postgres@pgu:~$ cat pg\_ash\_wait\_chain.sql  
 WITH RECURSIVE search\_wait\_chain(ash\_time,pid, blockerpid, wait\_event\_type,wait\_event,level, path)  
 AS (  
@@ -114,7 +114,7 @@ where level=max\_level
 ) as wait\_chain  
 group by path,cnt  
 order by count(\*) desc;  
-\[/code\]
+```
 
 Let's launch this query while only one session is being blocked by another one:
 

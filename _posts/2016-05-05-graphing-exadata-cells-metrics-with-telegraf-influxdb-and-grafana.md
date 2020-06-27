@@ -72,7 +72,7 @@ The perl script code is:
 
     $> cat influxdb_exadata_metrics.pl
 
-\[code language="perl"\]  
+```
 \#!/usr/bin/env perl  
 \#  
 \# Author: Bertrand Drouvot  
@@ -186,7 +186,7 @@ if ($tab1\[5\] eq "") {$tab1\[5\]="N/A"};
 \# Print  
 print "exadata\_cell\_metrics,cell=$tab1\[0\],metric\_name=$tab1\[1\],metricObjectName=$tab1\[2\],metric\_type=$tab1\[5\],metric\_unit=$tab1\[4\] metric\_value=$tab1\[3\]\\n";  
 }  
-\[/code\]
+```
 
 The output looks like (the output format is the InfluxDB [line-protocol](https://docs.influxdata.com/influxdb/v0.9/write_protocols/line/)):
 

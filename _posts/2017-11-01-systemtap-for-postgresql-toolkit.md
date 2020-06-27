@@ -77,7 +77,7 @@ Functions
 
 ### get\_pg\_dbname:
 
-\[code language="perl"\]  
+```
 function get\_pg\_dbname:string (mystr:string) %{  
 char \*ptr;  
 char \*ptr2;
@@ -91,13 +91,13 @@ strncpy (substr\_res,ptr, ptr2 - ptr);
 substr\_res\[ptr2 - ptr\]='\\0';  
 snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",substr\_res+1);  
 %}  
-\[/code\]
+```
 
 This function extracts the **database** from any "postgres: user **database** host activity" string
 
 ### get\_pg\_user\_proc:
 
-\[code language="perl"\]  
+```
 function get\_pg\_user\_proc:string (mystr:string) %{  
 char \*ptr;  
 char \*ptr2;
@@ -111,7 +111,7 @@ strncpy (substr\_res,ptr, ptr2 - ptr);
 substr\_res\[ptr2 - ptr\]='\\0';  
 snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",substr\_res+1);  
 %}  
-\[/code\]
+```
 
 This function extracts:
 

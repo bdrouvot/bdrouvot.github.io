@@ -40,7 +40,7 @@ So, for a particular wait event, I'll retrieve from the dba\_hist\_system\_event
 
 <span style="text-decoration:underline;">As those metrics are cumulative ones, I need to compute the difference between 2 snaps that way:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat check\_awr\_event.sql  
 set linesi 220;
 
@@ -71,7 +71,7 @@ and e.instance\_number=s.instance\_number
 and e.snap\_id=s.snap\_id  
 and s.BEGIN\_INTERVAL\_TIME &gt;= trunc(sysdate-&sysdate\_nb\_day\_begin\_interval+1)  
 and s.BEGIN\_INTERVAL\_TIME &lt;= trunc(sysdate-&sysdate\_nb\_day\_end\_interval+1) order by 1,2,3;  
-\[/code\]
+```
 
 I use the "**partition by event\_name order by snap\_id rows 1 preceding**" to compute the difference between snaps per event.
 

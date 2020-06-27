@@ -134,7 +134,7 @@ FAN callouts are server-side scripts or executables that run whenever a FAN even
 
 To do so, I created the following script:
 
-\[code language="bash"\]  
+```
 \#!/bin/ksh  
 \#  
 \# Close the PDB on the old intance during manual service relocation  
@@ -206,7 +206,7 @@ EOF
 echo ${\*} &gt;&gt; ${HOMEDIR}/log/${LOGFILE}
 
 fi  
-\[/code\]
+```
 
 under **$GRID\_HOME/racg/usrco/** (on both nodes). Then the script will be executed for all FAN events, but the script will start processing only for manual service relocation (thanks to the "if condition" in it).
 

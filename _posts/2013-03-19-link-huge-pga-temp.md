@@ -50,7 +50,7 @@ So, to find the top sql\_id(s) responsible of  PGA or TEMP space consumption d
 
 <span style="text-decoration:underline;color:#0000ff;">For the PGA consumption:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat ash\_sql\_id\_pga.sql  
 col percent head '%' for 99990.99  
 col star for A10 head ''
@@ -78,7 +78,7 @@ having sum(DELTA\_PGA\_MB) &gt; 0
 )  
 where rank &lt; (&top+1)  
 order by rank  
-/\[/code\]
+/```
 
 <span style="text-decoration:underline;">The output is like:</span>
 
@@ -107,7 +107,7 @@ order by rank
 
 <span style="text-decoration:underline;color:#0000ff;">For the TEMP consumption:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat ash\_sql\_id\_temp.sql  
 col percent head '%' for 99990.99  
 col star for A10 head ''
@@ -136,7 +136,7 @@ having sum(DELTA\_TEMP\_MB) &gt; 0
 where rank &lt; (&top+1)  
 order by rank  
 /  
-\[/code\]
+```
 
 <span style="text-decoration:underline;">The output is like:</span>
 

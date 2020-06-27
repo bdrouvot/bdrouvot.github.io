@@ -117,7 +117,7 @@ I really don't think so, this sql (**sql\_id "frjd8zfy2jfdq"**) should have been
 
 <span style="text-decoration:underline;">Let's prove it with a simple test case (I am alone on the database):</span>
 
-\[code language="sql"\]  
+```
 alter system flush shared\_pool;
 
 select count(\*) from v$sql where sql\_id='frjd8zfy2jfdq';
@@ -130,7 +130,7 @@ end;
 /
 
 select count(\*) from v$sql where sql\_id='frjd8zfy2jfdq';  
-\[/code\]
+```
 
 <span style="text-decoration:underline;">With the following result:</span>
 
@@ -167,7 +167,7 @@ It did not produce any change **until I set the *optimizer\_adaptive\_features* 
 
 <span style="text-decoration:underline;">Here is the result:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat test\_case.sql  
 alter system flush shared\_pool;
 
@@ -200,7 +200,7 @@ PL/SQL procedure successfully completed.
 COUNT(\*)  
 ----------  
 0  
-\[/code\]
+```
 
 **BINGO!!!** The sql\_id "frjd8zfy2jfdq" has not been executed!
 

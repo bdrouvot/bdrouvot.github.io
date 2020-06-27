@@ -39,7 +39,7 @@ That's fine, but **I would like to see per execution** of a given sql\_id, if th
 
 For this, I adapted the query that I use to retrieve "peeked" and "passed" bind values per execution into this [blog post](http://bdrouvot.wordpress.com/2013/04/29/bind-variable-peeking-retrieve-peeked-and-passed-values-per-execution-in-oracle-11-2/ "Bind variable peeking: Retrieve peeked and passed values per execution in oracle 11.2") that way:
 
-\[code language="sql"\]  
+```
 SQL&gt;!cat binds\_peeked\_passed\_acs.sql  
 set linesi 200 pages 999 feed off verify off  
 col bind\_name format a20  
@@ -134,13 +134,13 @@ pee.bind\_name=run\_t.bind\_name and
 pee.bind\_pos=run\_t.bind\_pos and  
 pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
 order by 1,2,3,7 ;  
-\[/code\]
+```
 
 So, I simply added this line:
 
-\[code language="sql"\]  
+```
 case when pee.bind\_data = first\_value(pee.bind\_data) over (partition by pee.sql\_id,pee.bind\_name,pee.bind\_pos order by end\_time rows 1 preceding) then 'NO' else 'YES' end "ACS"  
-\[/code\]
+```
 
 <span style="text-decoration:underline;">This new line:</span>
 

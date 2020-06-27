@@ -41,7 +41,7 @@ So **we can get rid of the "passed"** values (and then of the v$sql\_monitor vi
 
 For this purpose, let's modify the sql introduced into the previous post that way:
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat binds\_peeked\_acs.sql  
 set linesi 200 pages 999 feed off verify off  
 col bind\_name format a20  
@@ -110,7 +110,7 @@ pee.sql\_id=ash.sql\_id and
 pee.child\_number=ash.sql\_child\_number and  
 pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
 order by 1,2,3,7 ;  
-\[/code\]
+```
 
 Let's see the result with the same test as [Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2:](http://bdrouvot.wordpress.com/2013/05/01/diagnose-adaptive-cursor-sharing-acs-per-execution-in-11-2/ "Diagnose Adaptive Cursor Sharing (ACS) per execution in 11.2")
 

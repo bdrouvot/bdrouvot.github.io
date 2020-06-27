@@ -41,7 +41,7 @@ We can capture a 10053 trace for a specific sql\_id that way:
 
 So, If you can't be patient, then you can use this script to **flush the sql and enable the 10053 trace**:
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat enable\_10053\_sql\_id.sql  
 set serveroutput on  
 set pagesize 9999  
@@ -66,20 +66,20 @@ alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&&sql\_id\]';
 
 undef sql\_id  
 undef name  
-\[/code\]
+```
 
 Then just wait for the next execution and you'll get the trace file.
 
 <span style="text-decoration:underline;">To disable the trace:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat disable\_10053\_sql\_id.sql  
 prompt DISABLING 10053 trace
 
 accept sql\_id prompt 'Enter value for sql\_id: '
 
 alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&&sql\_id\] off';  
-\[/code\]
+```
 
 <span style="text-decoration:underline;">**Remark:**</span>
 

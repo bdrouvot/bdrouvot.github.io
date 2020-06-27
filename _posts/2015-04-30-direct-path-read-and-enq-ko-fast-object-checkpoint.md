@@ -50,7 +50,7 @@ Tests
 
 For the test, I used two tables on a 11.2.0.4 database. One table is made of 2 partitions and one is not partitioned (then 3 segments):
 
-\[code language="sql"\]  
+```
 BDT:BDT1&gt; select SEGMENT\_NAME,PARTITION\_NAME from dba\_segments where segment\_name in ('BDT1','BDT2');
 
 SEGMENT\_NAME PARTITION\_NAME  
@@ -58,11 +58,11 @@ SEGMENT\_NAME PARTITION\_NAME
 BDT2  
 BDT1 P2  
 BDT1 P1  
-\[/code\]
+```
 
 The rows distribution across segments, blocks and file relative numbers is the following:
 
-\[code language="sql"\]  
+```
 BDT:BDT1&gt; l  
 1 select u.object\_name,u.subobject\_name,dbms\_rowid.rowid\_block\_number(BDT1.rowid) BLOCK\_NUMBER, dbms\_rowid.rowid\_relative\_fno(BDT1.rowid) FNO  
 2 from BDT1, user\_objects u  
@@ -96,7 +96,7 @@ BDT2 1359091 5
 BDT2 1359091 5  
 BDT2 1359091 5
 
-18 rows selected.\[/code\]
+18 rows selected.```
 
 so that all the rows of the segment:
 
@@ -110,7 +110,7 @@ BDT1:P&lt;N&gt; stands for table BDT1 partition &lt;N&gt;
 
 Now, let's update both tables (**without** committing):
 
-\[code language="sql"\]  
+```
 BDT:BDT1&gt; update BDT1 set ID2=100;
 
 9 rows updated.
@@ -118,13 +118,13 @@ BDT:BDT1&gt; update BDT1 set ID2=100;
 BDT:BDT1&gt; update BDT2 set ID2=100;
 
 9 rows updated.  
-\[/code\]
+```
 
 As I do not commit (nor rollback), then those **3 blocks in memory contain an active transaction**.
 
 In another session, let's force serial direct path read and read partition **P1** from **BDT1 only**:
 
-\[code language="sql"\]  
+```
 BDT:BDT1&gt; alter session set "\_serial\_direct\_read"=always;
 
 Session altered.
@@ -134,11 +134,11 @@ BDT:BDT1&gt; select count(\*) from BDT1 partition (P1);
 COUNT(\*)  
 -----------  
 4  
-\[/code\]
+```
 
 Now, check its wait events and related statistics with snapper. A cool thing with snapper is that I can get wait events and statistics from one tool.
 
-\[code language="sql"\]  
+```
 SYS:BDT1&gt; @snapper all,end 5 1 20  
 Sampling SID 20 with interval 5 seconds, taking 1 snapshots...
 
@@ -155,7 +155,7 @@ SID @INST, USERNAME , TYPE, STATISTIC , DELTA, HDELTA/SEC, %TIME, GRAPH , NUM\_W
 -- End of ASH snap 1, end=, seconds=, samples\_taken=0, AAS=(No ASH sampling in begin/end snapshot mode)
 
 PL/SQL procedure successfully completed.  
-\[/code\]
+```
 
 For brevity and clarity, I keep only the wait events and statistics of interest.
 
@@ -163,7 +163,7 @@ As we can see, the direct path read has been used and the "fast object checkpoin
 
 Now let's check which block(s) has/have been flushed to disk: to do so, I'll dump those 3 blocks from disk and check **if** they contain an active transaction (as the ones in memory).
 
-\[code language="sql"\]  
+```
 BDT:BDT1&gt; !cat dump\_blocks.sql  
 -- BDT2  
 alter system dump datafile 5 block 1359091;  
@@ -186,7 +186,7 @@ VALUE
 /u01/app/oracle/diag/rdbms/bdt/BDT1/trace/BDT1\_ora\_91815.trc
 
 BDT:BDT1&gt; !view /u01/app/oracle/diag/rdbms/bdt/BDT1/trace/BDT1\_ora\_91815.trc  
-\[/code\]
+```
 
 The Interested Transaction List (ITL) for the first block that has been dumped from disk (BDT2 Table) looks like:
 

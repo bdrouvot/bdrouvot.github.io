@@ -51,7 +51,7 @@ So let's write the sql to do so, and let's test it.
 
 <span style="text-decoration:underline;">The sql script is the following:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat binds\_peeked\_passed.sql  
 set linesi 200 pages 999 feed off verify off  
 col bind\_name format a20  
@@ -144,7 +144,7 @@ pee.bind\_name=run\_t.bind\_name and
 pee.bind\_pos=run\_t.bind\_pos and  
 pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
 order by 1,2,3,7 ;  
-\[/code\]
+```
 
 <span style="text-decoration:underline;">Now let's test it:</span>
 

@@ -37,7 +37,7 @@ So, for a particular system statistic, I’ll retrieve from the dba\_hist\_sysst
 
 <span style="text-decoration:underline;">As the VALUE is cumulative, I need to compute the difference between 2 snaps that way:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat check\_awr\_stats.sql  
 set linesi 200  
 col BEGIN\_INTERVAL\_TIME format a28  
@@ -70,7 +70,7 @@ and sta.snap\_id=s.snap\_id
 and s.BEGIN\_INTERVAL\_TIME &gt;= trunc(sysdate-&sysdate\_nb\_day\_begin\_interval+1)  
 and s.BEGIN\_INTERVAL\_TIME &lt;= trunc(sysdate-&sysdate\_nb\_day\_end\_interval+1)  
 order by s.begin\_interval\_time asc;  
-\[/code\]
+```
 
 I use the "**partition by stat\_name order by snap\_id rows 1 preceding**" to compute the difference between snaps par stat\_name.
 

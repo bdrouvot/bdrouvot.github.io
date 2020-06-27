@@ -192,7 +192,7 @@ So, it was not possible to add 90 GB while it has been possible to add 89 GB: My
 
 <span style="text-decoration:underline;">Let's see the asm\_free\_usable\_imbalance.sql:</span>
 
-\[code language="sql"\]  
+```
 SQL&gt; !cat asm\_free\_usable\_imbalance.sql  
 select /\* EXTERNAL REDUNDANCY \*/  
 g.name,  
@@ -358,7 +358,7 @@ where factor\_partner &lt;&gt; max\_lag\_lead
 and nb\_partner &gt; 1))  
 group by name, disk\_number, type))  
 group by name, type;  
-\[/code\]
+```
 
 <span style="text-decoration:underline;">Don't be afraid ;-): The SQL is composed of 3 cases:</span>
 

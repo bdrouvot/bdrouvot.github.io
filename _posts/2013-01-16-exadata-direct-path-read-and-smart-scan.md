@@ -145,9 +145,9 @@ But a question still remains: How can I check by myself (**again just for fun**)
 
 As of 12.1.0.1, a more convenient way to display the stack linked to a wait event is:
 
-\[code language="sql"\] exec DBMS\_MONITOR.SESSION\_TRACE\_ENABLE(waits =&gt; true, binds =&gt; false, plan\_stat =&gt; 'NEVER');
+```
 
-alter session set events 'wait\_event\["cell smart table scan"\] trace("from %s\\n",shortstack())'; \[/code\]
+alter session set events 'wait\_event```
 
 Enabling the session trace is not mandatory but is useful as it displays the wait event prior to the stack.  
 The wait event "cell smart table scan" has been used as an example (as it is the one of interest for this post), but you could use the one of your choice.

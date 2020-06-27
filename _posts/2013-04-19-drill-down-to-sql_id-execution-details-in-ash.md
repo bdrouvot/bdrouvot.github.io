@@ -48,7 +48,7 @@ Let's suppose that I found (Thanks to the sql provided into [this post](http://b
 
 Now I can drill down to details to get the pga over allocation per execution that way:
 
-\[code language="sql"\]  
+```
 alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
 alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
 
@@ -92,7 +92,7 @@ order by sql\_id
 )  
 where sql\_id = 'btvk5dzpdmadh'  
 order by sql\_id, run\_time\_sec desc;  
-\[/code\]
+```
 
 It will produces this kind of output:
 

@@ -63,7 +63,7 @@ For example, this function would extract BDT from "ora\_dbw0\_BDT" or any "ora\
 
 The code is the following:
 
-\[code language="perl"\]  
+```
 function get\_oracle\_name\_b:string (mystr:string) %{  
 char \*ptr;  
 int ch = '\_';  
@@ -71,7 +71,7 @@ char \*strargs = STAP\_ARG\_mystr;
 ptr = strchr( strchr( strargs , ch) + 1 , ch);  
 snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",ptr + 1);  
 %}  
-\[/code\]
+```
 
 ### get\_oracle\_name\_f:
 
@@ -79,7 +79,7 @@ For example, this function would extract BDT from "oracleBDT (LOCAL=NO)", "orac
 
 The code is the following:
 
-\[code language="perl"\]  
+```
 function get\_oracle\_name\_f:string (mystr:string) %{  
 char \*ptr;  
 int ch = ' ';  
@@ -90,11 +90,11 @@ strncpy (substr\_res,strargs+6, ptr - strargs - 6);
 substr\_res\[ptr - strargs - 6\]='\\0';  
 snprintf(STAP\_RETVALUE, MAXSTRINGLEN, "%s",substr\_res);  
 %}  
-\[/code\]
+```
 
 Having in mind that the SystemTap aggregation operator is "&lt;&lt;&lt;" ([as explained here](https://sourceware.org/systemtap/langref/Statistics_aggregates.html)) we can use those 2 functions to aggregate within the probes by Instance Name (passing as parameter the *cmdline\_str())* that way:
 
-\[code language="perl"\]  
+```
 probe tcp.recvmsg  
 {
 
@@ -118,7 +118,7 @@ tcpsend\[get\_oracle\_name\_f(cmdline\_str())\] &lt;&lt;&lt; size
 tcpsend\["NOT\_A\_DB"\] &lt;&lt;&lt; size  
 }  
 }  
-\[/code\]
+```
 
 As you can see, non oracle database would be recorded and displayed as "NOT\_A\_DB".
 

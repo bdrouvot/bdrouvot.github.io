@@ -54,7 +54,7 @@ As you know, the wait event "db file sequential read" records "single block" IO 
 
 To do so, I'll use the AWR data coming from the dba\_hist\_event\_histogram view and [Tableau](http://www.tableausoftware.com/public//). I'll also extract the data coming from dba\_hist\_snapshot (to get the begin\_interval\_date time).
 
-\[code language="sql"\]  
+```
 alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
 alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
 
@@ -64,7 +64,7 @@ where begin\_interval\_time &gt;= to\_date ('2014/06/01 00:00','YYYY/MM/DD HH24:
 and event\_name='db file sequential read';
 
 select \* from dba\_hist\_snapshot where begin\_interval\_time &gt;= to\_date ('2014/06/01 00:00','YYYY/MM/DD HH24:MI');  
-\[/code\]
+```
 
 As you can see, there is no computation. This is just a simple extraction of the data.
 
