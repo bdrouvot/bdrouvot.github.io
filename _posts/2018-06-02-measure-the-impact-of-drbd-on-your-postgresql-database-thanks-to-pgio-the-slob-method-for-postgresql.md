@@ -271,7 +271,7 @@ DBNAME: pgio. 1 schemas, 1 threads(each). Run time: 120 seconds. RIOPS &gt;99352
 <pre style="padding-left:30px;">root@ubdrbd2:~# ls -l /dev/sdb
 brw-rw----
 1 root disk 8, 16 Jun 1 15:16 /dev/sdb root@ubdrbd2:~# cat /etc/cgconfig.conf mount { blkio = /cgroup/blkio; } group iothrottle { blkio { blkio.throttle.write\_iops\_device="8:16 500"; } } root@ubdrbd2:~# cat /etc/cgrules.conf 
-\* blkio /iothrottle
+* blkio /iothrottle
 </pre>
 
 Means: we want to ensure that the number of writes per second on /dev/sdb will be limited to 500 for all the processes.
@@ -279,13 +279,39 @@ Means: we want to ensure that the number of writes per second on /dev/sdb will b
 Let's check that DRDB is active:
 
 ```
-root@ubdrbd1:~# drbdsetup status --verbose --statistics postgresql role:Primary suspended:no write-ordering:flush volume:0 minor:1 disk:UpToDate size:20969820 read:453661 written:6472288 al-writes:215 bm-writes:0 upper-pending:4 lower-pending:0 al-suspended:no blocked:no peer connection:Connected role:Secondary congested:no volume:0 replication:Established peer-disk:UpToDate resync-suspended:no received:0 sent:5161968 out-of-sync:0 pending:4 unacked:0 root@ubdrbd2:~# drbdsetup status --verbose --statistics postgresql role:Secondary suspended:no write-ordering:flush volume:0 minor:1 disk:UpToDate size:20969820 read:0 written:5296960 al-writes:0 bm-writes:0 upper-pending:0 lower-pending:2 al-suspended:no blocked:no peer connection:Connected role:Primary congested:no volume:0 replication:Established peer-disk:UpToDate resync-suspended:no received:5296968 sent:0 out-of-sync:0 pending:0 unacked:2
+root@ubdrbd1:~# drbdsetup status --verbose --statistics
+postgresql role:Primary suspended:no
+    write-ordering:flush
+  volume:0 minor:1 disk:UpToDate
+      size:20969820 read:453661 written:6472288 al-writes:215 bm-writes:0 upper-pending:4 lower-pending:0 al-suspended:no blocked:no
+  peer connection:Connected role:Secondary congested:no
+    volume:0 replication:Established peer-disk:UpToDate resync-suspended:no
+        received:0 sent:5161968 out-of-sync:0 pending:4 unacked:0
+
+root@ubdrbd2:~# drbdsetup status --verbose --statistics
+postgresql role:Secondary suspended:no
+    write-ordering:flush
+  volume:0 minor:1 disk:UpToDate
+      size:20969820 read:0 written:5296960 al-writes:0 bm-writes:0 upper-pending:0 lower-pending:2 al-suspended:no blocked:no
+  peer connection:Connected role:Primary congested:no
+    volume:0 replication:Established peer-disk:UpToDate resync-suspended:no
 ```
 
 With this configuration in place, let's run pgio on the source machine:
 
 ```
-postgres@ubdrbd1:~/pgio$ ./runit.sh Date: Sat Jun 2 05:37:03 UTC 2018 Database connect string: "pgio". Shared buffers: 128MB. Testing 1 schemas with 1 thread(s) accessing 200M (25600 blocks) of each schema. Running iostat, vmstat and mpstat on current host--in background. Launching sessions. 1 schema(s) will be accessed by 1 thread(s) each. pg\_stat\_database stats: datname| blks\_hit| blks\_read|tup\_returned|tup\_fetched|tup\_updated BEFORE: pgio | 111461 | 44099 | 35967 | 5640 | 6 AFTER: pgio | 3879414 | 2132201 | 5799491 | 5766888 | 22425 DBNAME: pgio. 1 schemas, 1 threads(each). Run time: 120 seconds. RIOPS \>17400\< CACHE\_HITS/s \>31399\<
+postgres@ubdrbd1:~/pgio$ ./runit.sh
+Date: Sat Jun 2 05:37:03 UTC 2018
+Database connect string: "pgio".
+Shared buffers: 128MB.
+Testing 1 schemas with 1 thread(s) accessing 200M (25600 blocks) of each schema.
+Running iostat, vmstat and mpstat on current host--in background.
+Launching sessions. 1 schema(s) will be accessed by 1 thread(s) each.
+pg_stat_database stats:
+datname| blks_hit| blks_read|tup_returned|tup_fetched|tup_updated
+BEFORE: pgio | 111461 | 44099 | 35967 | 5640 | 6
+AFTER: pgio | 3879414 | 2132201 | 5799491 | 5766888 | 22425
+DBNAME: pgio. 1 schemas, 1 threads(each). Run time: 120 seconds. RIOPS >17400< CACHE_HITS/s >31399<
 ```
 
 As you can see, 22419 tuples have been updated during this 120 seconds run **with** &nbsp;DRBD and blkio throttling in place (this is far less than the 115470 observed in the first test).
@@ -293,13 +319,21 @@ As you can see, 22419 tuples have been updated during this 120 seconds run **wit
 pgio also provides&nbsp;snapshots of iostat, vmstat and mpstat, so that it is easy to check that the throttling was in place (writes per second \< 500 on the source due to the throttling on the target):
 
 ```
-Device r/s **w/s** rMB/s wMB/s rrqm/s wrqm/s %rrqm %wrqm r\_await w\_await aqu-sz rareq-sz wareq-sz svctm %util sdb 0.00 **425.42** 0.00 3.20 0.00 84.41 0.00 16.56 0.00 0.18 0.08 0.00 7.71 0.16 6.64 sdb 0.00 **415.18** 0.00 3.16 0.00 74.92 0.00 15.29 0.00 0.20 0.08 0.00 7.80 0.17 7.26 . .
+Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
+sdb              0.00  425.42      0.00      3.20     0.00    84.41   0.00  16.56    0.00    0.18   0.08     0.00     7.71   0.16   6.64
+sdb              0.00  415.18      0.00      3.16     0.00    74.92   0.00  15.29    0.00    0.20   0.08     0.00     7.80   0.17   7.26
+.
+.
 ```
 
 compares to:
 
 ```
-Device r/s **w/s** rMB/s wMB/s rrqm/s wrqm/s %rrqm %wrqm r\_await w\_await aqu-sz rareq-sz wareq-sz svctm %util sdb 0.00 **1311.0** 7 0.00 10.14 0.00 62.98 0.00 4.58 0.00 0.10 0.14 0.00 7.92 0.10 13.70 sdb 0.00 **1252.05** 0.00 9.67 0.00 62.33 0.00 4.74 0.00 0.11 0.13 0.00 7.91 0.10 13.01 . .
+Device            r/s     w/s     rMB/s     wMB/s   rrqm/s   wrqm/s  %rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz  svctm  %util
+sdb              0.00 1311.07      0.00     10.14     0.00    62.98   0.00   4.58    0.00    0.10   0.14     0.00     7.92   0.10  13.70
+sdb              0.00 1252.05      0.00      9.67     0.00    62.33   0.00   4.74    0.00    0.11   0.13     0.00     7.91   0.10  13.01
+.
+.
 ```
 
 with DRBD and throttling, both not in place.

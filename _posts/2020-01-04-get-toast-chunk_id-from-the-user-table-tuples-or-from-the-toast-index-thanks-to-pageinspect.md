@@ -56,9 +56,9 @@ FROM generate_series(1,10);
 INSERT 0 10</pre>
 <p>check the toast and toast index names:</p>
 <pre style="padding-left:40px;">toasted=# select r.relname,t.relname as toast,i.relname as toast_index from pg_class r, pg_class i, pg_index d, pg_class t where r.relname = 'bdttab' and d.indrelid = r.reltoastrelid and i.oid = d.indexrelid and t.oid = r.reltoastrelid;
-relname | toast | toast_index
+relname | toast           | toast_index
 ---------+-----------------+-----------------------
-bdttab | pg_toast_192881 | pg_toast_192881_index
+bdttab  | pg_toast_192881 | pg_toast_192881_index
 (1 row)</pre>
 <h3>Retrieve the chunk_id for each tuple directly from the user table</h3>
 <p>The chunk_id is part of the tuple's data as explained in this slide (coming from this <a href="https://pgconf.ru/media/2016/05/13/tuple-internals.pdf" target="_blank" rel="noopener">presentation</a>):</p>
