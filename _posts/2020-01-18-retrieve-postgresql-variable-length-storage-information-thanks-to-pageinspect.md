@@ -1,5 +1,36 @@
---- layout: post title: Retrieve PostgreSQL variable-length storage information thanks to pageinspect date: 2020-01-18 13:49:47.000000000 +01:00 type: post parent\_id: '0' published: true password: '' status: publish categories: - Postgresql tags: \[\] meta: \_edit\_last: '40807211' geo\_public: '0' \_wpas\_skip\_7950430: '1' timeline\_notification: '1579351791' \_publicize\_job\_id: '39682411733' \_publicize\_done\_external: a:1:{s:7:"twitter";a:1:{i:2225791;s:62:"https://twitter.com/BertrandDrouvot/status/1218515849352548358";}} \_publicize\_done\_2558296: '1' \_wpas\_done\_2225791: '1' publicize\_twitter\_user: BertrandDrouvot publicize\_linkedin\_url: '' \_publicize\_done\_22399261: '1' \_wpas\_done\_23399164: '1' author: login: bdrouvot email: bdtoracleblog@gmail.com display\_name: bdrouvot first\_name: '' last\_name: '' permalink: "/2020/01/18/retrieve-postgresql-variable-length-storage-information-thanks-to-pageinspect/" ---
-
+---
+layout: post
+title: Retrieve PostgreSQL variable-length storage information thanks to pageinspect
+date: 2020-01-18 13:49:47.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- Postgresql
+tags: []
+meta:
+  _edit_last: '40807211'
+  geo_public: '0'
+  _wpas_skip_7950430: '1'
+  timeline_notification: '1579351791'
+  _publicize_job_id: '39682411733'
+  _publicize_done_external: a:1:{s:7:"twitter";a:1:{i:2225791;s:62:"https://twitter.com/BertrandDrouvot/status/1218515849352548358";}}
+  _publicize_done_2558296: '1'
+  _wpas_done_2225791: '1'
+  publicize_twitter_user: BertrandDrouvot
+  publicize_linkedin_url: ''
+  _publicize_done_22399261: '1'
+  _wpas_done_23399164: '1'
+author:
+  login: bdrouvot
+  email: bdtoracleblog@gmail.com
+  display_name: bdrouvot
+  first_name: ''
+  last_name: ''
+permalink: "/2020/01/18/retrieve-postgresql-variable-length-storage-information-thanks-to-pageinspect/"
+---
 ### Introduction
 
 In PostgreSQL a variable-length datatype value can be stored in-line or out-of-line (as a TOAST). It can also be compressed or not (see the [documentation](https://www.postgresql.org/docs/current/storage-toast.html) for more details).
