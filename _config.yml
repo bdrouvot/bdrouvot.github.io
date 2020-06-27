@@ -12,6 +12,10 @@ url: "https://bdrouvot.github.io"
 # baseurl should be an empty string
 #baseurl: ""
 
+show_excerpts: true
+permalink: /:title/
+
+
 # --- Navigation bar options --- #
 
 # List of links in the navigation bar
