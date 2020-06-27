@@ -10,7 +10,7 @@ description: Sharing stuff (by Bertrand Drouvot)
 url: "https://bdrouvot.github.io"
 
 # baseurl should be an empty string
-#baseurl: ""
+baseurl: ""
 
 show_excerpts: true
 permalink: /:title/
