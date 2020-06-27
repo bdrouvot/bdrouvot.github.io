@@ -47,7 +47,7 @@ The only difference with gv$asm\_disk\_stat is the information available in memo
 
 <span style="text-decoration:underline;">So, let's have a look of the metrics collected by the script:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asm_metrics.png" class="aligncenter size-full wp-image-678" width="620" height="42" alt="asm_metrics" />](http://bdrouvot.files.wordpress.com/2013/02/asm_metrics.png)
+[<img src="{{ site.baseurl }}/assets/images/asm_metrics.png" class="aligncenter size-full wp-image-678" width="620" height="42" alt="asm_metrics" />](http://bdrouvot.files.wordpress.com/2013/02/asm_metrics.png)
 
 <span style="text-decoration:underline;">Description is the following:</span>
 
@@ -62,13 +62,13 @@ The only difference with gv$asm\_disk\_stat is the information available in memo
 
 Suppose I want to display the metrics by Diskgroup (default behavior), the output will be like:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asm_dg.png" class="aligncenter size-full wp-image-679" width="620" height="142" alt="asm_dg" />](http://bdrouvot.files.wordpress.com/2013/02/asm_dg.png)
+[<img src="{{ site.baseurl }}/assets/images/asm_dg.png" class="aligncenter size-full wp-image-679" width="620" height="142" alt="asm_dg" />](http://bdrouvot.files.wordpress.com/2013/02/asm_dg.png)
 
 You see the blank values for: INST (instance), FG (Failgroup) and DSK (disks)? It means that those values have been aggregated.
 
 Of course, you can display them as well, for example let's display INST too:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asm_inst_dg.png" class="aligncenter size-full wp-image-680" width="620" height="249" alt="asm_inst_dg" />](http://bdrouvot.files.wordpress.com/2013/02/asm_inst_dg.png)
+[<img src="{{ site.baseurl }}/assets/images/asm_inst_dg.png" class="aligncenter size-full wp-image-680" width="620" height="249" alt="asm_inst_dg" />](http://bdrouvot.files.wordpress.com/2013/02/asm_inst_dg.png)
 
 As you can see you now have the metrics for the diskgroups by Instance <span style="color:#0000ff;">and also</span> for the Instance itself (The row with the blank DG Field).
 
@@ -76,7 +76,7 @@ As you can see you now have the metrics for the diskgroups by Instance <span sty
 
 You can <span style="color:#0000ff;">also filter</span> on INST, DG and FG:  For example let's display the metrics for the DATA diskgroup and its associated disks and failgroups:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/asm_inst_dg_fg_dsk.png" class="aligncenter size-full wp-image-681" width="620" height="196" alt="asm_inst_dg_fg_dsk" />](http://bdrouvot.files.wordpress.com/2013/02/asm_inst_dg_fg_dsk.png)
+[<img src="{{ site.baseurl }}/assets/images/asm_inst_dg_fg_dsk.png" class="aligncenter size-full wp-image-681" width="620" height="196" alt="asm_inst_dg_fg_dsk" />](http://bdrouvot.files.wordpress.com/2013/02/asm_inst_dg_fg_dsk.png)
 
 <span style="text-decoration:underline;">Now let's see the utility usage:</span>
 

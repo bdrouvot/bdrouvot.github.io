@@ -38,7 +38,7 @@ permalink: "/2014/05/09/db_iometrics-family/"
 
 Into the last three posts I introduced three utilities to report database physical IO metrics in real time.
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-05-09-at-08-40-54.png?w=300" class="alignright size-medium wp-image-1970" width="300" height="261" alt="Screen Shot 2014-05-09 at 08.40.54" />](http://bdrouvot.files.wordpress.com/2014/05/screen-shot-2014-05-09-at-08-40-54.png)I just want to introduce again those three utilities into a single post as:
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-05-09-at-08-40-54.png?w=300" class="alignright size-medium wp-image-1970" width="300" height="261" alt="Screen Shot 2014-05-09 at 08.40.54" />](http://bdrouvot.files.wordpress.com/2014/05/screen-shot-2014-05-09-at-08-40-54.png)I just want to introduce again those three utilities into a single post as:
 
 -   You may have missed one of them.
 -   They are all members of the same family.
@@ -55,6 +55,6 @@ If a new member join this family, I will let you know.
 
 -   One member of the family looks like [SLOB](http://kevinclosson.wordpress.com/2013/05/02/slob-2-a-significant-update-links-are-here/)'s logo (see below its "official" logo) designed by [flashdba](http://flashdba.com/)'s childs, don't you think? ;-)
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-05-09-at-11-54-47.png?w=213" class="aligncenter size-medium wp-image-1972" width="213" height="300" alt="Screen Shot 2014-05-09 at 11.54.47" />](http://bdrouvot.files.wordpress.com/2014/05/screen-shot-2014-05-09-at-11-54-47.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-05-09-at-11-54-47.png?w=213" class="aligncenter size-medium wp-image-1972" width="213" height="300" alt="Screen Shot 2014-05-09 at 11.54.47" />](http://bdrouvot.files.wordpress.com/2014/05/screen-shot-2014-05-09-at-11-54-47.png)
 
 -    If you are interested in IO metrics related to ASM, you can have a look to the [asm\_metrics](http://bdrouvot.wordpress.com/asm_metrics_script/ "asm_metrics") utility.

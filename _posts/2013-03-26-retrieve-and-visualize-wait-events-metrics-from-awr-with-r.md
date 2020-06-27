@@ -160,7 +160,7 @@ For example, let's focus on the "db file sequential read" wait event over the la
 
 <span style="text-decoration:underline;color:#0000ff;">The output will be like:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/db_file_sequential_read.png" class="aligncenter size-full wp-image-850" width="620" height="411" alt="db_file_sequential_read" />](http://bdrouvot.files.wordpress.com/2013/03/db_file_sequential_read.png)
+[<img src="{{ site.baseurl }}/assets/images/db_file_sequential_read.png" class="aligncenter size-full wp-image-850" width="620" height="411" alt="db_file_sequential_read" />](http://bdrouvot.files.wordpress.com/2013/03/db_file_sequential_read.png)
 
 and the [db\_file\_sequential\_read](http://bdrouvot.files.wordpress.com/2013/03/db_file_sequential_read.pdf) pdf  file will be generated as well.
 

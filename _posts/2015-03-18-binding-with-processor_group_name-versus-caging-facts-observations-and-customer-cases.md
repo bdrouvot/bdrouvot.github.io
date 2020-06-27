@@ -77,7 +77,7 @@ This blog post is composed of 4 mains parts:
 
 Graphical view with multiple databases limited as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/instance_caging_graphical_view1.png" class="aligncenter size-full wp-image-2659" width="621" height="497" alt="instance_caging_graphical_view" />](https://bdrouvot.files.wordpress.com/2015/03/instance_caging_graphical_view1.png)**processor\_group\_name**: Bind a database instance to specific CPUs / NUMA nodes. It is enabled in 4 steps on my RedHat 6.5 machine:
+[<img src="{{ site.baseurl }}/assets/images/instance_caging_graphical_view1.png" class="aligncenter size-full wp-image-2659" width="621" height="497" alt="instance_caging_graphical_view" />](https://bdrouvot.files.wordpress.com/2015/03/instance_caging_graphical_view1.png)**processor\_group\_name**: Bind a database instance to specific CPUs / NUMA nodes. It is enabled in 4 steps on my RedHat 6.5 machine:
 
 -    Specify the CPUs or NUMA nodes by creating a “processor group”:
 
@@ -116,7 +116,7 @@ Example: Snippet of */etc/cgconfig.conf*:
 
 Graphical view with multiple databases bound as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/cpu_binding_graphical_view1.png" class="aligncenter size-full wp-image-2660" width="640" height="175" alt="cpu_binding_graphical_view" />](https://bdrouvot.files.wordpress.com/2015/03/cpu_binding_graphical_view1.png)This graphical view represents the **ideal** configuration, where a database is bound to specific CPUs and NUMA **local** memory (If you need more details, see the observation number 1 later on this post).
+[<img src="{{ site.baseurl }}/assets/images/cpu_binding_graphical_view1.png" class="aligncenter size-full wp-image-2660" width="640" height="175" alt="cpu_binding_graphical_view" />](https://bdrouvot.files.wordpress.com/2015/03/cpu_binding_graphical_view1.png)This graphical view represents the **ideal** configuration, where a database is bound to specific CPUs and NUMA **local** memory (If you need more details, see the observation number 1 later on this post).
 
 <span style="text-decoration:underline;">Remark regarding the Database Availability:</span>
 
@@ -136,11 +136,11 @@ The observations have been made on a 12.1.0.2 database using large pages (*use\_
 
 **   2.Without binding**, the SGA is **interleaved** across all the NUMA nodes (unless you set the oracle hidden parameter *\_enable\_NUMA\_interleave* to FALSE):
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/numa_mem_alloc_db_no_bind2.png" class="aligncenter size-full wp-image-2663" width="640" height="85" alt="numa_mem_alloc_db_no_bind" />](https://bdrouvot.files.wordpress.com/2015/03/numa_mem_alloc_db_no_bind2.png)
+[<img src="{{ site.baseurl }}/assets/images/numa_mem_alloc_db_no_bind2.png" class="aligncenter size-full wp-image-2663" width="640" height="85" alt="numa_mem_alloc_db_no_bind" />](https://bdrouvot.files.wordpress.com/2015/03/numa_mem_alloc_db_no_bind2.png)
 
 **   3.With binding** (on more than one NUMA nodes), the SGA **is not interleaved** across all the NUMA nodes (SGA bind on nodes 0 and 1):
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/numa_mem_alloc_db_bind_nodes_0_11.png" class="aligncenter size-full wp-image-2665" width="640" height="85" alt="numa_mem_alloc_db_bind_nodes_0_1" />](https://bdrouvot.files.wordpress.com/2015/03/numa_mem_alloc_db_bind_nodes_0_11.png)
+[<img src="{{ site.baseurl }}/assets/images/numa_mem_alloc_db_bind_nodes_0_11.png" class="aligncenter size-full wp-image-2665" width="640" height="85" alt="numa_mem_alloc_db_bind_nodes_0_1" />](https://bdrouvot.files.wordpress.com/2015/03/numa_mem_alloc_db_bind_nodes_0_11.png)
 
 **   4.Instance caging has been less performant **(compare to the **cpu binding**) during LIO pressure (by pressure I mean that the database needs **more cpu resources** than the ones it is limited to use) (See this [blog post](https://bdrouvot.wordpress.com/2015/01/15/cpu-binding-processor_group_name-vs-instance-caging-comparison-during-lio-pressure/ "cpu binding (processor_group_name) vs Instance caging comparison during LIO pressure") for more details). Please note that the comparison has been done on the **same** NUMA node (to avoid binding advantage over caging due to observations number 1 and 2).
 
@@ -163,11 +163,11 @@ The database has the caging enabled with the *cpu\_count* parameter set to **6**
 
 The OEM view:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/new_caging_6_nocg-_for_blog.png" class="aligncenter size-full wp-image-2651" width="640" height="112" alt="new_caging_6_nocg _for_blog" />](https://bdrouvot.files.wordpress.com/2015/03/new_caging_6_nocg-_for_blog.png)As you can see: In average about 6 sessions are running on the CPU and about 3 are waiting in the “Scheduler” wait class.
+[<img src="{{ site.baseurl }}/assets/images/new_caging_6_nocg-_for_blog.png" class="aligncenter size-full wp-image-2651" width="640" height="112" alt="new_caging_6_nocg _for_blog" />](https://bdrouvot.files.wordpress.com/2015/03/new_caging_6_nocg-_for_blog.png)As you can see: In average about 6 sessions are running on the CPU and about 3 are waiting in the “Scheduler” wait class.
 
 The AWR view:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/awr_caging_6_nocg.png" class="aligncenter size-full wp-image-2652" width="590" height="239" alt="awr_caging_6_nocg" />](https://bdrouvot.files.wordpress.com/2015/03/awr_caging_6_nocg.png)As you can see: Approximatively 60% of the DB time is spend on CPU and 40% is spend waiting because of the caging (Scheduler wait class).
+[<img src="{{ site.baseurl }}/assets/images/awr_caging_6_nocg.png" class="aligncenter size-full wp-image-2652" width="590" height="239" alt="awr_caging_6_nocg" />](https://bdrouvot.files.wordpress.com/2015/03/awr_caging_6_nocg.png)As you can see: Approximatively 60% of the DB time is spend on CPU and 40% is spend waiting because of the caging (Scheduler wait class).
 
 **CPU pressure with Binding:**
 
@@ -175,13 +175,13 @@ The *processor\_group\_name* is set to a cgroup of **6** CPUs. The Instance is r
 
 The OEM view:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/new_cg6_for_blog.png" class="aligncenter size-full wp-image-2653" width="640" height="112" alt="new_cg6_for_blog" />](https://bdrouvot.files.wordpress.com/2015/03/new_cg6_for_blog.png)As you can see: In average **6** sessions are running on CPU and **3** are waiting for the CPU (runqueue).
+[<img src="{{ site.baseurl }}/assets/images/new_cg6_for_blog.png" class="aligncenter size-full wp-image-2653" width="640" height="112" alt="new_cg6_for_blog" />](https://bdrouvot.files.wordpress.com/2015/03/new_cg6_for_blog.png)As you can see: In average **6** sessions are running on CPU and **3** are waiting for the CPU (runqueue).
 
 The AWR view:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/awr_cg_6_top10.png" class="aligncenter size-full wp-image-2654" width="640" height="173" alt="awr_cg_6_top10" />](https://bdrouvot.files.wordpress.com/2015/03/awr_cg_6_top10.png)New “Top Events” section as of 12c:
+[<img src="{{ site.baseurl }}/assets/images/awr_cg_6_top10.png" class="aligncenter size-full wp-image-2654" width="640" height="173" alt="awr_cg_6_top10" />](https://bdrouvot.files.wordpress.com/2015/03/awr_cg_6_top10.png)New “Top Events” section as of 12c:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/awr_cg_6_topevents.png" class="size-full wp-image-2655 alignleft" width="433" height="145" alt="awr_cg_6_topevents" />](https://bdrouvot.files.wordpress.com/2015/03/awr_cg_6_topevents.png)
+[<img src="{{ site.baseurl }}/assets/images/awr_cg_6_topevents.png" class="size-full wp-image-2655 alignleft" width="433" height="145" alt="awr_cg_6_topevents" />](https://bdrouvot.files.wordpress.com/2015/03/awr_cg_6_topevents.png)
 
  
 
@@ -193,7 +193,7 @@ The AWR view:
 
 To summarize:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/awr_12c_top_event_cg6.png" class="aligncenter size-full wp-image-2656" width="640" height="352" alt="awr_12c_top_event_cg6" />](https://bdrouvot.files.wordpress.com/2015/03/awr_12c_top_event_cg6.png)Then, we can conclude that:
+[<img src="{{ site.baseurl }}/assets/images/awr_12c_top_event_cg6.png" class="aligncenter size-full wp-image-2656" width="640" height="352" alt="awr_12c_top_event_cg6" />](https://bdrouvot.files.wordpress.com/2015/03/awr_12c_top_event_cg6.png)Then, we can conclude that:
 
 -   65.5% of the DB time has been spent on the CPU.
 -   99.62–65.5 = 34.12% of the DB time has been spent into the runqueue.
@@ -213,7 +213,7 @@ Then we want to limit its CPU usage:
 
 Example of such a case by implementing Caging:
 
-### [<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/caging_on_the_fly.png" class="aligncenter size-full wp-image-2635" width="640" height="283" alt="caging_on_the_fly" />](https://bdrouvot.files.wordpress.com/2015/03/caging_on_the_fly.png)**What to choose?**
+### [<img src="{{ site.baseurl }}/assets/images/caging_on_the_fly.png" class="aligncenter size-full wp-image-2635" width="640" height="283" alt="caging_on_the_fly" />](https://bdrouvot.files.wordpress.com/2015/03/caging_on_the_fly.png)**What to choose?**
 
 The caging is the best choice in this case (as it is the easiest and we don't need to restart the database).
 
@@ -235,7 +235,7 @@ For the following cases we need to define 2 categories of database:
 
 Graphical view as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/all_caged_databases_level.png" class="aligncenter size-full wp-image-2668" width="601" height="484" alt="all_caged_databases_level" />](https://bdrouvot.files.wordpress.com/2015/03/all_caged_databases_level.png)If you need to add a new database (a paying one or a non-paying one) and you are already in a situation where "*sum(cpu\_count) = Total number of threads*" then you have to review the caging of all non-paying databases (to not over allocate the machine).
+[<img src="{{ site.baseurl }}/assets/images/all_caged_databases_level.png" class="aligncenter size-full wp-image-2668" width="601" height="484" alt="all_caged_databases_level" />](https://bdrouvot.files.wordpress.com/2015/03/all_caged_databases_level.png)If you need to add a new database (a paying one or a non-paying one) and you are already in a situation where "*sum(cpu\_count) = Total number of threads*" then you have to review the caging of all non-paying databases (to not over allocate the machine).
 
 ### **Binding:**
 
@@ -248,7 +248,7 @@ That way we can easily mix paying and non-paying customer on the same machine.
 
 Graphical View as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/bind_all_databases_level.png" class="aligncenter size-full wp-image-2669" width="640" height="201" alt="bind_all_databases_level" />](https://bdrouvot.files.wordpress.com/2015/03/bind_all_databases_level.png)If you need to add a new database then, if this is:
+[<img src="{{ site.baseurl }}/assets/images/bind_all_databases_level.png" class="aligncenter size-full wp-image-2669" width="640" height="201" alt="bind_all_databases_level" />](https://bdrouvot.files.wordpress.com/2015/03/bind_all_databases_level.png)If you need to add a new database then, if this is:
 
 -   A non-paying one: Put it into the non-paying group.
 -   A paying one: Create a new cgroup for it, assigning CPU taken away from non-paying ones if needed.
@@ -260,7 +260,7 @@ Graphical View as an example:
 
 Graphical View as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/bind_caging_mix.png" class="aligncenter size-full wp-image-2670" width="640" height="180" alt="bind_caging_mix" />](https://bdrouvot.files.wordpress.com/2015/03/bind_caging_mix.png)If you need to add a new database then, if this is:
+[<img src="{{ site.baseurl }}/assets/images/bind_caging_mix.png" class="aligncenter size-full wp-image-2670" width="640" height="180" alt="bind_caging_mix" />](https://bdrouvot.files.wordpress.com/2015/03/bind_caging_mix.png)If you need to add a new database then, if this is:
 
 -   A non-paying one: Put it into the non-paying group.
 -   A paying one: Extend the paying group if needed (taking CPU away from non-paying ones) and cage it accordingly.
@@ -287,7 +287,7 @@ That way the paying databases have guaranteed **at least** the resources **they 
 
 Graphical View as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/caging_1group_option1.png" class="aligncenter size-full wp-image-2672" width="640" height="435" alt="caging_1group_option1" />](https://bdrouvot.files.wordpress.com/2015/03/caging_1group_option1.png)If you need to add a new database then, if this is:
+[<img src="{{ site.baseurl }}/assets/images/caging_1group_option1.png" class="aligncenter size-full wp-image-2672" width="640" height="435" alt="caging_1group_option1" />](https://bdrouvot.files.wordpress.com/2015/03/caging_1group_option1.png)If you need to add a new database then, if this is:
 
 -   A non-paying one: Cage it but you may need to re-cage all the non-paying ones to guarantee the paying ones still get its "minimum" resource.
 -   A paying one: Nothing to do.
@@ -302,7 +302,7 @@ That way the paying databases have guaranteed **exactly** the resources **they p
 
 Graphical View as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/caging_1group_option2.png" class="aligncenter size-full wp-image-2673" width="640" height="435" alt="caging_1group_option2" />](https://bdrouvot.files.wordpress.com/2015/03/caging_1group_option2.png)If you need to add a new database (a paying one or a non-paying one) and you are already in a situation where "*sum(cpu\_count) = Total number of threads*" then you have to review the caging of all non-paying databases (to not over allocate the machine).
+[<img src="{{ site.baseurl }}/assets/images/caging_1group_option2.png" class="aligncenter size-full wp-image-2673" width="640" height="435" alt="caging_1group_option2" />](https://bdrouvot.files.wordpress.com/2015/03/caging_1group_option2.png)If you need to add a new database (a paying one or a non-paying one) and you are already in a situation where "*sum(cpu\_count) = Total number of threads*" then you have to review the caging of all non-paying databases (to not over allocate the machine).
 
 ### **Binding**:
 
@@ -316,7 +316,7 @@ Again 2 options:
 
 Graphical View as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/bind_1group_option1.png" class="aligncenter size-full wp-image-2675" width="640" height="357" alt="bind_1group_option1" />](https://bdrouvot.files.wordpress.com/2015/03/bind_1group_option1.png)If you need to add a new database then, if this is:
+[<img src="{{ site.baseurl }}/assets/images/bind_1group_option1.png" class="aligncenter size-full wp-image-2675" width="640" height="357" alt="bind_1group_option1" />](https://bdrouvot.files.wordpress.com/2015/03/bind_1group_option1.png)If you need to add a new database then, if this is:
 
 -   A non-paying one: Put it in the non-paying cgroup.
 -   A paying one: Create it outside the non-paying cgroup.
@@ -330,7 +330,7 @@ That way the paying databases have guaranteed **exactly **the resources **they 
 
 Graphical View:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/bind_1group_option2.png" class="aligncenter size-full wp-image-2676" width="640" height="173" alt="bind_1group_option2" />](https://bdrouvot.files.wordpress.com/2015/03/bind_1group_option2.png)If you need to add a new database, then if this is:
+[<img src="{{ site.baseurl }}/assets/images/bind_1group_option2.png" class="aligncenter size-full wp-image-2676" width="640" height="173" alt="bind_1group_option2" />](https://bdrouvot.files.wordpress.com/2015/03/bind_1group_option2.png)If you need to add a new database, then if this is:
 
 -   A non-paying one: Put it in the non-paying cgroup.
 -   A paying one: Put it in the paying cgroup.
@@ -356,7 +356,7 @@ I like the option 1) in both cases as it allows customer to get more than what t
 
 Graphical View as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/caging_2groups.png" class="aligncenter size-full wp-image-2677" width="640" height="435" alt="caging_2groups" />](https://bdrouvot.files.wordpress.com/2015/03/caging_2groups.png)If you need to add a new database (a paying one or a non-paying one) and you are already in a situation where "*sum(cpu\_count) = Total number of threads*" then you have to review the caging of all non-paying databases (to not over allocate the machine).
+[<img src="{{ site.baseurl }}/assets/images/caging_2groups.png" class="aligncenter size-full wp-image-2677" width="640" height="435" alt="caging_2groups" />](https://bdrouvot.files.wordpress.com/2015/03/caging_2groups.png)If you need to add a new database (a paying one or a non-paying one) and you are already in a situation where "*sum(cpu\_count) = Total number of threads*" then you have to review the caging of all non-paying databases (to not over allocate the machine).
 
 Overlapping is not possible in that case (means you can't guarantee resources with overlapping).
 
@@ -367,7 +367,7 @@ Overlapping is not possible in that case (means you can't guarantee resources w
 
 Graphical view as an example:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/bind_2groups.png" class="aligncenter size-full wp-image-2678" width="640" height="115" alt="bind_2groups" />](https://bdrouvot.files.wordpress.com/2015/03/bind_2groups.png)
+[<img src="{{ site.baseurl }}/assets/images/bind_2groups.png" class="aligncenter size-full wp-image-2678" width="640" height="115" alt="bind_2groups" />](https://bdrouvot.files.wordpress.com/2015/03/bind_2groups.png)
 
 If you need to add a database, then simply put it in the right group.
 

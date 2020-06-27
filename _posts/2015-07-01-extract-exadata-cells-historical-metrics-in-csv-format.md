@@ -125,7 +125,7 @@ I want to retrieve in csv format the metrics from 2 cells related to databases f
 
 That way, you could visualize your data the way you feel comfortable with. For example, I used [tableau](https://public.tableau.com/s/) to create this "Database metrics dashboard" on DB\_\* rate metrics:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/cells_metrics.png" class="aligncenter size-full wp-image-2845" width="640" height="288" alt="cells_metrics" />](https://bdrouvot.files.wordpress.com/2015/07/cells_metrics.png)
+[<img src="{{ site.baseurl }}/assets/images/cells_metrics.png" class="aligncenter size-full wp-image-2845" width="640" height="288" alt="cells_metrics" />](https://bdrouvot.files.wordpress.com/2015/07/cells_metrics.png)
 
 <span style="text-decoration:underline;">**Remarks:**</span>
 

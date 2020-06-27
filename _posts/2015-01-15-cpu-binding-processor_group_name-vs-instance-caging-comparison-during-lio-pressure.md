@@ -212,7 +212,7 @@ As you can see during those 5 minutes run time:
 
 This last observation is due to the fact that "*CPU WAIT*" is not included into "*DB CPU*". OEM gives a clear picture of it:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/new_cg6_for_blog.png" class="aligncenter size-full wp-image-2515" width="640" height="112" alt="new_cg6_for_blog" />](https://bdrouvot.files.wordpress.com/2015/01/new_cg6_for_blog.png)
+[<img src="{{ site.baseurl }}/assets/images/new_cg6_for_blog.png" class="aligncenter size-full wp-image-2515" width="640" height="112" alt="new_cg6_for_blog" />](https://bdrouvot.files.wordpress.com/2015/01/new_cg6_for_blog.png)
 
 <span style="text-decoration:underline;">Remarks:</span>
 

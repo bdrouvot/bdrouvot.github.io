@@ -357,7 +357,7 @@ Imagine that you launched multiple full cached [SLOB](http://kevinclosson.net/s
 
 Example: I launched 11 full cached SLOB runs with 2,4,6,8,12,16,18,20,24,28 and 32 sessions running. The LIOPS graph is the following:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2015-09-22-at-09-29-08.png" class="aligncenter size-full wp-image-2901" width="640" height="603" alt="Screen Shot 2015-09-22 at 09.29.08" />](https://bdrouvot.files.wordpress.com/2015/09/screen-shot-2015-09-22-at-09-29-08.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2015-09-22-at-09-29-08.png" class="aligncenter size-full wp-image-2901" width="640" height="603" alt="Screen Shot 2015-09-22 at 09.29.08" />](https://bdrouvot.files.wordpress.com/2015/09/screen-shot-2015-09-22-at-09-29-08.png)
 
 Just check the curve of the graph (not the values). As you can see, once the number of sessions reached the number of cores (16) the LIOPS is still increasing but its increase rate is slow down. One of the reason is the one we observed during our previous tests: 2 sessions running on the same core don't perform as fast as 2 sessions running on 2 distincts cores.
 

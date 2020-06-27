@@ -33,7 +33,7 @@ You'll attend Oracle OpenWorld 2013 and:
 
 <span style="text-decoration:underline;">So, you should attend to RAC Attack at Oracle OpenWorld 2013:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/rac-attack.png" class="aligncenter size-full wp-image-1378" width="620" height="464" alt="RAC-attack" />](http://bdrouvot.files.wordpress.com/2013/09/rac-attack.png)
+[<img src="{{ site.baseurl }}/assets/images/rac-attack.png" class="aligncenter size-full wp-image-1378" width="620" height="464" alt="RAC-attack" />](http://bdrouvot.files.wordpress.com/2013/09/rac-attack.png)
 
 **Don't be afraid ! we won't configure an extended RAC and then no need to break your laptop into 2 separate pieces to simulate a stretched cluster :-)**
 

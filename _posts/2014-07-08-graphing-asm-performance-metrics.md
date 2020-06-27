@@ -137,15 +137,15 @@ The *ms/Read* and *By/Read* measures **depend on the number of reads**. So the a
 
 Let's create the calculated field in Tableau for those Weighted Averages:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-13-28.png" class="aligncenter size-full wp-image-2024" width="453" height="575" alt="Screen Shot 2014-07-07 at 20.13.28" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-13-28.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-13-28.png" class="aligncenter size-full wp-image-2024" width="453" height="575" alt="Screen Shot 2014-07-07 at 20.13.28" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-13-28.png)
 
 <span style="text-decoration:underline;">so that weighted Average ms/Read is:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-16-19.png" class="aligncenter size-full wp-image-2025" width="640" height="234" alt="Screen Shot 2014-07-07 at 20.16.19" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-16-19.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-16-19.png" class="aligncenter size-full wp-image-2025" width="640" height="234" alt="Screen Shot 2014-07-07 at 20.16.19" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-16-19.png)
 
 <span style="text-decoration:underline;">Weighted Average By/Read:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-21-12.png" class="aligncenter size-full wp-image-2026" width="640" height="230" alt="Screen Shot 2014-07-07 at 20.21.12" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-21-12.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-21-12.png" class="aligncenter size-full wp-image-2026" width="640" height="230" alt="Screen Shot 2014-07-07 at 20.21.12" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-21-12.png)
 
 <span style="text-decoration:underline;">The same way you have to create:</span>
 
@@ -156,15 +156,15 @@ Now let's display the average read latency by Failgroup (using the previous calc
 
 Drag the *Snap Time* dimension to the "columns" shelf and choose "exact date":
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-27-23.png" class="aligncenter size-full wp-image-2027" width="343" height="591" alt="Screen Shot 2014-07-07 at 20.27.23" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-27-23.png)Drag the *Weighted Average ms/Read* calculated field to the "Rows" shelf:
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-27-23.png" class="aligncenter size-full wp-image-2027" width="343" height="591" alt="Screen Shot 2014-07-07 at 20.27.23" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-27-23.png)Drag the *Weighted Average ms/Read* calculated field to the "Rows" shelf:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-29-41.png" class="aligncenter size-full wp-image-2028" width="640" height="421" alt="Screen Shot 2014-07-07 at 20.29.41" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-29-41.png)Drag the *FG* dimension to the "Color Marks" shelf:
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-29-41.png" class="aligncenter size-full wp-image-2028" width="640" height="421" alt="Screen Shot 2014-07-07 at 20.29.41" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-29-41.png)Drag the *FG* dimension to the "Color Marks" shelf:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-32-33.png" class="aligncenter size-full wp-image-2029" width="160" height="274" alt="Screen Shot 2014-07-07 at 20.32.33" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-32-33.png)So that the graph looks like:
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-32-33.png" class="aligncenter size-full wp-image-2029" width="160" height="274" alt="Screen Shot 2014-07-07 at 20.32.33" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-32-33.png)So that the graph looks like:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-33-15.png" class="aligncenter size-full wp-image-2030" width="640" height="419" alt="Screen Shot 2014-07-07 at 20.33.15" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-33-15.png)Create the same graph for the "Kby Read/s" measure (except that I want to see the sum (i.e the throughput and not the average) and put those 2 graphs into the same dashboard:
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-33-15.png" class="aligncenter size-full wp-image-2030" width="640" height="419" alt="Screen Shot 2014-07-07 at 20.33.15" />](https://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-33-15.png)Create the same graph for the "Kby Read/s" measure (except that I want to see the sum (i.e the throughput and not the average) and put those 2 graphs into the same dashboard:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-07-07-at-20-39-42.png" class="aligncenter size-full wp-image-2032" width="640" height="383" alt="Screen Shot 2014-07-07 at 20.39.42" />](http://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-39-42.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-07-07-at-20-39-42.png" class="aligncenter size-full wp-image-2032" width="640" height="383" alt="Screen Shot 2014-07-07 at 20.39.42" />](http://bdrouvot.files.wordpress.com/2014/07/screen-shot-2014-07-07-at-20-39-42.png)
 
 Here we are.
 

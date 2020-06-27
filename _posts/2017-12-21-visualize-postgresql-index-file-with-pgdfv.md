@@ -102,7 +102,7 @@ Let’s check which file contains the table and which one contains the index:
 
 So that we can use the utility on those files that way:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2017-12-21-at-16-41-53.png" class="aligncenter size-full wp-image-3323" width="1100" height="365" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-16-41-53/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-21-at-16-41-53.png" class="aligncenter size-full wp-image-3323" width="1100" height="365" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-16-41-53/)
 
 So the data block has been displayed (same behavior as the previous [blog post](https://bdrouvot.wordpress.com/2017/12/10/welcome-to-pgdfv-postgresql-data-file-visualizer/)) and also 2 index blocks.
 
@@ -147,7 +147,7 @@ Let's update 3 rows: one update on the indexed column and 2 updates on the non i
 
 And launch the tool again:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2017-12-21-at-16-47-34.png" class="aligncenter size-full wp-image-3324" width="1100" height="367" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-16-47-34/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-21-at-16-47-34.png" class="aligncenter size-full wp-image-3324" width="1100" height="367" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-16-47-34/)
 
 As you can see we still have more than 75% of free space in the leaf index block but the way to display the color has been changed (because now **less** than 50% of the rows the index refers to are current aka tx\_max = 0) and HOT redirect is still less than 10% (0 is displayed).
 
@@ -180,7 +180,7 @@ Let’s vacuum the table:
 
 and launch the utility:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2017-12-21-at-16-50-52.png" class="aligncenter size-full wp-image-3325" width="1100" height="362" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-16-50-52/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-21-at-16-50-52.png" class="aligncenter size-full wp-image-3325" width="1100" height="362" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-16-50-52/)
 
 As you can see we still have more than 75% of free space. Now more than 50% of the rows the index refers to are current. The index refers to between 50 and 60% of HOT redirect rows (so 5 is displayed) (for ctid (0,2) and (0,3): so 2 rows out of 4 the index refers to).
 
@@ -188,11 +188,11 @@ The legend and summary are **dynamic** and depend of the contents of the scann
 
 For example on a table made of 757 blocks, you could end up with something like:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2017-12-21-at-17-16-49.png" class="aligncenter size-full wp-image-3327" width="1100" height="577" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-17-16-49/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-21-at-17-16-49.png" class="aligncenter size-full wp-image-3327" width="1100" height="577" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-17-16-49/)
 
 The same table, once FULL vacuum would produce:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2017-12-21-at-17-21-25.png" class="aligncenter size-full wp-image-3328" width="1100" height="415" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-17-21-25/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2017-12-21-at-17-21-25.png" class="aligncenter size-full wp-image-3328" width="1100" height="415" />](https://bdrouvot.wordpress.com/2017/12/21/visualize-postgresql-index-file-with-pgdfv/screen-shot-2017-12-21-at-17-21-25/)
 
 Remarks
 -------

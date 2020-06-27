@@ -34,7 +34,7 @@ If you begin working with Data Guard and you want to learn quickly, I would like
 
 **Oracle Data Guard 11gR2 Administration Beginner's Guide**
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/oracle-data-guard-image.jpg" width="500" height="617" alt="Oracle data guard image" />](http://bdrouvot.files.wordpress.com/2013/08/oracle-data-guard-image.jpg)
+[<img src="{{ site.baseurl }}/assets/images/oracle-data-guard-image.jpg" width="500" height="617" alt="Oracle data guard image" />](http://bdrouvot.files.wordpress.com/2013/08/oracle-data-guard-image.jpg)
 
 This book has been written by [Emre Baransel](http://emrebaransel.blogspot.fr/) and [Nassyam Basha](http://www.oracle-ckpt.com/).
 

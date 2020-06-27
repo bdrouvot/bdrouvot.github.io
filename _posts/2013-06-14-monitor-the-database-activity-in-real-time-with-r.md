@@ -37,15 +37,15 @@ The "**graph\_real\_time\_db\_activity.r**" script (You can download it from thi
 
 -   A sub-graph for the time waited (in ms) per wait class.
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_time_values.png" class="aligncenter size-full wp-image-1085" width="620" height="184" alt="real_time_db_activity_time_values" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_time_values.png)
+[<img src="{{ site.baseurl }}/assets/images/real_time_db_activity_time_values.png" class="aligncenter size-full wp-image-1085" width="620" height="184" alt="real_time_db_activity_time_values" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_time_values.png)
 
 -   A sub-graph for the wait events distribution of the wait class having the max time waited during the last snap.
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_events_distribution.png" class="aligncenter size-full wp-image-1086" width="526" height="364" alt="real_time_db_activity_events_distribution" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_events_distribution.png)
+[<img src="{{ site.baseurl }}/assets/images/real_time_db_activity_events_distribution.png" class="aligncenter size-full wp-image-1086" width="526" height="364" alt="real_time_db_activity_events_distribution" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_events_distribution.png)
 
 -   A sub-graph for the wait class distribution since the script has been launched.
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_wait_class_distribution.png" class="aligncenter size-full wp-image-1087" width="472" height="365" alt="real_time_db_activity_wait_class_distribution" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_distribution.png)
+[<img src="{{ site.baseurl }}/assets/images/real_time_db_activity_wait_class_distribution.png" class="aligncenter size-full wp-image-1087" width="472" height="365" alt="real_time_db_activity_wait_class_distribution" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_distribution.png)
 
 <span style="text-decoration:underline;">The script also provides:</span>
 
@@ -83,7 +83,7 @@ So you can **choose the number of snapshots and the graph refresh interval**.
 
 <span style="text-decoration:underline;">**The output is like:**</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_activity_wait_class_all.png" class="aligncenter size-full wp-image-1090" width="620" height="395" alt="real_time_db_activity_wait_class_all" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_all.png)
+[<img src="{{ site.baseurl }}/assets/images/real_time_db_activity_wait_class_all.png" class="aligncenter size-full wp-image-1090" width="620" height="395" alt="real_time_db_activity_wait_class_all" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_activity_wait_class_all.png)
 
 <span style="text-decoration:underline;">**Remarks:**</span>
 

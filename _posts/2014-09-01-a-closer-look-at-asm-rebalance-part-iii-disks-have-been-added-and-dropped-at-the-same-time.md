@@ -72,7 +72,7 @@ I'll present the results with [Tableau](http://www.tableausoftware.com/public//c
 
 First let's verify that the whole rebalance activity has been done on the +ASM1 instance (As I launched the rebalance operations from it).
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-20-29-42.png" class="aligncenter size-full wp-image-2252" width="640" height="307" alt="Screen Shot 2014-09-01 at 20.29.42" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-20-29-42.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-20-29-42.png" class="aligncenter size-full wp-image-2252" width="640" height="307" alt="Screen Shot 2014-09-01 at 20.29.42" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-20-29-42.png)
 
 <span style="text-decoration:underline;">We can see:</span>
 
@@ -84,11 +84,11 @@ Now I would like to compare the behavior of 3 Sets of Disks: The disks that have
 
 To do so, let's create in Tableau 3 groups:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-21-00-06.png" class="aligncenter size-full wp-image-2255" width="400" height="481" alt="Screen Shot 2014-09-01 at 21.00.06" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-00-06.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-21-00-06.png" class="aligncenter size-full wp-image-2255" width="400" height="481" alt="Screen Shot 2014-09-01 at 21.00.06" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-00-06.png)
 
 Let's call it "3 Groups"
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-20-58-24.png" class="aligncenter size-full wp-image-2254" width="472" height="387" alt="Screen Shot 2014-09-01 at 20.58.24" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-20-58-24.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-20-58-24.png" class="aligncenter size-full wp-image-2254" width="472" height="387" alt="Screen Shot 2014-09-01 at 20.58.24" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-20-58-24.png)
 
 So that now we are able to display the ASM metrics for those 3 sets of disks.
 
@@ -96,7 +96,7 @@ I will filter the metrics on ASM1 only (to avoid any "little parasites" coming f
 
 <span style="text-decoration:underline;">**Let's visualize the *Reads/s* and *Writes/s* metrics:**</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-21-03-04.png" class="aligncenter size-full wp-image-2256" width="640" height="312" alt="Screen Shot 2014-09-01 at 21.03.04" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-03-04.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-21-03-04.png" class="aligncenter size-full wp-image-2256" width="640" height="312" alt="Screen Shot 2014-09-01 at 21.03.04" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-03-04.png)
 
 <span style="text-decoration:underline;">We can see that during the 3 rebalances:</span>
 
@@ -112,7 +112,7 @@ I will filter the metrics on ASM1 only (to avoid any "little parasites" coming f
 
 <span style="text-decoration:underline;">**Let's visualize the *Kby Read/s* and *Kby Write/s* metrics:**</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-21-12-44.png" class="aligncenter size-full wp-image-2257" width="640" height="308" alt="Screen Shot 2014-09-01 at 21.12.44" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-12-44.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-21-12-44.png" class="aligncenter size-full wp-image-2257" width="640" height="308" alt="Screen Shot 2014-09-01 at 21.12.44" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-12-44.png)
 
 <span style="text-decoration:underline;">We can see that during the 3 rebalances:</span>
 
@@ -133,13 +133,13 @@ I will filter the metrics on ASM1 only (to avoid any "little parasites" coming f
 
 Let’s create the calculated field in Tableau for the *By/Read* Weighted Average:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-20-at-21-56-49.png" class="aligncenter size-full wp-image-2161" width="640" height="229" alt="Screen Shot 2014-08-20 at 21.56.49" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-20-at-21-56-49.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-20-at-21-56-49.png" class="aligncenter size-full wp-image-2161" width="640" height="229" alt="Screen Shot 2014-08-20 at 21.56.49" />](https://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-20-at-21-56-49.png)
 
 The same has to be done for the *By/Write* Weighted Average.
 
 Let's see the result:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-09-01-at-21-22-10.png" class="aligncenter size-full wp-image-2260" width="640" height="309" alt="Screen Shot 2014-09-01 at 21.22.10" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-22-10.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-09-01-at-21-22-10.png" class="aligncenter size-full wp-image-2260" width="640" height="309" alt="Screen Shot 2014-09-01 at 21.22.10" />](https://bdrouvot.files.wordpress.com/2014/09/screen-shot-2014-09-01-at-21-22-10.png)
 
 <span style="text-decoration:underline;">We can see:</span>
 

@@ -145,7 +145,7 @@ For example, let’s focus on the “physical reads" system statistic over the 
 
 <span style="text-decoration:underline;">The output will be like:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/physical_reads.png" class="aligncenter size-full wp-image-888" width="620" height="407" alt="physical_reads" />](http://bdrouvot.files.wordpress.com/2013/03/physical_reads.png)  
+[<img src="{{ site.baseurl }}/assets/images/physical_reads.png" class="aligncenter size-full wp-image-888" width="620" height="407" alt="physical_reads" />](http://bdrouvot.files.wordpress.com/2013/03/physical_reads.png)  
 and the [physical\_reads](http://bdrouvot.files.wordpress.com/2013/03/physical_reads.pdf) pdf file will be generated as well.
 
 <span style="text-decoration:underline;">As you can see, you are prompted for:</span>

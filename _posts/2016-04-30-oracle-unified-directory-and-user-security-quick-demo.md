@@ -208,7 +208,7 @@ So that the users and groups have been created into the OUD.
 
 A graphical view of what has been done into the OUD (thanks to the [Apache Directory Studio](https://directory.apache.org/studio/)) is:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2016-04-30-at-13-48-21.png" class="aligncenter size-full wp-image-3065" width="640" height="294" alt="Screen Shot 2016-04-30 at 13.48.21" />](https://bdrouvot.wordpress.com/2016/04/30/oracle-unified-directory-and-user-security-quick-demo/screen-shot-2016-04-30-at-13-48-21/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-04-30-at-13-48-21.png" class="aligncenter size-full wp-image-3065" width="640" height="294" alt="Screen Shot 2016-04-30 at 13.48.21" />](https://bdrouvot.wordpress.com/2016/04/30/oracle-unified-directory-and-user-security-quick-demo/screen-shot-2016-04-30-at-13-48-21/)
 
 ### Step 4: Link OUD groups with database roles.
 

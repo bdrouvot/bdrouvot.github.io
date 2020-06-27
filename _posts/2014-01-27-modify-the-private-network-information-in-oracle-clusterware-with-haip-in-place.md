@@ -41,7 +41,7 @@ So what's about changing the interconnect configuration **with Highly Available 
 
 Let's remember what HAIP is (from [Oracle® Database High Availability Best Practices](http://docs.oracle.com/cd/E11882_01/server.112/e10803/config_cw.htm#HABPT4849)):
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/haip.png" class="aligncenter size-full wp-image-1592" width="620" height="157" alt="haip" />](http://bdrouvot.files.wordpress.com/2014/01/haip.png)
+[<img src="{{ site.baseurl }}/assets/images/haip.png" class="aligncenter size-full wp-image-1592" width="620" height="157" alt="haip" />](http://bdrouvot.files.wordpress.com/2014/01/haip.png)
 
 As HAIP provides redundant interconnect, we should be able to change the interconnect configuration of **one private interface**  without any downtime, right ?
 

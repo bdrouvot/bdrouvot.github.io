@@ -41,7 +41,7 @@ permalink: "/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unprefe
 
 **Update 2017/05/20:** As of 12.2, preferred reads are site-aware (extract of  [Markus Michalewicz](https://twitter.com/OracleRACpm) presentation available [here](https://www.slideshare.net/MarkusMichalewicz/oracle-extended-clusters-for-oracle-rac)) so that the issue described into this blog post has been addressed.
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/pref_site_aware.png" class="aligncenter size-full wp-image-3127" width="640" height="359" />](https://bdrouvot.wordpress.com/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unpreferred-read/pref_site_aware/)
+[<img src="{{ site.baseurl }}/assets/images/pref_site_aware.png" class="aligncenter size-full wp-image-3127" width="640" height="359" />](https://bdrouvot.wordpress.com/2013/07/02/flex-asm-12c-12-1-and-extended-rac-be-careful-to-unpreferred-read/pref_site_aware/)
 
  
 
@@ -57,7 +57,7 @@ As you know Oracle 11g introduced a new feature called "Asm Preferred Read". It 
 
 <span style="text-decoration:underline;">**Why is it important ?** </span>  Because with [Flex ASM](http://www.oracle.com/technetwork/products/cloud-storage/oracle-12c-asm-overview-1965430.pdf) in place, database instances are connection load balanced across the set of available ASM instances (that of course are not necessary "local" to the database instance anymore):
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/flex_asm1.png" class="aligncenter size-full wp-image-1151" width="620" height="260" alt="flex_asm1" />](http://bdrouvot.files.wordpress.com/2013/07/flex_asm1.png)
+[<img src="{{ site.baseurl }}/assets/images/flex_asm1.png" class="aligncenter size-full wp-image-1151" width="620" height="260" alt="flex_asm1" />](http://bdrouvot.files.wordpress.com/2013/07/flex_asm1.png)
 
 And then you could hit what I call the "**unpreferred**" read behavior.
 
@@ -128,7 +128,7 @@ And check the IO metrics with my asmiostat utility that way (I want to see Insta
 
 With the following output:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/flex_asm_pref_read_12c.png" class="aligncenter size-full wp-image-1161" width="620" height="236" alt="flex_asm_pref_read_12c" />](http://bdrouvot.files.wordpress.com/2013/07/flex_asm_pref_read_12c.png)
+[<img src="{{ site.baseurl }}/assets/images/flex_asm_pref_read_12c.png" class="aligncenter size-full wp-image-1161" width="620" height="236" alt="flex_asm_pref_read_12c" />](http://bdrouvot.files.wordpress.com/2013/07/flex_asm_pref_read_12c.png)
 
 As I am the only one to work on this [Lab](http://bdrouvot.wordpress.com/2013/06/29/build-your-own-flex-asm-12c-lab-using-virtual-box/ "Build your own Flex ASM 12c lab using Virtual Box"), you can see with no doubt that the IO metrics coming from the Instance NOPBDT3 are recorded into the ASM instance +ASM1 and clearly indicates that the read IOs have been done on SITEA.
 
@@ -162,4 +162,4 @@ But I had to bounce the NOPBDT3 database instance so that it launchs the read IO
 -   The asmiostat utility is not part of the real\_time.pl script anymore. A new utility called **asm\_metrics.pl** has been created. See "[ASM metrics are a gold mine. Welcome to asm\_metrics.pl, a new utility to extract and to manipulate them in real time](http://bdrouvot.wordpress.com/2013/10/04/asm-metrics-are-a-gold-mine-welcome-to-asm_metrics-pl-a-new-utility-to-extract-and-to-manipulate-them-in-real-time/ "ASM metrics are a gold mine. Welcome to asm_metrics.pl, a new utility to extract and to manipulate them in real time")" for more information.
 -   Unpreferred read still exists in 12.1.0.2: ASM1/NBDT1 located on SITE1, ASM2/NBDT2 located on SITE2, ASM1 prefers to read from SITE1 and serves NBDT2:
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/unpref_12102.png" class="aligncenter size-full wp-image-2239" width="640" height="129" alt="unpref_12102" />](https://bdrouvot.files.wordpress.com/2013/07/unpref_12102.png)
+[<img src="{{ site.baseurl }}/assets/images/unpref_12102.png" class="aligncenter size-full wp-image-2239" width="640" height="129" alt="unpref_12102" />](https://bdrouvot.files.wordpress.com/2013/07/unpref_12102.png)

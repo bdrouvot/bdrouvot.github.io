@@ -42,7 +42,7 @@ During the "[A closer look at ASM rebalance series](http://bdrouvot.wordpress.co
 
 <span style="text-decoration:underline;">Example:</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2014-08-25-at-18-38-07.png" class="aligncenter size-full wp-image-2218" width="640" height="309" alt="Screen Shot 2014-08-25 at 18.38.07" />](http://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-25-at-18-38-07.png)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2014-08-25-at-18-38-07.png" class="aligncenter size-full wp-image-2218" width="640" height="309" alt="Screen Shot 2014-08-25 at 18.38.07" />](http://bdrouvot.files.wordpress.com/2014/08/screen-shot-2014-08-25-at-18-38-07.png)
 
 <span style="text-decoration:underline;">**The question is: why?**</span>
 

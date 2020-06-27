@@ -51,15 +51,15 @@ First, I built a 3 nodes RAC. For this purpose you just have to follow one of th
 
 Step 3: Choose "Configure a Standard cluster"
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/12c_grid_infra_step31.png" class="aligncenter size-full wp-image-1143" width="620" height="466" alt="12c_grid_infra_step3" />](http://bdrouvot.files.wordpress.com/2013/06/12c_grid_infra_step31.png)
+[<img src="{{ site.baseurl }}/assets/images/12c_grid_infra_step31.png" class="aligncenter size-full wp-image-1143" width="620" height="466" alt="12c_grid_infra_step3" />](http://bdrouvot.files.wordpress.com/2013/06/12c_grid_infra_step31.png)
 
 Step 4: Choose "Advanced Installation"
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/12c_grid_infra_step4.png" class="aligncenter size-full wp-image-1140" width="620" height="463" alt="12c_grid_infra_step4" />](http://bdrouvot.files.wordpress.com/2013/06/12c_grid_infra_step4.png)
+[<img src="{{ site.baseurl }}/assets/images/12c_grid_infra_step4.png" class="aligncenter size-full wp-image-1140" width="620" height="463" alt="12c_grid_infra_step4" />](http://bdrouvot.files.wordpress.com/2013/06/12c_grid_infra_step4.png)
 
 Step 10: Choose "Use Oracle Flex ASM for Storage"
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/12c_grid_infra_step10.png" class="aligncenter size-full wp-image-1141" width="620" height="463" alt="12c_grid_infra_step10" />](http://bdrouvot.files.wordpress.com/2013/06/12c_grid_infra_step10.png)
+[<img src="{{ site.baseurl }}/assets/images/12c_grid_infra_step10.png" class="aligncenter size-full wp-image-1141" width="620" height="463" alt="12c_grid_infra_step10" />](http://bdrouvot.files.wordpress.com/2013/06/12c_grid_infra_step10.png)
 
 Once this is installed, you can verify that Flex ASM has been set up:
 

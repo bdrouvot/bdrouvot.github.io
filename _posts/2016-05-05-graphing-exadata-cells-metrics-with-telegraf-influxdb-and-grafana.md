@@ -264,7 +264,7 @@ Now you can connect to grafana and create a new dashboard with the Exadata cells
 Example
 -------
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/screen-shot-2016-05-05-at-16-37-40.png" class="aligncenter size-full wp-image-3081" width="640" height="292" alt="Screen Shot 2016-05-05 at 16.37.40" />](https://bdrouvot.wordpress.com/2016/05/05/graphing-exadata-cells-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-05-05-at-16-37-40/)
+[<img src="{{ site.baseurl }}/assets/images/screen-shot-2016-05-05-at-16-37-40.png" class="aligncenter size-full wp-image-3081" width="640" height="292" alt="Screen Shot 2016-05-05 at 16.37.40" />](https://bdrouvot.wordpress.com/2016/05/05/graphing-exadata-cells-metrics-with-telegraf-influxdb-and-grafana/screen-shot-2016-05-05-at-16-37-40/)
 
 Remark
 ------

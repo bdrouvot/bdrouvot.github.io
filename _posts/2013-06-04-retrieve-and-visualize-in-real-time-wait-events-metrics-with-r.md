@@ -73,7 +73,7 @@ So you can **choose the number of snapshots and the graphs refresh interval**.
 
 <span style="text-decoration:underline;">**When the number of snapshots is reached the output is like:**</span>
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/real_time_db_file_sequential_read.png" class="aligncenter size-full wp-image-1043" width="620" height="409" alt="real_time_db_file_sequential_read" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_file_sequential_read.png)
+[<img src="{{ site.baseurl }}/assets/images/real_time_db_file_sequential_read.png" class="aligncenter size-full wp-image-1043" width="620" height="409" alt="real_time_db_file_sequential_read" />](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_file_sequential_read.png)
 
 The graphs sequence that leads to this final graph is the following (see the [real\_time\_db\_file\_sequential\_read](http://bdrouvot.files.wordpress.com/2013/06/real_time_db_file_sequential_read.pdf) pdf file).
 

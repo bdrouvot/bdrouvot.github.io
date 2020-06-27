@@ -135,7 +135,7 @@ And then the database has been able to work as expected and we launched a full b
 2.  In our case restoring the redo log files from the file descriptors has not been enough, but it's worth trying as a last chance.
 3.  Adding new redo logs should not be necessary. Clearing the "dropped/restored" redo logs with "ALTER DATABASE CLEAR (UNARCHIVED) LOGFILE GROUP &lt;n&gt;" could be enough as stated [here](http://docs.oracle.com/cd/B19306_01/backup.102/b14191/recoscen.htm):
 
-[<img src="%7B%7B%20site.baseurl%20%7D%7D/assets/images/loss_redo.png" class="aligncenter size-full wp-image-1573" width="620" height="205" alt="loss_redo" />](http://bdrouvot.files.wordpress.com/2013/12/loss_redo.png)
+[<img src="{{ site.baseurl }}/assets/images/loss_redo.png" class="aligncenter size-full wp-image-1573" width="620" height="205" alt="loss_redo" />](http://bdrouvot.files.wordpress.com/2013/12/loss_redo.png)
 
 <span style="text-decoration:underline;">Conclusion:</span>
 
