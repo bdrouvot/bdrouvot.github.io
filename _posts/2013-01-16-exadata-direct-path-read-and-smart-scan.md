@@ -147,7 +147,7 @@ As of 12.1.0.1, a more convenient way to display the stack linked to a wait even
 
 ```
 
-alter session set events 'wait\_event```
+alter session set events 'wait_event```
 
 Enabling the session trace is not mandatory but is useful as it displays the wait event prior to the stack.  
 The wait event "cell smart table scan" has been used as an example (as it is the one of interest for this post), but you could use the one of your choice.

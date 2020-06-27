@@ -42,29 +42,29 @@ We can capture a 10053 trace for a specific sql\_id that way:
 So, If you can't be patient, then you can use this script to **flush the sql and enable the 10053 trace**:
 
 ```
-SQL&gt; !cat enable\_10053\_sql\_id.sql  
+SQL> !cat enable_10053_sql_id.sql  
 set serveroutput on  
 set pagesize 9999  
 set linesize 155  
 var name varchar2(50)
 
-prompt WARNING SQL\_ID WILL BE PURGED FROM THE SHARED POOL  
-accept sql\_id prompt 'Enter value for sql\_id: '
+prompt WARNING SQL_ID WILL BE PURGED FROM THE SHARED POOL  
+accept sql_id prompt 'Enter value for sql_id: '
 
 BEGIN
 
-select address||','||hash\_value into :name  
+select address||','||hash_value into :name  
 from v$sqlarea  
-where sql\_id like '&&sql\_id';
+where sql_id like '&&sql_id';
 
-dbms\_shared\_pool.purge(:name,'C',1);
+dbms_shared_pool.purge(:name,'C',1);
 
 END;  
 /
 
-alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&&sql\_id\]';
+alter system set events 'trace[RDBMS.SQL_Optimizer.*][sql:&&sql_id]';
 
-undef sql\_id  
+undef sql_id  
 undef name  
 ```
 
@@ -73,12 +73,12 @@ Then just wait for the next execution and you'll get the trace file.
 <span style="text-decoration:underline;">To disable the trace:</span>
 
 ```
-SQL&gt; !cat disable\_10053\_sql\_id.sql  
+SQL> !cat disable_10053_sql_id.sql  
 prompt DISABLING 10053 trace
 
-accept sql\_id prompt 'Enter value for sql\_id: '
+accept sql_id prompt 'Enter value for sql_id: '
 
-alter system set events 'trace\[RDBMS.SQL\_Optimizer.\*\]\[sql:&&sql\_id\] off';  
+alter system set events 'trace[RDBMS.SQL_Optimizer.*][sql:&&sql_id] off';  
 ```
 
 <span style="text-decoration:underline;">**Remark:**</span>

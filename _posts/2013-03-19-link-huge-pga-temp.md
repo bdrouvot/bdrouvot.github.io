@@ -51,30 +51,30 @@ So, to find the top sql\_id(s) responsible of  PGA or TEMP space consumption d
 <span style="text-decoration:underline;color:#0000ff;">For the PGA consumption:</span>
 
 ```
-SQL&gt; !cat ash\_sql\_id\_pga.sql  
+SQL> !cat ash_sql_id_pga.sql  
 col percent head '%' for 99990.99  
 col star for A10 head ''
 
-accept seconds prompt "Last Seconds \[60\] : " default 60;  
-accept top prompt "Top Rows \[10\] : " default 10;
+accept seconds prompt "Last Seconds [60] : " default 60;  
+accept top prompt "Top Rows [10] : " default 10;
 
-select SQL\_ID,round(PGA\_MB,1) PGA\_MB,percent,rpad('\*',percent\*10/100,'\*') star  
+select SQL_ID,round(PGA_MB,1) PGA_MB,percent,rpad('*',percent*10/100,'*') star  
 from  
 (  
-select SQL\_ID,sum(DELTA\_PGA\_MB) PGA\_MB ,(ratio\_to\_report(sum(DELTA\_PGA\_MB)) over ())\*100 percent,rank() over(order by sum(DELTA\_PGA\_MB) desc) rank  
+select SQL_ID,sum(DELTA_PGA_MB) PGA_MB ,(ratio_to_report(sum(DELTA_PGA_MB)) over ())*100 percent,rank() over(order by sum(DELTA_PGA_MB) desc) rank  
 from  
 (  
-select SESSION\_ID,SESSION\_SERIAL\#,sample\_id,SQL\_ID,SAMPLE\_TIME,IS\_SQLID\_CURRENT,SQL\_CHILD\_NUMBER,PGA\_ALLOCATED,  
-greatest(PGA\_ALLOCATED - first\_value(PGA\_ALLOCATED) over (partition by SESSION\_ID,SESSION\_SERIAL\# order by sample\_time rows 1 preceding),0)/power(1024,2) "DELTA\_PGA\_MB"  
+select SESSION_ID,SESSION_SERIAL#,sample_id,SQL_ID,SAMPLE_TIME,IS_SQLID_CURRENT,SQL_CHILD_NUMBER,PGA_ALLOCATED,  
+greatest(PGA_ALLOCATED - first_value(PGA_ALLOCATED) over (partition by SESSION_ID,SESSION_SERIAL# order by sample_time rows 1 preceding),0)/power(1024,2) "DELTA_PGA_MB"  
 from  
-v$active\_session\_history  
+v$active_session_history  
 where  
-IS\_SQLID\_CURRENT='Y'  
-and sample\_time &gt; sysdate-&seconds/86400  
+IS_SQLID_CURRENT='Y'  
+and sample_time > sysdate-&seconds/86400  
 order by 1,2,3,4  
 )  
-group by sql\_id  
-having sum(DELTA\_PGA\_MB) &gt; 0  
+group by sql_id  
+having sum(DELTA_PGA_MB) > 0  
 )  
 where rank &lt; (&top+1)  
 order by rank  
@@ -108,30 +108,30 @@ order by rank
 <span style="text-decoration:underline;color:#0000ff;">For the TEMP consumption:</span>
 
 ```
-SQL&gt; !cat ash\_sql\_id\_temp.sql  
+SQL> !cat ash_sql_id_temp.sql  
 col percent head '%' for 99990.99  
 col star for A10 head ''
 
-accept seconds prompt "Last Seconds \[60\] : " default 60;  
-accept top prompt "Top Rows \[10\] : " default 10;
+accept seconds prompt "Last Seconds [60] : " default 60;  
+accept top prompt "Top Rows [10] : " default 10;
 
-select SQL\_ID,TEMP\_MB,percent,rpad('\*',percent\*10/100,'\*') star  
+select SQL_ID,TEMP_MB,percent,rpad('*',percent*10/100,'*') star  
 from  
 (  
-select SQL\_ID,sum(DELTA\_TEMP\_MB) TEMP\_MB ,(ratio\_to\_report(sum(DELTA\_TEMP\_MB)) over ())\*100 percent,rank() over(order by sum(DELTA\_TEMP\_MB) desc) rank  
+select SQL_ID,sum(DELTA_TEMP_MB) TEMP_MB ,(ratio_to_report(sum(DELTA_TEMP_MB)) over ())*100 percent,rank() over(order by sum(DELTA_TEMP_MB) desc) rank  
 from  
 (  
-select SESSION\_ID,SESSION\_SERIAL\#,sample\_id,SQL\_ID,SAMPLE\_TIME,IS\_SQLID\_CURRENT,SQL\_CHILD\_NUMBER,temp\_space\_allocated,  
-greatest(temp\_space\_allocated - first\_value(temp\_space\_allocated) over (partition by SESSION\_ID,SESSION\_SERIAL\# order by sample\_time rows 1 preceding),0)/power(1024,2) "DELTA\_TEMP\_MB"  
+select SESSION_ID,SESSION_SERIAL#,sample_id,SQL_ID,SAMPLE_TIME,IS_SQLID_CURRENT,SQL_CHILD_NUMBER,temp_space_allocated,  
+greatest(temp_space_allocated - first_value(temp_space_allocated) over (partition by SESSION_ID,SESSION_SERIAL# order by sample_time rows 1 preceding),0)/power(1024,2) "DELTA_TEMP_MB"  
 from  
-v$active\_session\_history  
+v$active_session_history  
 where  
-IS\_SQLID\_CURRENT='Y'  
-and sample\_time &gt; sysdate-&seconds/86400  
+IS_SQLID_CURRENT='Y'  
+and sample_time > sysdate-&seconds/86400  
 order by 1,2,3,4  
 )  
-group by sql\_id  
-having sum(DELTA\_TEMP\_MB) &gt; 0  
+group by sql_id  
+having sum(DELTA_TEMP_MB) > 0  
 )  
 where rank &lt; (&top+1)  
 order by rank  

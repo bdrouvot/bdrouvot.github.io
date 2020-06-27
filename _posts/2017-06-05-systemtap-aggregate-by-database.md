@@ -87,7 +87,7 @@ char substr_res[30];
 char *strargs = STAP_ARG_mystr;  
 ptr = strchr( strargs, ch );  
 strncpy (substr_res,strargs+6, ptr - strargs - 6);  
-substr_res[ptr - strargs - 6]='\0';  
+substr_res[ptr - strargs - 6]='0';  
 snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",substr_res);  
 %}  
 ```

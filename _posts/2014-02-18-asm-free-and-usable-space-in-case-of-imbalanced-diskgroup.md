@@ -193,170 +193,170 @@ So, it was not possible to add 90 GB while it has been possible to add 89 GB: My
 <span style="text-decoration:underline;">Let's see the asm\_free\_usable\_imbalance.sql:</span>
 
 ```
-SQL&gt; !cat asm\_free\_usable\_imbalance.sql  
-select /\* EXTERNAL REDUNDANCY \*/  
+SQL> !cat asm_free_usable_imbalance.sql  
+select /* EXTERNAL REDUNDANCY */  
 g.name,  
-sum(d.TOTAL\_MB) \* min(d.FREE\_MB / d.total\_mb) /  
-decode(g.type, 'EXTERN', 1, 'NORMAL', 2, 'HIGH', 3, 1) "USABLE\_FREE\_MB"  
-from v$asm\_disk d, v$asm\_diskgroup g  
-where d.group\_number = g.group\_number  
+sum(d.TOTAL_MB) * min(d.FREE_MB / d.total_mb) /  
+decode(g.type, 'EXTERN', 1, 'NORMAL', 2, 'HIGH', 3, 1) "USABLE_FREE_MB"  
+from v$asm_disk d, v$asm_diskgroup g  
+where d.group_number = g.group_number  
 and g.type = 'EXTERN'  
 group by g.name, g.type  
 union  
-select /\* NON EXTERNAL REDUNDANCY WITH SYMMETRIC FG \*/  
+select /* NON EXTERNAL REDUNDANCY WITH SYMMETRIC FG */  
 g.name,  
-sum(d.TOTAL\_MB) \* min(d.FREE\_MB / d.total\_mb) /  
-decode(g.type, 'EXTERN', 1, 'NORMAL', 2, 'HIGH', 3, 1) "USABLE\_FREE\_MB"  
-from v$asm\_disk d, v$asm\_diskgroup g  
-where d.group\_number = g.group\_number  
-and g.group\_number not in /\* KEEP SYMMETRIC\*/  
-(select distinct (group\_number)  
-from (select group\_number,  
+sum(d.TOTAL_MB) * min(d.FREE_MB / d.total_mb) /  
+decode(g.type, 'EXTERN', 1, 'NORMAL', 2, 'HIGH', 3, 1) "USABLE_FREE_MB"  
+from v$asm_disk d, v$asm_diskgroup g  
+where d.group_number = g.group_number  
+and g.group_number not in /* KEEP SYMMETRIC*/  
+(select distinct (group_number)  
+from (select group_number,  
 failgroup,  
-TOTAL\_MB,  
-count\_dsk,  
-greatest(lag(count\_dsk, 1, 0)  
-over(partition by TOTAL\_MB,  
-group\_number order by TOTAL\_MB,  
+TOTAL_MB,  
+count_dsk,  
+greatest(lag(count_dsk, 1, 0)  
+over(partition by TOTAL_MB,  
+group_number order by TOTAL_MB,  
 FAILGROUP),  
-lead(count\_dsk, 1, 0)  
-over(partition by TOTAL\_MB,  
-group\_number order by TOTAL\_MB,  
-FAILGROUP)) as max\_lag\_lead,  
-count(distinct(failgroup)) over(partition by group\_number, TOTAL\_MB) as nb\_fg\_per\_size,  
-count\_fg  
-from (select group\_number,  
+lead(count_dsk, 1, 0)  
+over(partition by TOTAL_MB,  
+group_number order by TOTAL_MB,  
+FAILGROUP)) as max_lag_lead,  
+count(distinct(failgroup)) over(partition by group_number, TOTAL_MB) as nb_fg_per_size,  
+count_fg  
+from (select group_number,  
 failgroup,  
-TOTAL\_MB,  
-count(\*) over(partition by group\_number, failgroup, TOTAL\_MB) as count\_dsk,  
-count(distinct(failgroup)) over(partition by group\_number) as count\_fg  
-from v$asm\_disk))  
-where count\_dsk &lt;&gt; max\_lag\_lead  
-or nb\_fg\_per\_size &lt;&gt; count\_fg)  
-and g.type &lt;&gt; 'EXTERNAL'  
+TOTAL_MB,  
+count(*) over(partition by group_number, failgroup, TOTAL_MB) as count_dsk,  
+count(distinct(failgroup)) over(partition by group_number) as count_fg  
+from v$asm_disk))  
+where count_dsk &lt;> max_lag_lead  
+or nb_fg_per_size &lt;> count_fg)  
+and g.type &lt;> 'EXTERNAL'  
 group by g.name, g.type  
 union  
-select /\* NON EXTERNAL REDUNDANCY WITH NON SYMMETRIC FG  
-AND DOES EXIST AT LEAST ONE DISK WITH PARTNERS OF DIFFERENT SIZE\*/  
+select /* NON EXTERNAL REDUNDANCY WITH NON SYMMETRIC FG  
+AND DOES EXIST AT LEAST ONE DISK WITH PARTNERS OF DIFFERENT SIZE*/  
 name,  
-min(free) / decode(type, 'EXTERN', 1, 'NORMAL', 2, 'HIGH', 3, 1) "USABLE\_FREE\_MB"  
+min(free) / decode(type, 'EXTERN', 1, 'NORMAL', 2, 'HIGH', 3, 1) "USABLE_FREE_MB"  
 from (select name,  
-disk\_number,  
-free\_mb / (factor / sum(factor) over(partition by name)) as free,  
+disk_number,  
+free_mb / (factor / sum(factor) over(partition by name)) as free,  
 type  
 from (select name,  
-disk\_number,  
-avg(free\_mb) as free\_mb,  
-avg(total\_mb) as total\_mb,  
-sum(factor\_disk + factor\_partner) as factor,  
+disk_number,  
+avg(free_mb) as free_mb,  
+avg(total_mb) as total_mb,  
+sum(factor_disk + factor_partner) as factor,  
 type  
 from (SELECT g.name,  
 g.type,  
-d.group\_number as group\_number,  
-d.disk\_number disk\_number,  
-d.total\_mb as total\_mb,  
-d.free\_mb as free\_mb,  
-p.number\_kfdpartner "Partner disk\#",  
-f.factor as factor\_disk,  
-fp.factor as factor\_partner  
+d.group_number as group_number,  
+d.disk_number disk_number,  
+d.total_mb as total_mb,  
+d.free_mb as free_mb,  
+p.number_kfdpartner "Partner disk#",  
+f.factor as factor_disk,  
+fp.factor as factor_partner  
 FROM x$kfdpartner p,  
-v$asm\_disk d,  
-v$asm\_diskgroup g,  
-(select disk\_number,  
-group\_number,  
-TOTAL\_MB / min(total\_mb) over(partition by group\_number) as factor  
-from v$asm\_disk  
+v$asm_disk d,  
+v$asm_diskgroup g,  
+(select disk_number,  
+group_number,  
+TOTAL_MB / min(total_mb) over(partition by group_number) as factor  
+from v$asm_disk  
 where state = 'NORMAL'  
-and mount\_status = 'CACHED') f,  
-(select disk\_number,  
-group\_number,  
-TOTAL\_MB / min(total\_mb) over(partition by group\_number) as factor  
-from v$asm\_disk  
+and mount_status = 'CACHED') f,  
+(select disk_number,  
+group_number,  
+TOTAL_MB / min(total_mb) over(partition by group_number) as factor  
+from v$asm_disk  
 where state = 'NORMAL'  
-and mount\_status = 'CACHED') fp  
-WHERE p.disk = d.disk\_number  
-and p.grp = d.group\_number  
-and f.disk\_number = d.disk\_number  
-and f.group\_number = d.group\_number  
-and fp.disk\_number = p.number\_kfdpartner  
-and fp.group\_number = p.grp  
-and d.group\_number = g.group\_number  
-and g.type &lt;&gt; 'EXTERN'  
-and g.group\_number in /\* KEEP NON SYMMETRIC \*/  
-(select distinct (group\_number)  
-from (select group\_number,  
+and mount_status = 'CACHED') fp  
+WHERE p.disk = d.disk_number  
+and p.grp = d.group_number  
+and f.disk_number = d.disk_number  
+and f.group_number = d.group_number  
+and fp.disk_number = p.number_kfdpartner  
+and fp.group_number = p.grp  
+and d.group_number = g.group_number  
+and g.type &lt;> 'EXTERN'  
+and g.group_number in /* KEEP NON SYMMETRIC */  
+(select distinct (group_number)  
+from (select group_number,  
 failgroup,  
-TOTAL\_MB,  
-count\_dsk,  
-greatest(lag(count\_dsk, 1, 0)  
+TOTAL_MB,  
+count_dsk,  
+greatest(lag(count_dsk, 1, 0)  
 over(partition by  
-TOTAL\_MB,  
-group\_number order by  
-TOTAL\_MB,  
+TOTAL_MB,  
+group_number order by  
+TOTAL_MB,  
 FAILGROUP),  
-lead(count\_dsk, 1, 0)  
+lead(count_dsk, 1, 0)  
 over(partition by  
-TOTAL\_MB,  
-group\_number order by  
-TOTAL\_MB,  
-FAILGROUP)) as max\_lag\_lead,  
-count(distinct(failgroup)) over(partition by group\_number, TOTAL\_MB) as nb\_fg\_per\_size,  
-count\_fg  
-from (select group\_number,  
+TOTAL_MB,  
+group_number order by  
+TOTAL_MB,  
+FAILGROUP)) as max_lag_lead,  
+count(distinct(failgroup)) over(partition by group_number, TOTAL_MB) as nb_fg_per_size,  
+count_fg  
+from (select group_number,  
 failgroup,  
-TOTAL\_MB,  
-count(\*) over(partition by group\_number, failgroup, TOTAL\_MB) as count\_dsk,  
-count(distinct(failgroup)) over(partition by group\_number) as count\_fg  
-from v$asm\_disk))  
-where count\_dsk &lt;&gt; max\_lag\_lead  
-or nb\_fg\_per\_size &lt;&gt; count\_fg)  
-and d.group\_number not in /\* KEEP DG THAT DOES NOT CONTAIN AT LEAST ONE DISK HAVING PARTNERS OF DIFFERENT SIZE\*/  
-(select distinct (group\_number)  
-from (select d.group\_number as group\_number,  
-d.disk\_number disk\_number,  
-p.number\_kfdpartner "Partner disk\#",  
-f.factor as factor\_disk,  
-fp.factor as factor\_partner,  
+TOTAL_MB,  
+count(*) over(partition by group_number, failgroup, TOTAL_MB) as count_dsk,  
+count(distinct(failgroup)) over(partition by group_number) as count_fg  
+from v$asm_disk))  
+where count_dsk &lt;> max_lag_lead  
+or nb_fg_per_size &lt;> count_fg)  
+and d.group_number not in /* KEEP DG THAT DOES NOT CONTAIN AT LEAST ONE DISK HAVING PARTNERS OF DIFFERENT SIZE*/  
+(select distinct (group_number)  
+from (select d.group_number as group_number,  
+d.disk_number disk_number,  
+p.number_kfdpartner "Partner disk#",  
+f.factor as factor_disk,  
+fp.factor as factor_partner,  
 greatest(lag(fp.factor, 1, 0)  
 over(partition by  
-d.group\_number,  
-d.disk\_number order by  
-d.group\_number,  
-d.disk\_number),  
+d.group_number,  
+d.disk_number order by  
+d.group_number,  
+d.disk_number),  
 lead(fp.factor, 1, 0)  
 over(partition by  
-d.group\_number,  
-d.disk\_number order by  
-d.group\_number,  
-d.disk\_number)) as max\_lag\_lead,  
-count(p.number\_kfdpartner) over(partition by d.group\_number, d.disk\_number) as nb\_partner  
+d.group_number,  
+d.disk_number order by  
+d.group_number,  
+d.disk_number)) as max_lag_lead,  
+count(p.number_kfdpartner) over(partition by d.group_number, d.disk_number) as nb_partner  
 FROM x$kfdpartner p,  
-v$asm\_disk d,  
-v$asm\_diskgroup g,  
-(select disk\_number,  
-group\_number,  
-TOTAL\_MB / min(total\_mb) over(partition by group\_number) as factor  
-from v$asm\_disk  
+v$asm_disk d,  
+v$asm_diskgroup g,  
+(select disk_number,  
+group_number,  
+TOTAL_MB / min(total_mb) over(partition by group_number) as factor  
+from v$asm_disk  
 where state = 'NORMAL'  
-and mount\_status = 'CACHED') f,  
-(select disk\_number,  
-group\_number,  
-TOTAL\_MB / min(total\_mb) over(partition by group\_number) as factor  
-from v$asm\_disk  
+and mount_status = 'CACHED') f,  
+(select disk_number,  
+group_number,  
+TOTAL_MB / min(total_mb) over(partition by group_number) as factor  
+from v$asm_disk  
 where state = 'NORMAL'  
-and mount\_status = 'CACHED') fp  
-WHERE p.disk = d.disk\_number  
-and p.grp = d.group\_number  
-and f.disk\_number = d.disk\_number  
-and f.group\_number = d.group\_number  
-and fp.disk\_number =  
-p.number\_kfdpartner  
-and fp.group\_number = p.grp  
-and d.group\_number = g.group\_number  
-and g.type &lt;&gt; 'EXTERN')  
-where factor\_partner &lt;&gt; max\_lag\_lead  
-and nb\_partner &gt; 1))  
-group by name, disk\_number, type))  
+and mount_status = 'CACHED') fp  
+WHERE p.disk = d.disk_number  
+and p.grp = d.group_number  
+and f.disk_number = d.disk_number  
+and f.group_number = d.group_number  
+and fp.disk_number =  
+p.number_kfdpartner  
+and fp.group_number = p.grp  
+and d.group_number = g.group_number  
+and g.type &lt;> 'EXTERN')  
+where factor_partner &lt;> max_lag_lead  
+and nb_partner > 1))  
+group by name, disk_number, type))  
 group by name, type;  
 ```
 

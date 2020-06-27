@@ -93,27 +93,27 @@ Let's see how we could display some interesting information in case of blocked s
 As PostgreSQL provides [recursive query](https://www.postgresql.org/docs/current/static/queries-with.html) and [window functions](https://www.postgresql.org/docs/current/static/tutorial-window.html), let's make use of them to write this query:
 
 ```
-postgres@pgu:~$ cat pg\_ash\_wait\_chain.sql  
-WITH RECURSIVE search\_wait\_chain(ash\_time,pid, blockerpid, wait\_event\_type,wait\_event,level, path)  
+postgres@pgu:~$ cat pg_ash_wait_chain.sql  
+WITH RECURSIVE search_wait_chain(ash_time,pid, blockerpid, wait_event_type,wait_event,level, path)  
 AS (  
-SELECT ash\_time,pid, blockerpid, wait\_event\_type,wait\_event, 1 AS level,  
-'pid:'||pid||' ('||wait\_event\_type||' : '||wait\_event||') -&gt;'||'pid:'||blockerpid AS path  
-from pg\_active\_session\_history WHERE blockers &gt; 0  
+SELECT ash_time,pid, blockerpid, wait_event_type,wait_event, 1 AS level,  
+'pid:'||pid||' ('||wait_event_type||' : '||wait_event||') ->'||'pid:'||blockerpid AS path  
+from pg_active_session_history WHERE blockers > 0  
 union ALL  
-SELECT p.ash\_time,p.pid, p.blockerpid, p.wait\_event\_type,p.wait\_event, swc.level + 1 AS level,  
-'pid:'||p.pid||' ('||p.wait\_event\_type||' : '||p.wait\_event||') -&gt;'||swc.path AS path  
-FROM pg\_active\_session\_history p, search\_wait\_chain swc  
-WHERE p.blockerpid = swc.pid and p.ash\_time = swc.ash\_time and p.blockers &gt; 0  
+SELECT p.ash_time,p.pid, p.blockerpid, p.wait_event_type,p.wait_event, swc.level + 1 AS level,  
+'pid:'||p.pid||' ('||p.wait_event_type||' : '||p.wait_event||') ->'||swc.path AS path  
+FROM pg_active_session_history p, search_wait_chain swc  
+WHERE p.blockerpid = swc.pid and p.ash_time = swc.ash_time and p.blockers > 0  
 )  
-select round(100 \* count(\*) / cnt)||'%' as "% of total wait",count(\*) as seconds,path as wait\_chain from (  
-SELECT pid,wait\_event,path,sum(count) over() as cnt from (  
-select ash\_time,level,pid,wait\_event,path,count(\*) as count, max(level) over(partition by ash\_time,pid) as max\_level  
-FROM search\_wait\_chain where level &gt; 0 group by ash\_time,level,pid,wait\_event,path  
-) as all\_wait\_chain  
-where level=max\_level  
-) as wait\_chain  
+select round(100 * count(*) / cnt)||'%' as "% of total wait",count(*) as seconds,path as wait_chain from (  
+SELECT pid,wait_event,path,sum(count) over() as cnt from (  
+select ash_time,level,pid,wait_event,path,count(*) as count, max(level) over(partition by ash_time,pid) as max_level  
+FROM search_wait_chain where level > 0 group by ash_time,level,pid,wait_event,path  
+) as all_wait_chain  
+where level=max_level  
+) as wait_chain  
 group by path,cnt  
-order by count(\*) desc;  
+order by count(*) desc;  
 ```
 
 Let's launch this query while only one session is being blocked by another one:

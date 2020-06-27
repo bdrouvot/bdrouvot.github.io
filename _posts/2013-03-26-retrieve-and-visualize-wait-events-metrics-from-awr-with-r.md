@@ -41,36 +41,36 @@ So, for a particular wait event, I'll retrieve from the dba\_hist\_system\_event
 <span style="text-decoration:underline;">As those metrics are cumulative ones, I need to compute the difference between 2 snaps that way:</span>
 
 ```
-SQL&gt; !cat check\_awr\_event.sql  
+SQL> !cat check_awr_event.sql  
 set linesi 220;
 
-alter session set nls\_date\_format='DD-MM-YYYY HH24:MI:SS';
+alter session set nls_date_format='DD-MM-YYYY HH24:MI:SS';
 
-col BEGIN\_INTERVAL\_TIME format a28  
-col event\_name format a40  
-col WAIT\_CLASS format a20  
+col BEGIN_INTERVAL_TIME format a28  
+col event_name format a40  
+col WAIT_CLASS format a20  
 set pagesi 999
 
-select distinct(WAIT\_CLASS) from v$system\_event;
+select distinct(WAIT_CLASS) from v$system_event;
 
-select e.WAIT\_CLASS,e.event\_name,s.begin\_interval\_time,e.TOTAL\_WAITS,e.TIME\_WAITED\_MS,e.TIME\_WAITED\_MS / TOTAL\_WAITS "MS\_PER\_WAIT"  
+select e.WAIT_CLASS,e.event_name,s.begin_interval_time,e.TOTAL_WAITS,e.TIME_WAITED_MS,e.TIME_WAITED_MS / TOTAL_WAITS "MS_PER_WAIT"  
 from  
 (  
-select instance\_number,snap\_id,WAIT\_CLASS,event\_name,  
-total\_waits - first\_value(total\_waits) over (partition by event\_name order by snap\_id rows 1 preceding) "TOTAL\_WAITS",  
-(time\_waited\_micro - first\_value(time\_waited\_micro) over (partition by event\_name order by snap\_id rows 1 preceding))/1000 "TIME\_WAITED\_MS"  
+select instance_number,snap_id,WAIT_CLASS,event_name,  
+total_waits - first_value(total_waits) over (partition by event_name order by snap_id rows 1 preceding) "TOTAL_WAITS",  
+(time_waited_micro - first_value(time_waited_micro) over (partition by event_name order by snap_id rows 1 preceding))/1000 "TIME_WAITED_MS"  
 from  
-dba\_hist\_system\_event  
+dba_hist_system_event  
 where  
-WAIT\_CLASS like nvl('&WAIT\_CLASS',WAIT\_CLASS)  
-and event\_name like nvl('&event\_name',event\_name)  
-and instance\_number = (select instance\_number from v$instance)  
-) e, dba\_hist\_snapshot s  
-where e.TIME\_WAITED\_MS &gt; 0  
-and e.instance\_number=s.instance\_number  
-and e.snap\_id=s.snap\_id  
-and s.BEGIN\_INTERVAL\_TIME &gt;= trunc(sysdate-&sysdate\_nb\_day\_begin\_interval+1)  
-and s.BEGIN\_INTERVAL\_TIME &lt;= trunc(sysdate-&sysdate\_nb\_day\_end\_interval+1) order by 1,2,3;  
+WAIT_CLASS like nvl('&WAIT_CLASS',WAIT_CLASS)  
+and event_name like nvl('&event_name',event_name)  
+and instance_number = (select instance_number from v$instance)  
+) e, dba_hist_snapshot s  
+where e.TIME_WAITED_MS > 0  
+and e.instance_number=s.instance_number  
+and e.snap_id=s.snap_id  
+and s.BEGIN_INTERVAL_TIME >= trunc(sysdate-&sysdate_nb_day_begin_interval+1)  
+and s.BEGIN_INTERVAL_TIME &lt;= trunc(sysdate-&sysdate_nb_day_end_interval+1) order by 1,2,3;  
 ```
 
 I use the "**partition by event\_name order by snap\_id rows 1 preceding**" to compute the difference between snaps per event.

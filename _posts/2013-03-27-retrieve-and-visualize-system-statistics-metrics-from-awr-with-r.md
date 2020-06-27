@@ -38,38 +38,38 @@ So, for a particular system statistic, I’ll retrieve from the dba\_hist\_sysst
 <span style="text-decoration:underline;">As the VALUE is cumulative, I need to compute the difference between 2 snaps that way:</span>
 
 ```
-SQL&gt; !cat check\_awr\_stats.sql  
+SQL> !cat check_awr_stats.sql  
 set linesi 200  
-col BEGIN\_INTERVAL\_TIME format a28  
-col stat\_name format a40
+col BEGIN_INTERVAL_TIME format a28  
+col stat_name format a40
 
-alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';  
-alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';
+alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';
 
-select s.begin\_interval\_time,sta.stat\_name,sta.VALUE,  
---round(((sta.VALUE)/(to\_date(s.end\_interval\_time)-to\_date(s.begin\_interval\_time)))/86400,2) VALUE\_PER\_SEC\_NOT\_ACCURATE,  
+select s.begin_interval_time,sta.stat_name,sta.VALUE,  
+--round(((sta.VALUE)/(to_date(s.end_interval_time)-to_date(s.begin_interval_time)))/86400,2) VALUE_PER_SEC_NOT_ACCURATE,  
 round(((sta.VALUE)/  
 (  
-(extract(day from s.END\_INTERVAL\_TIME)-extract(day from s.BEGIN\_INTERVAL\_TIME))\*86400 +  
-(extract(hour from s.END\_INTERVAL\_TIME)-extract(hour from s.BEGIN\_INTERVAL\_TIME))\*3600 +  
-(extract(minute from s.END\_INTERVAL\_TIME)-extract(minute from s.BEGIN\_INTERVAL\_TIME))\*60 +  
-(extract(second from s.END\_INTERVAL\_TIME)-extract(second from s.BEGIN\_INTERVAL\_TIME))  
+(extract(day from s.END_INTERVAL_TIME)-extract(day from s.BEGIN_INTERVAL_TIME))*86400 +  
+(extract(hour from s.END_INTERVAL_TIME)-extract(hour from s.BEGIN_INTERVAL_TIME))*3600 +  
+(extract(minute from s.END_INTERVAL_TIME)-extract(minute from s.BEGIN_INTERVAL_TIME))*60 +  
+(extract(second from s.END_INTERVAL_TIME)-extract(second from s.BEGIN_INTERVAL_TIME))  
 )  
-),2) VALUE\_PER\_SEC  
+),2) VALUE_PER_SEC  
 from  
 (  
-select instance\_number,snap\_id,stat\_name,  
-value - first\_value(value) over (partition by stat\_name order by snap\_id rows 1 preceding) "VALUE"  
+select instance_number,snap_id,stat_name,  
+value - first_value(value) over (partition by stat_name order by snap_id rows 1 preceding) "VALUE"  
 from  
-dba\_hist\_sysstat  
-where stat\_name like nvl('&stat\_name',stat\_name)  
-and instance\_number = (select instance\_number from v$instance)  
-) sta, dba\_hist\_snapshot s  
-where sta.instance\_number=s.instance\_number  
-and sta.snap\_id=s.snap\_id  
-and s.BEGIN\_INTERVAL\_TIME &gt;= trunc(sysdate-&sysdate\_nb\_day\_begin\_interval+1)  
-and s.BEGIN\_INTERVAL\_TIME &lt;= trunc(sysdate-&sysdate\_nb\_day\_end\_interval+1)  
-order by s.begin\_interval\_time asc;  
+dba_hist_sysstat  
+where stat_name like nvl('&stat_name',stat_name)  
+and instance_number = (select instance_number from v$instance)  
+) sta, dba_hist_snapshot s  
+where sta.instance_number=s.instance_number  
+and sta.snap_id=s.snap_id  
+and s.BEGIN_INTERVAL_TIME >= trunc(sysdate-&sysdate_nb_day_begin_interval+1)  
+and s.BEGIN_INTERVAL_TIME &lt;= trunc(sysdate-&sysdate_nb_day_end_interval+1)  
+order by s.begin_interval_time asc;  
 ```
 
 I use the "**partition by stat\_name order by snap\_id rows 1 preceding**" to compute the difference between snaps par stat\_name.

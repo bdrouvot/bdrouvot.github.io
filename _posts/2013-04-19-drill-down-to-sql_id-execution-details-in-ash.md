@@ -49,49 +49,49 @@ Let's suppose that I found (Thanks to the sql provided into [this post](http://b
 Now I can drill down to details to get the pga over allocation per execution that way:
 
 ```
-alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
-alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
+alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';
 
-select sql\_id,  
-starting\_time,  
-end\_time,  
-(EXTRACT(HOUR FROM run\_time) \* 3600  
-+ EXTRACT(MINUTE FROM run\_time) \* 60  
-+ EXTRACT(SECOND FROM run\_time)) run\_time\_sec,  
-READ\_IO\_BYTES,  
-PGA\_ALLOCATED PGA\_ALLOCATED\_BYTES,  
-TEMP\_ALLOCATED TEMP\_ALLOCATED\_BYTES  
+select sql_id,  
+starting_time,  
+end_time,  
+(EXTRACT(HOUR FROM run_time) * 3600  
++ EXTRACT(MINUTE FROM run_time) * 60  
++ EXTRACT(SECOND FROM run_time)) run_time_sec,  
+READ_IO_BYTES,  
+PGA_ALLOCATED PGA_ALLOCATED_BYTES,  
+TEMP_ALLOCATED TEMP_ALLOCATED_BYTES  
 from (  
 select  
-sql\_id,  
-max(sample\_time - sql\_exec\_start) run\_time,  
-max(sample\_time) end\_time,  
-sql\_exec\_start starting\_time,  
-sum(DELTA\_READ\_IO\_BYTES) READ\_IO\_BYTES,  
-sum(DELTA\_PGA) PGA\_ALLOCATED,  
-sum(DELTA\_TEMP) TEMP\_ALLOCATED  
+sql_id,  
+max(sample_time - sql_exec_start) run_time,  
+max(sample_time) end_time,  
+sql_exec_start starting_time,  
+sum(DELTA_READ_IO_BYTES) READ_IO_BYTES,  
+sum(DELTA_PGA) PGA_ALLOCATED,  
+sum(DELTA_TEMP) TEMP_ALLOCATED  
 from  
 (  
-select sql\_id,  
-sample\_time,  
-sql\_exec\_start,  
-DELTA\_READ\_IO\_BYTES,  
-sql\_exec\_id,  
-greatest(PGA\_ALLOCATED - first\_value(PGA\_ALLOCATED) over (partition by sql\_id,sql\_exec\_id order by sample\_time rows 1 preceding),0) DELTA\_PGA,  
-greatest(TEMP\_SPACE\_ALLOCATED - first\_value(TEMP\_SPACE\_ALLOCATED) over (partition by sql\_id,sql\_exec\_id order by sample\_time rows 1 preceding),0) DELTA\_TEMP  
+select sql_id,  
+sample_time,  
+sql_exec_start,  
+DELTA_READ_IO_BYTES,  
+sql_exec_id,  
+greatest(PGA_ALLOCATED - first_value(PGA_ALLOCATED) over (partition by sql_id,sql_exec_id order by sample_time rows 1 preceding),0) DELTA_PGA,  
+greatest(TEMP_SPACE_ALLOCATED - first_value(TEMP_SPACE_ALLOCATED) over (partition by sql_id,sql_exec_id order by sample_time rows 1 preceding),0) DELTA_TEMP  
 from  
-dba\_hist\_active\_sess\_history  
+dba_hist_active_sess_history  
 where  
-sample\_time &gt;= to\_date ('2013/04/16 00:00:00','YYYY/MM/DD HH24:MI:SS')  
-and sample\_time &lt; to\_date ('2013/04/16 03:10:00','YYYY/MM/DD HH24:MI:SS')  
-and sql\_exec\_start is not null  
-and IS\_SQLID\_CURRENT='Y'  
+sample_time >= to_date ('2013/04/16 00:00:00','YYYY/MM/DD HH24:MI:SS')  
+and sample_time &lt; to_date ('2013/04/16 03:10:00','YYYY/MM/DD HH24:MI:SS')  
+and sql_exec_start is not null  
+and IS_SQLID_CURRENT='Y'  
 )  
-group by sql\_id,SQL\_EXEC\_ID,sql\_exec\_start  
-order by sql\_id  
+group by sql_id,SQL_EXEC_ID,sql_exec_start  
+order by sql_id  
 )  
-where sql\_id = 'btvk5dzpdmadh'  
-order by sql\_id, run\_time\_sec desc;  
+where sql_id = 'btvk5dzpdmadh'  
+order by sql_id, run_time_sec desc;  
 ```
 
 It will produces this kind of output:

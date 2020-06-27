@@ -55,15 +55,15 @@ As you know, the wait event "db file sequential read" records "single block" IO 
 To do so, I'll use the AWR data coming from the dba\_hist\_event\_histogram view and [Tableau](http://www.tableausoftware.com/public//). I'll also extract the data coming from dba\_hist\_snapshot (to get the begin\_interval\_date time).
 
 ```
-alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
-alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
+alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';
 
-select \* from dba\_hist\_event\_histogram where  
-snap\_id &gt;= (select min(snap\_id) from dba\_hist\_snapshot  
-where begin\_interval\_time &gt;= to\_date ('2014/06/01 00:00','YYYY/MM/DD HH24:MI'))  
-and event\_name='db file sequential read';
+select * from dba_hist_event_histogram where  
+snap_id >= (select min(snap_id) from dba_hist_snapshot  
+where begin_interval_time >= to_date ('2014/06/01 00:00','YYYY/MM/DD HH24:MI'))  
+and event_name='db file sequential read';
 
-select \* from dba\_hist\_snapshot where begin\_interval\_time &gt;= to\_date ('2014/06/01 00:00','YYYY/MM/DD HH24:MI');  
+select * from dba_hist_snapshot where begin_interval_time >= to_date ('2014/06/01 00:00','YYYY/MM/DD HH24:MI');  
 ```
 
 As you can see, there is no computation. This is just a simple extraction of the data.

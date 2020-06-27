@@ -205,7 +205,7 @@ FORMAT = '%(asctime)s - %(name)s - %(levelname)-s %(message)s'
 help = ''' Oracle Public Cloud Wrapper
 
 Usage:  
-opc_api_wrapper.py &lt;service_name&gt; create_instance
+opc_api_wrapper.py &lt;service_name> create_instance
 
 Options:  
 -h Help message
@@ -305,7 +305,7 @@ def main():
 
 arguments = docopt(help)  
 for key in arguments.keys():  
-arguments[key.replace('&lt;','').replace('&gt;','')] = arguments.pop(key)
+arguments[key.replace('&lt;','').replace('>','')] = arguments.pop(key)
 
 launch_actions(arguments)
 

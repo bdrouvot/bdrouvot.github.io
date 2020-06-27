@@ -118,18 +118,18 @@ I really don't think so, this sql (**sql\_id "frjd8zfy2jfdq"**) should have been
 <span style="text-decoration:underline;">Let's prove it with a simple test case (I am alone on the database):</span>
 
 ```
-alter system flush shared\_pool;
+alter system flush shared_pool;
 
-select count(\*) from v$sql where sql\_id='frjd8zfy2jfdq';
+select count(*) from v$sql where sql_id='frjd8zfy2jfdq';
 
 connect / as sysdba
 
 begin  
-execute immediate 'select object\_name from dba\_objects';  
+execute immediate 'select object_name from dba_objects';  
 end;  
 /
 
-select count(\*) from v$sql where sql\_id='frjd8zfy2jfdq';  
+select count(*) from v$sql where sql_id='frjd8zfy2jfdq';  
 ```
 
 <span style="text-decoration:underline;">With the following result:</span>
@@ -168,26 +168,26 @@ It did not produce any change **until I set the *optimizer\_adaptive\_features* 
 <span style="text-decoration:underline;">Here is the result:</span>
 
 ```
-SQL&gt; !cat test\_case.sql  
-alter system flush shared\_pool;
+SQL> !cat test_case.sql  
+alter system flush shared_pool;
 
-select count(\*) from v$sql where sql\_id='frjd8zfy2jfdq';
+select count(*) from v$sql where sql_id='frjd8zfy2jfdq';
 
 connect / as sysdba  
-alter session set optimizer\_adaptive\_features=false;
+alter session set optimizer_adaptive_features=false;
 
 begin  
-execute immediate 'select object\_name from dba\_objects';  
+execute immediate 'select object_name from dba_objects';  
 end;  
 /
 
-select count(\*) from v$sql where sql\_id='frjd8zfy2jfdq';
+select count(*) from v$sql where sql_id='frjd8zfy2jfdq';
 
-SQL&gt; @test\_case
+SQL> @test_case
 
 System altered.
 
-COUNT(\*)  
+COUNT(*)  
 ----------  
 0
 
@@ -197,7 +197,7 @@ Session altered.
 
 PL/SQL procedure successfully completed.
 
-COUNT(\*)  
+COUNT(*)  
 ----------  
 0  
 ```

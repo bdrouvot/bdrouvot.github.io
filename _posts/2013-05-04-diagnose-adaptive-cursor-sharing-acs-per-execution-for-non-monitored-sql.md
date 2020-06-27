@@ -42,73 +42,73 @@ So **we can get rid of the "passed"** values (and then of the v$sql\_monitor vi
 For this purpose, let's modify the sql introduced into the previous post that way:
 
 ```
-SQL&gt; !cat binds\_peeked\_acs.sql  
+SQL> !cat binds_peeked_acs.sql  
 set linesi 200 pages 999 feed off verify off  
-col bind\_name format a20  
-col end\_time format a19  
-col start\_time format a19  
+col bind_name format a20  
+col end_time format a19  
+col start_time format a19  
 col peeked format a20
 
-alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
-alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
+alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';
 
 select  
-pee.sql\_id,  
-ash.starting\_time,  
-ash.end\_time,  
-(EXTRACT(HOUR FROM ash.run\_time) \* 3600  
-+ EXTRACT(MINUTE FROM ash.run\_time) \* 60  
-+ EXTRACT(SECOND FROM ash.run\_time)) run\_time\_sec,  
-pee.plan\_hash\_value,  
-pee.bind\_name,  
-pee.bind\_pos,  
-pee.bind\_data peeked,  
---first\_value(pee.bind\_data) over (partition by pee.sql\_id,pee.bind\_name,pee.bind\_pos order by end\_time rows 1 preceding) previous\_peeked,  
-case when pee.bind\_data = first\_value(pee.bind\_data) over (partition by pee.sql\_id,pee.bind\_name,pee.bind\_pos order by end\_time rows 1 preceding) then 'NO' else 'YES' end "ACS"  
+pee.sql_id,  
+ash.starting_time,  
+ash.end_time,  
+(EXTRACT(HOUR FROM ash.run_time) * 3600  
++ EXTRACT(MINUTE FROM ash.run_time) * 60  
++ EXTRACT(SECOND FROM ash.run_time)) run_time_sec,  
+pee.plan_hash_value,  
+pee.bind_name,  
+pee.bind_pos,  
+pee.bind_data peeked,  
+--first_value(pee.bind_data) over (partition by pee.sql_id,pee.bind_name,pee.bind_pos order by end_time rows 1 preceding) previous_peeked,  
+case when pee.bind_data = first_value(pee.bind_data) over (partition by pee.sql_id,pee.bind_name,pee.bind_pos order by end_time rows 1 preceding) then 'NO' else 'YES' end "ACS"  
 from  
 (  
 select  
-p.sql\_id,  
-p.child\_number,  
-p.child\_address,  
-c.bind\_name,  
-c.bind\_pos,  
-p.plan\_hash\_value,  
+p.sql_id,  
+p.child_number,  
+p.child_address,  
+c.bind_name,  
+c.bind_pos,  
+p.plan_hash_value,  
 case  
-when c.bind\_type = 1 then utl\_raw.cast\_to\_varchar2(c.bind\_data)  
-when c.bind\_type = 2 then to\_char(utl\_raw.cast\_to\_number(c.bind\_data))  
-when c.bind\_type = 96 then to\_char(utl\_raw.cast\_to\_varchar2(c.bind\_data))  
-else 'Sorry: Not printable try with DBMS\_XPLAN.DISPLAY\_CURSOR'  
-end bind\_data  
+when c.bind_type = 1 then utl_raw.cast_to_varchar2(c.bind_data)  
+when c.bind_type = 2 then to_char(utl_raw.cast_to_number(c.bind_data))  
+when c.bind_type = 96 then to_char(utl_raw.cast_to_varchar2(c.bind_data))  
+else 'Sorry: Not printable try with DBMS_XPLAN.DISPLAY_CURSOR'  
+end bind_data  
 from  
-v$sql\_plan p,  
+v$sql_plan p,  
 xmltable  
 (  
-'/\*/peeked\_binds/bind' passing xmltype(p.other\_xml)  
-columns bind\_name varchar2(30) path '/bind/@nam',  
-bind\_pos number path '/bind/@pos',  
-bind\_type number path '/bind/@dty',  
-bind\_data raw(2000) path '/bind'  
+'/*/peeked_binds/bind' passing xmltype(p.other_xml)  
+columns bind_name varchar2(30) path '/bind/@nam',  
+bind_pos number path '/bind/@pos',  
+bind_type number path '/bind/@dty',  
+bind_data raw(2000) path '/bind'  
 ) c  
 where  
-p.other\_xml is not null  
+p.other_xml is not null  
 ) pee,  
 (  
 select  
-sql\_id,  
-sql\_child\_number,  
-sql\_exec\_id,  
-max(sample\_time - sql\_exec\_start) run\_time,  
-max(sample\_time) end\_time,  
-sql\_exec\_start starting\_time  
+sql_id,  
+sql_child_number,  
+sql_exec_id,  
+max(sample_time - sql_exec_start) run_time,  
+max(sample_time) end_time,  
+sql_exec_start starting_time  
 from  
-v$active\_session\_history  
-group by sql\_id,sql\_child\_number,sql\_exec\_id,sql\_exec\_start  
+v$active_session_history  
+group by sql_id,sql_child_number,sql_exec_id,sql_exec_start  
 ) ash  
 where  
-pee.sql\_id=ash.sql\_id and  
-pee.child\_number=ash.sql\_child\_number and  
-pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
+pee.sql_id=ash.sql_id and  
+pee.child_number=ash.sql_child_number and  
+pee.sql_id like nvl('&sql_id',pee.sql_id)  
 order by 1,2,3,7 ;  
 ```
 

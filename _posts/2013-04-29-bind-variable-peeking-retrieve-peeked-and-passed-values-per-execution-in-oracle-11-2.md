@@ -52,97 +52,97 @@ So let's write the sql to do so, and let's test it.
 <span style="text-decoration:underline;">The sql script is the following:</span>
 
 ```
-SQL&gt; !cat binds\_peeked\_passed.sql  
+SQL> !cat binds_peeked_passed.sql  
 set linesi 200 pages 999 feed off verify off  
-col bind\_name format a20  
-col end\_time format a19  
-col start\_time format a19  
+col bind_name format a20  
+col end_time format a19  
+col start_time format a19  
 col peeked format a20  
 col passed format a20
 
-alter session set nls\_date\_format='YYYY/MM/DD HH24:MI:SS';  
-alter session set nls\_timestamp\_format='YYYY/MM/DD HH24:MI:SS';
+alter session set nls_date_format='YYYY/MM/DD HH24:MI:SS';  
+alter session set nls_timestamp_format='YYYY/MM/DD HH24:MI:SS';
 
 select  
-pee.sql\_id,  
-ash.starting\_time,  
-ash.end\_time,  
-(EXTRACT(HOUR FROM ash.run\_time) \* 3600  
-+ EXTRACT(MINUTE FROM ash.run\_time) \* 60  
-+ EXTRACT(SECOND FROM ash.run\_time)) run\_time\_sec,  
-pee.plan\_hash\_value,  
-pee.bind\_name,  
-pee.bind\_pos,  
-pee.bind\_data peeked,  
-run\_t.bind\_data passed  
+pee.sql_id,  
+ash.starting_time,  
+ash.end_time,  
+(EXTRACT(HOUR FROM ash.run_time) * 3600  
++ EXTRACT(MINUTE FROM ash.run_time) * 60  
++ EXTRACT(SECOND FROM ash.run_time)) run_time_sec,  
+pee.plan_hash_value,  
+pee.bind_name,  
+pee.bind_pos,  
+pee.bind_data peeked,  
+run_t.bind_data passed  
 from  
 (  
 select  
-p.sql\_id,  
-p.sql\_child\_address,  
-p.sql\_exec\_id,  
-c.bind\_name,  
-c.bind\_pos,  
-c.bind\_data  
+p.sql_id,  
+p.sql_child_address,  
+p.sql_exec_id,  
+c.bind_name,  
+c.bind_pos,  
+c.bind_data  
 from  
-v$sql\_monitor p,  
+v$sql_monitor p,  
 xmltable  
 (  
-'/binds/bind' passing xmltype(p.binds\_xml)  
-columns bind\_name varchar2(30) path '/bind/@name',  
-bind\_pos number path '/bind/@pos',  
-bind\_data varchar2(30) path '/bind'  
+'/binds/bind' passing xmltype(p.binds_xml)  
+columns bind_name varchar2(30) path '/bind/@name',  
+bind_pos number path '/bind/@pos',  
+bind_data varchar2(30) path '/bind'  
 ) c  
 where  
-p.binds\_xml is not null  
-) run\_t  
+p.binds_xml is not null  
+) run_t  
 ,  
 (  
 select  
-p.sql\_id,  
-p.child\_number,  
-p.child\_address,  
-c.bind\_name,  
-c.bind\_pos,  
-p.plan\_hash\_value,  
+p.sql_id,  
+p.child_number,  
+p.child_address,  
+c.bind_name,  
+c.bind_pos,  
+p.plan_hash_value,  
 case  
-when c.bind\_type = 1 then utl\_raw.cast\_to\_varchar2(c.bind\_data)  
-when c.bind\_type = 2 then to\_char(utl\_raw.cast\_to\_number(c.bind\_data))  
-when c.bind\_type = 96 then to\_char(utl\_raw.cast\_to\_varchar2(c.bind\_data))  
-else 'Sorry: Not printable try with DBMS\_XPLAN.DISPLAY\_CURSOR'  
-end bind\_data  
+when c.bind_type = 1 then utl_raw.cast_to_varchar2(c.bind_data)  
+when c.bind_type = 2 then to_char(utl_raw.cast_to_number(c.bind_data))  
+when c.bind_type = 96 then to_char(utl_raw.cast_to_varchar2(c.bind_data))  
+else 'Sorry: Not printable try with DBMS_XPLAN.DISPLAY_CURSOR'  
+end bind_data  
 from  
-v$sql\_plan p,  
+v$sql_plan p,  
 xmltable  
 (  
-'/\*/peeked\_binds/bind' passing xmltype(p.other\_xml)  
-columns bind\_name varchar2(30) path '/bind/@nam',  
-bind\_pos number path '/bind/@pos',  
-bind\_type number path '/bind/@dty',  
-bind\_data raw(2000) path '/bind'  
+'/*/peeked_binds/bind' passing xmltype(p.other_xml)  
+columns bind_name varchar2(30) path '/bind/@nam',  
+bind_pos number path '/bind/@pos',  
+bind_type number path '/bind/@dty',  
+bind_data raw(2000) path '/bind'  
 ) c  
 where  
-p.other\_xml is not null  
+p.other_xml is not null  
 ) pee,  
 (  
 select  
-sql\_id,  
-sql\_exec\_id,  
-max(sample\_time - sql\_exec\_start) run\_time,  
-max(sample\_time) end\_time,  
-sql\_exec\_start starting\_time  
+sql_id,  
+sql_exec_id,  
+max(sample_time - sql_exec_start) run_time,  
+max(sample_time) end_time,  
+sql_exec_start starting_time  
 from  
-v$active\_session\_history  
-group by sql\_id,sql\_exec\_id,sql\_exec\_start  
+v$active_session_history  
+group by sql_id,sql_exec_id,sql_exec_start  
 ) ash  
 where  
-pee.sql\_id=run\_t.sql\_id and  
-pee.sql\_id=ash.sql\_id and  
-run\_t.sql\_exec\_id=ash.sql\_exec\_id and  
-pee.child\_address=run\_t.sql\_child\_address and  
-pee.bind\_name=run\_t.bind\_name and  
-pee.bind\_pos=run\_t.bind\_pos and  
-pee.sql\_id like nvl('&sql\_id',pee.sql\_id)  
+pee.sql_id=run_t.sql_id and  
+pee.sql_id=ash.sql_id and  
+run_t.sql_exec_id=ash.sql_exec_id and  
+pee.child_address=run_t.sql_child_address and  
+pee.bind_name=run_t.bind_name and  
+pee.bind_pos=run_t.bind_pos and  
+pee.sql_id like nvl('&sql_id',pee.sql_id)  
 order by 1,2,3,7 ;  
 ```
 

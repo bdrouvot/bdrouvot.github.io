@@ -141,7 +141,7 @@ round(10*m.time_waited/nullif(m.wait_count,0),3) avgms
 from v$eventmetric m,  
 v$event_name n  
 where m.event_id=n.event_id  
-and n.wait_class &lt;&gt; 'Idle' and m.wait_count &gt; 0 order by 1 """)  
+and n.wait_class &lt;> 'Idle' and m.wait_count > 0 order by 1 """)  
 for wait in cursor:  
 wait_class = wait[0]  
 wait_name = wait[1]  

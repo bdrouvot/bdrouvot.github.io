@@ -125,7 +125,7 @@ $goodparam++;
 
 # Check if groupfile is empty
 
-if ((!$goodparam) | $goodparam &gt; 1) {  
+if ((!$goodparam) | $goodparam > 1) {  
 print "n Error while processing parameters : GROUPFILE parameter is mandatory! nn" unless ($help);  
 $help=1;  
 }

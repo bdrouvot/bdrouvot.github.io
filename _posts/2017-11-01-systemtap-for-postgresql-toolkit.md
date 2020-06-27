@@ -88,7 +88,7 @@ char *strargs = STAP_ARG_mystr;
 ptr = strchr( strchr( strargs , ch) + 1 , ch);  
 ptr2 = strchr( ptr + 1 , ch);  
 strncpy (substr_res,ptr, ptr2 - ptr);  
-substr_res[ptr2 - ptr]='\0';  
+substr_res[ptr2 - ptr]='0';  
 snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",substr_res+1);  
 %}  
 ```
@@ -108,7 +108,7 @@ char *strargs = STAP_ARG_mystr;
 ptr = strchr( strargs , ch);  
 ptr2 = strchr( ptr + 1 , ch);  
 strncpy (substr_res,ptr, ptr2 - ptr);  
-substr_res[ptr2 - ptr]='\0';  
+substr_res[ptr2 - ptr]='0';  
 snprintf(STAP_RETVALUE, MAXSTRINGLEN, "%s",substr_res+1);  
 %}  
 ```

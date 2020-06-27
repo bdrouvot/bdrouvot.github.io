@@ -135,75 +135,75 @@ FAN callouts are server-side scripts or executables that run whenever a FAN even
 To do so, I created the following script:
 
 ```
-\#!/bin/ksh  
-\#  
-\# Close the PDB on the old intance during manual service relocation  
-\#  
-\# Description:  
-\# - This script closes the PDB on the old intance during manual service relocation  
-\#  
-\# Requirement:  
-\# - Location of the script must be $ORA\_CRS\_HOME/racg/usrco/.  
-\#  
-\# Version:  
-\# - version 1.0  
-\# - Bertrand Drouvot  
-\#  
-\# Date: 2014/12/04  
-\#  
-\#  
-\# Env settings
+#!/bin/ksh  
+#  
+# Close the PDB on the old intance during manual service relocation  
+#  
+# Description:  
+# - This script closes the PDB on the old intance during manual service relocation  
+#  
+# Requirement:  
+# - Location of the script must be $ORA_CRS_HOME/racg/usrco/.  
+#  
+# Version:  
+# - version 1.0  
+# - Bertrand Drouvot  
+#  
+# Date: 2014/12/04  
+#  
+#  
+# Env settings
 
-ME=\`who | cut -d" " -f1\`  
+ME=`who | cut -d" " -f1`  
 PASSWDFILE="/etc/passwd"  
-HOMEDIR=\`egrep "^${ME}" ${PASSWDFILE} | cut -d: -f 6\`  
-DATE\_LOG=$(date +"%y%m%d\_%H%M")  
-LOGFILE=fan\_cloe\_pdb\_${DATE\_LOG}.log
+HOMEDIR=`egrep "^${ME}" ${PASSWDFILE} | cut -d: -f 6`  
+DATE_LOG=$(date +"%y%m%d_%H%M")  
+LOGFILE=fan_cloe_pdb_${DATE_LOG}.log
 
-VAR\_EVENTTYPE=$1
+VAR_EVENTTYPE=$1
 
-for ARGS in $\*;  
+for ARGS in $*;  
 do  
-PROPERTY=\`echo $ARGS | cut -f1 -d"=" | tr '\[:lower:\]' '\[:upper:\]'\`  
-VALUE=\`echo $ARGS | cut -f2 -d"=" | tr '\[:lower:\]' '\[:upper:\]'\`  
+PROPERTY=`echo $ARGS | cut -f1 -d"=" | tr '[:lower:]' '[:upper:]'`  
+VALUE=`echo $ARGS | cut -f2 -d"=" | tr '[:lower:]' '[:upper:]'`  
 case $PROPERTY in  
-VERSION) VAR\_VERSION=$VALUE ;;  
-SERVICE) VAR\_SERVICE=$VALUE ;;  
-DATABASE) VAR\_DATABASE=$VALUE ;;  
-INSTANCE) VAR\_INSTANCE=$VALUE ;;  
-HOST) VAR\_HOST=$VALUE ;;  
-STATUS) VAR\_STATUS=$VALUE ;;  
-REASON) VAR\_REASON=$VALUE ;;  
-CARD) VAR\_CARDINALITY=$VALUE ;;  
-TIMESTAMP) VAR\_LOGDATE=$VALUE ;;  
-??:??:??) VAR\_LOGTIME=$VALUE ;;  
+VERSION) VAR_VERSION=$VALUE ;;  
+SERVICE) VAR_SERVICE=$VALUE ;;  
+DATABASE) VAR_DATABASE=$VALUE ;;  
+INSTANCE) VAR_INSTANCE=$VALUE ;;  
+HOST) VAR_HOST=$VALUE ;;  
+STATUS) VAR_STATUS=$VALUE ;;  
+REASON) VAR_REASON=$VALUE ;;  
+CARD) VAR_CARDINALITY=$VALUE ;;  
+TIMESTAMP) VAR_LOGDATE=$VALUE ;;  
+??:??:??) VAR_LOGTIME=$VALUE ;;  
 esac  
 done
 
-\# Close the PDB (PDB name extracted from the service name) if service relocated manually
+# Close the PDB (PDB name extracted from the service name) if service relocated manually
 
-if ( (\[ $VAR\_EVENTTYPE = "SERVICEMEMBER" \]) && (\[ $VAR\_STATUS = "DOWN" \]) && (\[ $VAR\_REASON = "USER" \]))  
+if ( ([ $VAR_EVENTTYPE = "SERVICEMEMBER" ]) && ([ $VAR_STATUS = "DOWN" ]) && ([ $VAR_REASON = "USER" ]))  
 then
 
 PATH=$PATH:/usr/local/bin  
 export pATH  
-ORAENV\_ASK=NO  
-export ORAENV\_ASK  
-ORACLE\_SID=${VAR\_INSTANCE}  
-export ORACLE\_SID  
-. oraenv &gt; /dev/null
+ORAENV_ASK=NO  
+export ORAENV_ASK  
+ORACLE_SID=${VAR_INSTANCE}  
+export ORACLE_SID  
+. oraenv > /dev/null
 
-\# Extract PDB name based on our naming convention (You may need to change this)  
-PDB=\`echo "${VAR\_SERVICE}" | sed 's/\_TAF.\*//'\`
+# Extract PDB name based on our naming convention (You may need to change this)  
+PDB=`echo "${VAR_SERVICE}" | sed 's/_TAF.*//'`
 
-\# Close the PDB on the old instance  
+# Close the PDB on the old instance  
 sqlplus /nolog &lt;&lt;EOF  
 connect / as sysdba;  
-alter pluggable database ${PDB} close instances=('${VAR\_INSTANCE}');  
+alter pluggable database ${PDB} close instances=('${VAR_INSTANCE}');  
 EOF
 
-\# Log this in a logfile  
-echo ${\*} &gt;&gt; ${HOMEDIR}/log/${LOGFILE}
+# Log this in a logfile  
+echo ${*} >> ${HOMEDIR}/log/${LOGFILE}
 
 fi  
 ```
