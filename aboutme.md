@@ -1,16 +1,11 @@
 ---
 layout: page
 title: About me
-subtitle: Why you'd want to go on a date with me
+subtitle: bdt
 ---
 
-My name is Inigo Montoya. I have the following qualities:
+Bertrand has been an Oracle DBA since 1999 and currently works for Amazon Web Services. He has experience working in very large and very critical environments, now focusing on databases, cloud and automation.
+He is an Oracle Exadata 11g Certified Implementation Specialist, Oracle Real Application Clusters (RAC) Administrator Certified Expert, and Oracle Database Administrator Certified Professional (OCP 9i/10g/11g).
+He is an OakTable Member, has been active in the Oracle community since 2012 and is a regular speaker in Europe conferences (Ukoug, Doag,..).
 
-- I rock a great mustache
-- I'm extremely loyal to my family
-
-What else do you need?
-
-### my history
-
-To be honest, I'm having some trouble remembering right now, so why don't you just watch [my movie](https://en.wikipedia.org/wiki/The_Princess_Bride_%28film%29) and it will answer **all** your questions.
+I am currently having a lot of interest around open source and mainly PostgreSQL.
