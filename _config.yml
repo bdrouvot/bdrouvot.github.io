@@ -108,8 +108,6 @@ highlighter: rouge
 permalink: /:year-:month-:day-:title/
 paginate: 5
 paginate_path: "/page:num/"
-gems:
-  - jemoji
 
 kramdown:
   input: GFM
@@ -198,6 +196,7 @@ prose:
           help: "Check to publish post, uncheck to hide."
 
 plugins:
+  - jemoji
   - jekyll-paginate
   - jekyll-sitemap
 
