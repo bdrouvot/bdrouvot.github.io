@@ -49,7 +49,6 @@ layout: base
         </span>
         {% if site.owner.disqus-shortname and page.comments or site.comments %}<span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span>{% endif %}
         {% if page.share %}{% include social-share.html %}{% endif %}
-        {% if page.ads == true %}{% include ad-sidebar.html %}<!-- /.google-ads -->{% endif %}
       </footer>
       <div class="entry-content">
         {{ content }}
@@ -76,8 +75,5 @@ layout: base
     {% include footer.html %}
   </footer>
 </div><!-- /.footer-wrapper -->
-
-{% include scripts.html %}
-
 </body>
 </html>
