@@ -21,6 +21,11 @@ permalink: /:title/
 # List of links in the navigation bar
 navbar-links:
   About Me: "aboutme"
+  Blog: ""
+  Presentations:
+    - Oracle Related: "oracle-presentations"
+    - Postgres Related: "postgres-presentations"
+  Postgres Extensions: "pg-extensions"
   Resources:
     - Previous Blog: "https://bdrouvot.wordpress.com/"
 nav-search: "search"
