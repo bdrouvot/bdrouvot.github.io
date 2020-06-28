@@ -12,6 +12,7 @@ categories:
 - ToolKit
 tags:
 - perl scripts
+- oracle
 meta:
   _edit_last: '40807211'
   _publicize_pending: '1'

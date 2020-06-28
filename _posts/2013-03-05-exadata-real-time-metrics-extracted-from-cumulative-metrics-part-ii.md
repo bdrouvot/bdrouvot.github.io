@@ -11,7 +11,7 @@ categories:
 - Exadata
 - Perl Scripts
 - ToolKit
-tags: []
+tags: [exadata, oracle]
 meta:
   _edit_last: '40807211'
   _publicize_pending: '1'

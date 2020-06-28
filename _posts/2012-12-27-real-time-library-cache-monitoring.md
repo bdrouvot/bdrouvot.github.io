@@ -13,6 +13,7 @@ categories:
 tags:
 - perl scripts
 - real-time
+- oracle
 meta:
   _publicize_pending: '1'
   _edit_last: '40807211'

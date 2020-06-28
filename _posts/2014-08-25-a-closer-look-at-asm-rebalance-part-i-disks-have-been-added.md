@@ -10,7 +10,7 @@ status: publish
 categories:
 - ASM
 - Tableau
-tags: []
+tags: [ASM, oracle]
 meta:
   _edit_last: '40807211'
   _publicize_done_external: a:1:{s:8:"facebook";a:1:{i:100007305933776;b:1;}}

@@ -10,7 +10,7 @@ status: publish
 categories:
 - Performance
 - Rac
-tags: []
+tags: [Oracle RAC, oracle]
 meta:
   _edit_last: '40807211'
   geo_public: '0'

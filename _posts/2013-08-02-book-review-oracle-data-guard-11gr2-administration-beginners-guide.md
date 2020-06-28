@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - Book Review
-tags: []
+tags: [oracle]
 meta:
   _edit_last: '40807211'
   geo_public: '0'

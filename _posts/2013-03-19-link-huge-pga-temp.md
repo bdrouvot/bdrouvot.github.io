@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - Perl Scripts
-tags: []
+tags: [oracle]
 meta:
   _wpas_done_2225791: '1'
   publicize_twitter_user: BertrandDrouvot

@@ -12,7 +12,7 @@ categories:
 - ASM
 - Perl Scripts
 - ToolKit
-tags: []
+tags: [ASM, oracle]
 meta:
   _edit_last: '40807211'
   _publicize_pending: '1'

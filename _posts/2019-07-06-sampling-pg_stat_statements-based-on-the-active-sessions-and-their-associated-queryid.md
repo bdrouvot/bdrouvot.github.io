@@ -11,7 +11,7 @@ status: publish
 categories:
 - Performance
 - Postgresql
-tags: []
+tags: [PostgreSQL]
 meta:
   _edit_last: '40807211'
   geo_public: '0'

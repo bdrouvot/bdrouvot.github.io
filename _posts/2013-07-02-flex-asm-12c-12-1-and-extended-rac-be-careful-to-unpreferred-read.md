@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - ASM
-tags: []
+tags: [Oracle RAC, ASM, oracle]
 meta:
   _edit_last: '40807211'
   _wpas_done_2077996: '1'

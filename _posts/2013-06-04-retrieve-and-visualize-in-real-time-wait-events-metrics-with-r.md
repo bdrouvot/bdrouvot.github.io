@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - R scripts
-tags: []
+tags: [oracle]
 meta:
   _edit_last: '40807211'
   _publicize_pending: '1'

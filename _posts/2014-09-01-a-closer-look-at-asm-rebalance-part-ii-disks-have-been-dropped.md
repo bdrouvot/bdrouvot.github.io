@@ -10,7 +10,7 @@ status: publish
 categories:
 - ASM
 - Tableau
-tags: []
+tags: [ASM, oracle]
 meta:
   _edit_last: '40807211'
   geo_public: '0'

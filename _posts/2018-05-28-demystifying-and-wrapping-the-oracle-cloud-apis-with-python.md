@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - cloud
-tags: []
+tags: [oracle]
 meta:
   _edit_last: '40807211'
   _oembed_1a8253b44ddc96ce14a8dcda5e5f4deb: "{{unknown}}"

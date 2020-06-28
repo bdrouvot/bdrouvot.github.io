@@ -10,7 +10,7 @@ status: publish
 categories:
 - ASM
 - Tableau
-tags: []
+tags: [ASM, oracle]
 meta:
   _edit_last: '40807211'
   publicize_google_plus_url: https://plus.google.com/101126738655139704850/posts/RqzLvRmsgtn

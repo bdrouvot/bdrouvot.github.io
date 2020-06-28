@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - Slob
-tags: []
+tags: [oracle]
 meta:
   _edit_last: '40807211'
   publicize_linkedin_url: http://www.linkedin.com/updates?discuss=&scope=16310177&stype=M&topic=5860020806779703296&type=U&a=PQ7Z

@@ -10,7 +10,7 @@ password: ''
 status: publish
 categories:
 - In-Memory
-tags: []
+tags: [Oracle RAC, oracle]
 meta:
   _wpas_skip_2077996: '1'
   _wpas_skip_2225791: '1'

@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - Rac
-tags: []
+tags: [Oracle RAC, oracle]
 meta:
   _edit_last: '40807211'
   _publicize_pending: '1'

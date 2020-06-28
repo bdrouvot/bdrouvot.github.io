@@ -13,6 +13,7 @@ categories:
 tags:
 - perl scripts
 - real-time
+- oracle
 meta:
   _publicize_done_external: a:1:{s:7:"twitter";a:1:{i:246399475;b:1;}}
   _wpas_done_2225791: '1'

@@ -15,6 +15,7 @@ tags:
 - exadata
 - perl scripts
 - real-time
+- oracle
 meta:
   _edit_last: '40807211'
   _wpas_done_2077996: '1'

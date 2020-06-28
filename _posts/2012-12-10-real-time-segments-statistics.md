@@ -15,6 +15,7 @@ tags:
 - exadata
 - perl scripts
 - real-time
+- oracle
 meta:
   publicize_twitter_user: BertrandDrouvot
   publicize_reach: a:2:{s:7:"twitter";a:1:{i:2225791;i:4;}s:2:"wp";a:1:{i:0;i:3;}}
