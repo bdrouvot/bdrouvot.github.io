@@ -21,7 +21,7 @@ permalink: /:title/
 # List of links in the navigation bar
 navbar-links:
   About Me: "aboutme"
-  Blog: ""
+  Blog: "https://bdrouvot.github.io/"
   Presentations:
     - Oracle Related: "oracle-presentations"
     - Postgres Related: "postgres-presentations"
