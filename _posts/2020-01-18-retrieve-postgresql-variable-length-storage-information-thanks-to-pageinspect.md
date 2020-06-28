@@ -9,7 +9,7 @@ password: ''
 status: publish
 categories:
 - Postgresql
-tags: []
+tags: [POSTGRESQL]
 meta:
   _edit_last: '40807211'
   geo_public: '0'
