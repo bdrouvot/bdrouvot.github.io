@@ -25,7 +25,9 @@ navbar-links:
   Presentations:
     - Oracle Related: "oracle-presentations"
     - Postgres Related: "postgres-presentations"
-  Postgres Extensions: "pg-extensions"
+  Postgres:
+    - Extensions: "pg-extensions"
+    - Toolkit: "pg-toolkit"
   Resources:
     - Previous Blog: "https://bdrouvot.wordpress.com/"
 nav-search: "search"
