@@ -6,7 +6,7 @@ subtitle: making use of postgres extensibility
 
 ---------------
 
-## :elephant: Extensions
+## Extensions :elephant:
 
 * [pgsentinel](https://github.com/pgsentinel/pgsentinel): This extension provides active session history for Postgres
 * [pg_wal_fp_extract](https://github.com/bdrouvot/pg_wal_fp_extract): This extension extracts full page image from WAL
