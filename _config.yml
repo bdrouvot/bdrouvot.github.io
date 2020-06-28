@@ -31,7 +31,7 @@ navbar-links:
   Oracle:
     - Tooling: "oracle-tooling"
   Resources:
-    - List of posts and tags: "https://bdrouvot.github.io/tags/"
+    - List of posts by tag: "https://bdrouvot.github.io/tags/"
     - Previous Blog: "https://bdrouvot.wordpress.com/"
 nav-search: "search"
 
