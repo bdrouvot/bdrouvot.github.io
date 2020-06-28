@@ -28,6 +28,8 @@ navbar-links:
   Postgres:
     - Extensions: "pg-extensions"
     - Toolkit: "pg-toolkit"
+  Oracle:
+    - Tooling: "oracle-tooling"
   Resources:
     - Previous Blog: "https://bdrouvot.wordpress.com/"
 nav-search: "search"
