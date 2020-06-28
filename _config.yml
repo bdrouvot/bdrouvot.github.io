@@ -24,7 +24,6 @@ navbar-links:
   Blog: ""
   Presentations:
     - Oracle Related: "oracle-presentations"
-    - Postgres Related: "postgres-presentations"
   Postgres Extensions: "pg-extensions"
   Resources:
     - Previous Blog: "https://bdrouvot.wordpress.com/"
