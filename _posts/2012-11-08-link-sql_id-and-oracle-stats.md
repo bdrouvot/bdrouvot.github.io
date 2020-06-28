@@ -10,8 +10,6 @@ status: publish
 categories:
 - ToolKit
 tags:
-- perl scripts
-- real-time
 - oracle
 meta:
   _edit_last: '40807211'

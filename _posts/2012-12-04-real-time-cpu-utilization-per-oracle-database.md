@@ -11,8 +11,6 @@ categories:
 - Perl Scripts
 - ToolKit
 tags:
-- perl scripts
-- real-time
 - oracle
 meta:
   _publicize_done_external: a:1:{s:7:"twitter";a:1:{i:246399475;b:1;}}

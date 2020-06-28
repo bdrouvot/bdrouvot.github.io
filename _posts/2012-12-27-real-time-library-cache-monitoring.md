@@ -11,8 +11,6 @@ categories:
 - Perl Scripts
 - ToolKit
 tags:
-- perl scripts
-- real-time
 - oracle
 meta:
   _publicize_pending: '1'

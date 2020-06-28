@@ -13,8 +13,6 @@ categories:
 - ToolKit
 tags:
 - exadata
-- perl scripts
-- real-time
 - oracle
 meta:
   publicize_twitter_user: BertrandDrouvot

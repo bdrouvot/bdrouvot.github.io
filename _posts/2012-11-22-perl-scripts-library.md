@@ -11,7 +11,6 @@ categories:
 - Perl Scripts
 - ToolKit
 tags:
-- perl scripts
 meta:
   _edit_last: '40807211'
   _publicize_pending: '1'

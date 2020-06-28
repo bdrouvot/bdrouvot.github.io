@@ -11,7 +11,6 @@ categories:
 - Perl Scripts
 - ToolKit
 tags:
-- perl scripts
 - oracle
 meta:
   _edit_last: '40807211'
