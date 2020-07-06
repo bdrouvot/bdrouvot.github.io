@@ -372,6 +372,7 @@ img {
 
 .nav-search-link .nav-search-icon {
   display: none;
+  color: {{ site.navbar-text-col | default: "#404040" }};
 }
 .nav-search-link .nav-search-text {
   display: inline;
