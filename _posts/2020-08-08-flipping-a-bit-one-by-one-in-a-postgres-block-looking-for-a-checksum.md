@@ -56,6 +56,7 @@ It's an indication that the corruption might be due to a bit flip at that positi
 -   The `flip_bit_and_checksum.bin` utility can be found [here](https://github.com/bdrouvot/pg_toolkit/blob/master/c/flip_bit_and_checksum.c).
 -   Having found the expected cheksum while flipping a bit is not a guarantee that a flip bip actually happened and led to the corruption. But it's a good way to start the investigations with.
 -   The utility does not modify the original block.
+-   There is only one bit different from the original block at any time.
 
 ### Conclusion
 
