@@ -44,7 +44,7 @@ launch the `flip_bit_and_checksum.bin` utility to look for the expected checksum
      ./flip_bit_and_checksum.bin [OPTION] <block_path>
      -c, --checksum=CHECKSUM to look for
 
-     $ ./flip_bit_and_checksum.bin ./for_bit_flip_investigation -c \`51845\`
+     $ ./flip_bit_and_checksum.bin ./for_bit_flip_investigation -c 51845
      Warning: Keep in mind that numbering starts from 0 for both bit and byte
      checksum ca85 (51845) found while flipping bit 1926 (bit 6 in byte 240)
 
