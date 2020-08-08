@@ -22,7 +22,7 @@ permalink: "/2020/08/08/flipping-a-bit-one-by-one-in-a-postgres-block-looking-fo
 
 Nikolay Samokhvalov started recently a thread for collecting useful ideas, tools for dealing with PostgreSQL DATA CORRUPTION, and BUGS (see the [thread](https://twitter.com/samokhvalov/status/1289069826531422208)).
 
-One potential corruption could be a bit flip, let me share one utility that could starting the investigation in such a case.
+One potential corruption could be a bit flip, let me share one utility that could help starting the investigation in such a case.
 
 say you got:
 
@@ -44,7 +44,7 @@ launch the `flip_bit_and_checksum.bin` utility to look for the expected checksum
      ./flip_bit_and_checksum.bin [OPTION] <block_path>
      -c, --checksum=CHECKSUM to look for
 
-     $ ./flip_bit_and_checksum.bin ./for_bit_flip_investigation -c `51845`
+     $ ./flip_bit_and_checksum.bin ./for_bit_flip_investigation -c \`51845\`
      Warning: Keep in mind that numbering starts from 0 for both bit and byte
      checksum ca85 (51845) found while flipping bit 1926 (bit 6 in byte 240)
 
