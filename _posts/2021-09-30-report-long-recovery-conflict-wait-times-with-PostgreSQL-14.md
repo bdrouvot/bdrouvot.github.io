@@ -45,7 +45,7 @@ but you won't see any of those if the recovery was blocked for less than 30s (wh
 
 It means this could be difficult to diagnose where the recovery lag is coming from (if any).
 
-And that's where the new parameter comes into play, byt setting it to `on` you would get things like:
+And that's where the new parameter comes into play, by setting it to `on` you would get things like:
 
 	LOG:  recovery still waiting after 1024.777 ms: recovery conflict on snapshot
 	DETAIL:  Conflicting process: 10156.
