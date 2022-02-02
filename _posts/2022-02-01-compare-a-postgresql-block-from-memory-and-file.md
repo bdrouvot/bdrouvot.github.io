@@ -41,7 +41,7 @@ Let's use the [pg_buffercache](https://www.postgresql.org/docs/current/pgbufferc
 
 So the block number 1 is a dirty block, let's compare its content from its file and memory.
 
-#### Get the content from the relation file:
+#### Get the content from the relation file
 
 To do so, let's get its associated filepath that way:
 
@@ -91,7 +91,7 @@ and then use pg_filedump that way:
 
 Now let's get the information from memory (means from the shared buffer).
 
-#### Get the content from memory:
+#### Get the content from memory
 
 First, let's dump the block from memory to a file thanks to the get_raw_page() pageinspect's function that way:
 
