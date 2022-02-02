@@ -142,7 +142,7 @@ Now we can use the dumped block as the pg_filedump input that way:
 
 	*** End of File Encountered. Last Block Read: 0 ***
 
-As you can see, and as expected, the blocks are different (among other things, there is one more item in memory).
+As you can see, and as expected in this example as we choose a dirty block, the blocks coming from the shared buffer and from the file are different (among other things, there is one more item in memory).
 
 ### Conclusion
 
