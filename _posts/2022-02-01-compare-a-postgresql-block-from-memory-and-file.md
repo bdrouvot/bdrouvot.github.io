@@ -31,7 +31,7 @@ First of all, for this example, I want to be sure that I will be comparing a dir
 
 A dirty block is a block that has been modified since the last checkpoint.
 
--   Let's use the [pg_buffercache](https://www.postgresql.org/docs/current/pgbuffercache.html) extension to find a dirty block that belongs to the relation bdttab:
+Let's use the [pg_buffercache](https://www.postgresql.org/docs/current/pgbuffercache.html) extension to find a dirty block that belongs to the relation bdttab:
 
 	postgres=# select c.relname, b.relblocknumber, b.isdirty from pg_buffercache AS b, pg_class AS c where c.relfilenode = b.relfilenode and c.relname = 'bdttab' and isdirty is true;
 	 relname | relblocknumber | isdirty
@@ -45,14 +45,14 @@ So the block number 1 is a dirty block, let's compare its content from its file 
 
 To do so, let's:
 
--   get its associated filepath that way:
+get its associated filepath that way:
 
 	postgres=# SELECT pg_relation_filepath('bdttab');
 	 pg_relation_filepath
 	----------------------
 	 base/13580/32771
 
--   use pg_filedump that way:
+use pg_filedump that way:
 
 	$ ./pg_filedump -R 1 /home/postgres/pg/pg_installed/data/base/13580/32771
 
@@ -91,11 +91,11 @@ To do so, let's:
 
 	*** End of Requested Range Encountered. Last Block Read: 1 ***
 
-Now let's get the information from memory:
+Now let's get the information from memory.
 
 #### Get the content from memory:
 
--   First, let's dump the block from memory to a file thanks to pageinspect that way:
+First, let's dump the block from memory to a file thanks to pageinspect that way:
 
 	$ psql postgres -tA -c "select encode(get_raw_page::bytea, 'hex') from get_raw_page('bdttab',1)" | xxd -r -p > bdttab_block_1.out
 
@@ -104,7 +104,7 @@ Now let's get the information from memory:
 
 As you can see the generated file size is 8K, which is the default PostgreSQL block size (that i did not change).
  
--   and then use the dumped block as the pg_filedump input that way:
+And then use the dumped block as the pg_filedump input that way:
 
 	$ ./pg_filedump ./bdttab_block_1.out
 
