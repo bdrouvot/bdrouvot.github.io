@@ -24,7 +24,7 @@ This post shows a way to compare the content of a PostgreSQL block from memory a
 To achieve this goal we will use the [pageinspect](https://www.postgresql.org/docs/current/pageinspect.html) extension and [pg_filedump](https://github.com/df7cb/pg_filedump). 
 
 ### Let's compare
-
+    
 #### Find a dirty block
 
 First of all, for this example, I want to be sure that I will be comparing a dirty block (means its content between the shared buffer and the file it belongs to differs).
@@ -43,16 +43,14 @@ So the block number 1 is a dirty block, let's compare its content from its file 
 
 #### Get the content from the relation file:
 
-To do so, let's:
-
-get its associated filepath that way:
+To do so, let's get its associated filepath that way:
 
 	postgres=# SELECT pg_relation_filepath('bdttab');
 	 pg_relation_filepath
 	----------------------
 	 base/13580/32771
 
-use pg_filedump that way:
+and then use pg_filedump that way:
 
 	$ ./pg_filedump -R 1 /home/postgres/pg/pg_installed/data/base/13580/32771
 
@@ -91,11 +89,11 @@ use pg_filedump that way:
 
 	*** End of Requested Range Encountered. Last Block Read: 1 ***
 
-Now let's get the information from memory.
+Now let's get the information from memory (means from the shared buffer).
 
 #### Get the content from memory:
 
-First, let's dump the block from memory to a file thanks to pageinspect that way:
+First, let's dump the block from memory to a file thanks to the get_raw_page() pageinspect's function that way:
 
 	$ psql postgres -tA -c "select encode(get_raw_page::bytea, 'hex') from get_raw_page('bdttab',1)" | xxd -r -p > bdttab_block_1.out
 
@@ -104,7 +102,7 @@ First, let's dump the block from memory to a file thanks to pageinspect that way
 
 As you can see the generated file size is 8K, which is the default PostgreSQL block size (that i did not change).
  
-And then use the dumped block as the pg_filedump input that way:
+Now we can use the dumped block as the pg_filedump input that way:
 
 	$ ./pg_filedump ./bdttab_block_1.out
 
@@ -144,7 +142,7 @@ And then use the dumped block as the pg_filedump input that way:
 
 	*** End of File Encountered. Last Block Read: 0 ***
 
-As you can see the blocks are different (among other things, there is one more item in memory).
+As you can see, and as expected, the blocks are different (among other things, there is one more item in memory).
 
 ### Conclusion
 
