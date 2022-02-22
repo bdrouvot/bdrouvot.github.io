@@ -202,6 +202,5 @@ prose:
           help: "Check to publish post, uncheck to hide."
 
 plugins:
-  - jemoji
   - jekyll-paginate
   - jekyll-sitemap
