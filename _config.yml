@@ -26,6 +26,7 @@ navbar-links:
     - Oracle Related: "oracle-presentations"
     - Postgres Related: "postgres-presentations"
   Postgres:
+    - Contributions: "pg-contributions"
     - Extensions: "pg-extensions"
     - Toolkit: "pg-toolkit"
   Oracle:
