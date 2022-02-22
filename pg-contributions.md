@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Postgres contributions
-subtitle: my contributions to community postgres and extensions
+subtitle: my contributions to community Postgres and extensions
 ---
 
 ---------------
