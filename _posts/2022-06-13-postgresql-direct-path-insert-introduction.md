@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'PostgreSQL direct path insert: Introduction'
+title: PostgreSQL direct path insert: Introduction
 date: 2022-06-13 17:26:32.000000000 +01:00
 type: post
 parent_id: '0'
@@ -15,7 +15,7 @@ author:
   display_name: bdrouvot
   first_name: ''
   last_name: ''
-permalink: "/2022/06/13/postgresql-direct-path-insert-introduction"
+permalink: "/2022/06/13/postgresql-direct-path-insert-introduction/"
 ---
 
 ### Introduction
