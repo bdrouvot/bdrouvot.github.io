@@ -1,6 +1,6 @@
 ---
 layout: post
-title: PostgreSQL direct path insert: Introduction
+title: 'PostgreSQL direct path insert: Introduction'
 date: 2022-06-13 17:26:32.000000000 +01:00
 type: post
 parent_id: '0'
@@ -15,7 +15,7 @@ author:
   display_name: bdrouvot
   first_name: ''
   last_name: ''
-permalink: "/2022/06/13-postgresql-direct-path-insert-introduction"
+permalink: "/2022/06/13/postgresql-direct-path-insert-introduction"
 ---
 
 ### Introduction
@@ -161,7 +161,7 @@ Then it makes a lot of sense to compare 2 Flame Graphs,
 
 - one captured while the standard insert was running:
 
-<img src="{{ site.baseurl }}/assets/images/perf_nohint.svg" class="aligncenter size-full wp-image-3542" width="1100" height="777" />
+![]({{ site.baseurl }}/assets/images/perf_nohint.svg)
 
 - the second one, captured while the direct path insert was running:
 
