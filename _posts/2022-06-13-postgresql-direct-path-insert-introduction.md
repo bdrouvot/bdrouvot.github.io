@@ -1,6 +1,6 @@
 ---
 layout: post
-title: PostgreSQL direct path insert: Introduction
+title: 'PostgreSQL direct path insert: Introduction'
 date: 2022-06-13 17:26:32.000000000 +01:00
 type: post
 parent_id: '0'
@@ -165,7 +165,7 @@ Then it makes a lot of sense to compare 2 Flame Graphs,
 
 - the second one, captured while the direct path insert was running:
 
-<img src="{{ site.baseurl }}/assets/images/perf_with_hint.svg" class="aligncenter size-full wp-image-3542" width="1100" height="777" />
+![]({{ site.baseurl }}/assets/images/perf_with_hint.svg)
 
 For the interpretation, you can assume that the `IAExecInsert` seen in the direct path one relates to the `ExecInsert` in the standard one.
 
@@ -188,6 +188,6 @@ If done that way, it could provide huge performance benefits.
 
 It has been around for a while in the Oracle world and seems well known and used:
 
-<img src="{{ site.baseurl }}/assets/images/twitter_poll_dpi.png" class="aligncenter size-full wp-image-3542" width="1100" height="777" />
+![]({{ site.baseurl }}/assets/images/twitter_poll_dpi.png)
 			
 at least according to some of my Oracle tweeps :smiley:.
