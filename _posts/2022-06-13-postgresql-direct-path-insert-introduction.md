@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'PostgreSQL direct path insert: Introduction'
-date: 2022-06-13 17:26:32.000000000 +01:00
+date: 2022-06-12 17:26:32.000000000 +01:00
 type: post
 parent_id: '0'
 published: true
