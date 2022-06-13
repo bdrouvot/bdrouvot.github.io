@@ -26,11 +26,12 @@ It writes the data into brand new pages and appends them direcly into the relati
 This is not to be confused with Direct I/O (which bypass the kernel page cache).
 
 In this post we will:
+
 - look at the pros and cons
 - introduce a new PostgreSQL module that provides direct path insert
-- look at an example and explain the performance results
+- look at an example and explain the performance results  
 
-### Let's see the pros and cons
+### Let's see the pros and cons  
 
 #### Pros
 
