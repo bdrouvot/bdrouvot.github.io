@@ -26,7 +26,6 @@ It writes the data into brand new pages and appends them direcly into the relati
 This is not to be confused with Direct I/O (which bypass the kernel page cache).
 
 In this post we will:
-
 - look at the pros and cons
 - introduce a new PostgreSQL module that provides direct path insert
 - look at an example and explain the performance results
@@ -157,7 +156,7 @@ postgres=# select wait_event,count(*),top_level_query from pg_active_session_his
 ```
 
 As you can see almost 88% of the time has been spent in the CPU.  
-Then it makes a lot of sense to compare 2 Flame Graphs,
+Then it makes a lot of sense to compare 2 Flame Graphs:
 
 - one captured while the standard insert was running:
 
