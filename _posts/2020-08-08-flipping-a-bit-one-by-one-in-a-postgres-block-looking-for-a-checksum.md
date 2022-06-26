@@ -34,7 +34,7 @@ then, copy the block:
 
      $ dd status=none bs=8192 count=1 if=/usr/local/pgsql11.8-last/data/base/13287/24877 skip=0 of=./for_bit_flip_investigation
 
-launch the `flip_bit_and_checksum.bin` utility to look for the expected checksum (51845 in this example):
+launch the **flip_bit_and_checksum.bin** utility to look for the expected checksum (51845 in this example):
 
      $ ./flip_bit_and_checksum.bin
      ./flip_bit_and_checksum.bin: Flip one bit one by one and compute the checksum.
@@ -53,7 +53,7 @@ It's an indication that the corruption might be due to a bit flip at that positi
 
 ### Remarks
 
--   The `flip_bit_and_checksum.bin` utility can be found [here](https://github.com/bdrouvot/pg_toolkit/blob/master/c/flip_bit_and_checksum.c).
+-   The **flip_bit_and_checksum.bin** utility can be found [here](https://github.com/bdrouvot/pg_toolkit/blob/master/c/flip_bit_and_checksum.c).
 -   Having found the expected cheksum while flipping a bit is not a guarantee that a flip bit actually happened and led to the corruption. But it's a good way to start the investigations with.
 -   The utility does not modify the original block.
 -   There is only one bit different from the original block at any time.

@@ -54,11 +54,11 @@ Please bear in mind that a partition is considered as a relation (so that you ca
 
 ### How can it be tested?
 
-It can be tested with a new ``pg_directpaths`` PostgreSQL module (that does not require any core changes).  
+It can be tested with a new **pg_directpaths** PostgreSQL module (that does not require any core changes).
 The module can be found [here](https://github.com/bdrouvot/pg_directpaths) and supports PostgreSQL versions >= 10.
 
 You just need to add a new /*+ APPEND */ hint to your insert statement to give it a try.  
-Please note that at the time of this writing the module is in ``alpha version and should not be used for Production``.
+Please note that at the time of this writing the module is in **alpha version and should not be used for Production**.
 
 Currently this module has some limitations (that will be addressed in the near future):
 
@@ -68,7 +68,7 @@ Currently this module has some limitations (that will be addressed in the near f
 
 But already provides some benefits:
 
-- All the ones already mentioned in the `Pros` section, plus:
+- All the ones already mentioned in the **Pros** section, plus:
 - If the data set being inserted is large enough:
 	- faster WAL logging (as it is done by batch of Full Page Images and not record by record)
 	- less amount of WAL generated (same reason as above)
@@ -144,7 +144,7 @@ as you can see it took about 56 seconds to insert the same amount of data (50M t
 ### Why did the direct path insert run faster?
 
 First let's have a look to the wait events history while the standard insert was running.  
-To do so, let's query the `pg_active_session_history` view coming with the [pgsentinel](https://github.com/pgsentinel/pgsentinel) extension:
+To do so, let's query the **pg_active_session_history** view coming with the [pgsentinel](https://github.com/pgsentinel/pgsentinel) extension:
 
 ```
 postgres=# select wait_event,count(*),top_level_query from pg_active_session_history group by wait_event,top_level_query;
@@ -167,12 +167,12 @@ Then it makes a lot of sense to compare 2 Flame Graphs:
 
 ![]({{ site.baseurl }}/assets/images/perf_with_hint.svg)
 
-For the interpretation, you can assume that the `IAExecInsert` seen in the direct path one relates to the `ExecInsert` in the standard one.
+For the interpretation, you can assume that the **IAExecInsert** seen in the direct path one relates to the **ExecInsert** in the standard one.
 
-Then, as you can see in the standard insert, a large part of the `ExecInsert` samples are linked to `RelationGetBufferForTuple` and `XLogInsert` (mainly `XLogInsertRecord`) while we don't see any of those in the direct path one.
+Then, as you can see in the standard insert, a large part of the **ExecInsert** samples are linked to **RelationGetBufferForTuple** and **XLogInsert** (mainly **XLogInsertRecord**) while we don't see any of those in the direct path one.
 This is the result of bypassing the shared buffers and WAL logging by batch of Full Page Images (instead of record by record).
 
-Simply put, this is where the saving is coming from: the direct path insert has been `faster` because `it did less work`.
+Simply put, this is where the saving is coming from: the direct path insert has been **faster** because **it did less work**.
 
 ### Conclusion
 

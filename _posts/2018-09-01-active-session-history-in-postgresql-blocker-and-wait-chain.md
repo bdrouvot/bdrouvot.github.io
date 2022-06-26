@@ -69,16 +69,16 @@ The pg\_active\_session\_history view is currently made of:
      blockerpid       | integer                  |           |          |
      blocker_state    | text                     |           |          |
 
-You could see it as samplings of `pg_stat_activity` providing more information:
+You could see it as samplings of **pg_stat_activity** providing more information:
 
--   `ash_time`: the sampling time
--   `top_level_query`: the top level statement (in case PL/pgSQL is used)
--   `query`: the statement being executed (not normalised, as it is in `pg_stat_statements`, means you see the values)
--   `cmdtype`: the statement type (SELECT,UPDATE,INSERT,DELETE,UTILITY,UNKNOWN,NOTHING)
--   `queryid`: the queryid of the statement which links to pg\_stat\_statements
--   `blockers`: the number of blockers
--   `blockerpid`: the pid of the blocker (if blockers = 1), the pid of one blocker (if blockers &gt; 1)
--   `blocker_state`: state of the blocker (state of the blockerpid)
+-   **ash_time**: the sampling time
+-   **top_level_query**: the top level statement (in case PL/pgSQL is used)
+-   **query**: the statement being executed (not normalised, as it is in **pg_stat_statements**, means you see the values)
+-   **cmdtype**: the statement type (SELECT,UPDATE,INSERT,DELETE,UTILITY,UNKNOWN,NOTHING)
+-   **queryid**: the queryid of the statement which links to pg\_stat\_statements
+-   **blockers**: the number of blockers
+-   **blockerpid**: the pid of the blocker (if blockers = 1), the pid of one blocker (if blockers &gt; 1)
+-   **blocker_state**: state of the blocker (state of the blockerpid)
 
 Thanks to the queryid field you are able to link the session activity with the sql activity.
 
