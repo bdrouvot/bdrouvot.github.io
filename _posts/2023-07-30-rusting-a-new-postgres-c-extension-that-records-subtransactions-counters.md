@@ -1,6 +1,6 @@
 ---
 layout: post
-title: '"Rusting" a new Postgres c extension that records subtransactions counters'
+title: '"Rusting" a new Postgres C extension that records subtransactions counters'
 date: 2023-07-30 08:00:00.000000000 +01:00
 type: post
 parent_id: '0'
