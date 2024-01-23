@@ -6,10 +6,15 @@ subtitle: Never stop learning and sharing
 
 ----------
 
-#### Active Session History in PostgreSQL
+#### Postgres 16 highlight: Logical decoding on standby
 
-* [slides](https://fr.slideshare.net/BertrandDrouvot/active-session-history-in-postgresql)
+* [video](https://youtu.be/RQucDdeg0Ac?si=KDlvacKM6dhepsom)
+* [slides](https://www.postgresql.eu/events/pgconfeu2023/sessions/session/4867/slides/433/pgconfeu2023_logical_decoding_on_standby.pdf)
 
 #### How to create a hacking toolkit thanks to the pageinspect extension and some Linux commands like dd, od…?
 
 * [slides, scripts and video](https://github.com/bdrouvot/pgconfnyc2022)
+
+#### Active Session History in PostgreSQL
+
+* [slides](https://fr.slideshare.net/BertrandDrouvot/active-session-history-in-postgresql)
