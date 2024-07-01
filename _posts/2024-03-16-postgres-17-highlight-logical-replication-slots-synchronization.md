@@ -300,15 +300,15 @@ on the promoted standby.
 
 ### Remarks
 
-A new GUC *standby_slot_names* has also been added: it provides a way to **ensure** that physical standbys that are
+A new GUC ~~*standby_slot_names*~~  *synchronized_standby_slots* has also been added: it provides a way to **ensure** that physical standbys that are
 potential failover candidates have received and flushed changes before the primary server makes them visible to subscribers.
 
 In the example above, it was set to:
 
 ```
-postgres@primary=# show standby_slot_names;
- standby_slot_names
---------------------
+postgres=# show synchronized_standby_slots;
+ synchronized_standby_slots
+----------------------------
  master_slot
 ```
 
@@ -320,6 +320,7 @@ Logical replication slot synchronization is currently not supported on a cascadi
 
 In addition to the one mentioned in the Introduction, the following commits have also been implemented:
 
+- [Rename standby_slot_names to synchronized_standby_slots](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=2357c9223b710c91b0f05cbc56bd435baeac961f)
 - [Allow to enable failover property for replication slots via SQL API](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c393308b69)
 - [Allow setting failover property in the replication command](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=7329240437)
 - [Add a failover option to subscriptions](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=776621a5e4)
