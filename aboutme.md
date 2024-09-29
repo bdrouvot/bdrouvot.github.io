@@ -4,10 +4,9 @@ title: About me
 subtitle: bdt
 ---
 
-I used to work as an oracle DBA since 1999.
-I am an OakTable Member, have been active in the Oracle community since 2012 and am a regular speaker in Europe conferences (Ukoug, Doag, ...). 
+Bertrand is an IT professional since about 25 years mainly focusing on databases and data.
+He currently works for Amazon Web Services (PostgreSQL Contributors Team).
+He is a PostgreSQL Major Contributor, contributing to extensions, bug fixes, patch reviews and new features.
 
-![]({{ site.baseurl }}/assets/images/oak_logo.jpg)
-![]({{ site.baseurl }}/assets/images/ace_alumnus.jpg)
-
-I am currently having a lot of interest around open source and mainly PostgreSQL :elephant:
+Before that he was active in the Oracle community, recognized as an OakTable member
+and regular speaker in Europe conferences.
