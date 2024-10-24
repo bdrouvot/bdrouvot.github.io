@@ -6,6 +6,10 @@ subtitle: Never stop learning and sharing
 
 ----------
 
+#### My Journey in PostgreSQL bug fixing
+
+* [slides](https://www.postgresql.eu/events/pgconfeu2024/sessions/session/5750/slides/553/my_journey_in_pg_bug_fixing.pdf)
+
 #### Postgres 16 highlight: Logical decoding on standby
 
 * [video](https://youtu.be/RQucDdeg0Ac?si=KDlvacKM6dhepsom)
