@@ -21,7 +21,7 @@ permalink: "/2024/03/16/postgres-17-highlight-logical-replication-slots-synchron
 ### Introduction
 
 PostgreSQL 17 will normally (as there is always a risk of seeing something reverted in the beta phase) include this commit:
-[Add a new slot sync worker to synchronize logical slots](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=93db6cbda037f1be9544932bd9a785dabf3ff712).
+[Add a new slot sync worker to synchronize logical slots](https://github.com/postgres/postgres/commit/93db6cbda037f1be9544932bd9a785dabf3ff712).
 
 ```
 commit 93db6cbda037f1be9544932bd9a785dabf3ff712
@@ -320,13 +320,13 @@ Logical replication slot synchronization is currently not supported on a cascadi
 
 In addition to the one mentioned in the Introduction, the following commits have also been implemented:
 
-- [Rename standby_slot_names to synchronized_standby_slots](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=2357c9223b710c91b0f05cbc56bd435baeac961f)
-- [Allow to enable failover property for replication slots via SQL API](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c393308b69)
-- [Allow setting failover property in the replication command](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=7329240437)
-- [Add a failover option to subscriptions](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=776621a5e4)
-- [Enhance libpqrcv APIs to support slot synchronization](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=dafbfed9ef)
-- [Add a slot synchronization function](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=ddd5f4f54a)
-- [Introduce a new GUC 'standby_slot_names'](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=bf279ddd1c)
+- [Rename standby_slot_names to synchronized_standby_slots](https://github.com/postgres/postgres/commit/2357c9223b710c91b0f05cbc56bd435baeac961f)
+- [Allow to enable failover property for replication slots via SQL API](https://github.com/postgres/postgres/commit/c393308b69)
+- [Allow setting failover property in the replication command](https://github.com/postgres/postgres/commit/7329240437)
+- [Add a failover option to subscriptions](https://github.com/postgres/postgres/commit/776621a5e4)
+- [Enhance libpqrcv APIs to support slot synchronization](https://github.com/postgres/postgres/commit/dafbfed9ef)
+- [Add a slot synchronization function](https://github.com/postgres/postgres/commit/ddd5f4f54a)
+- [Introduce a new GUC 'standby_slot_names'](https://github.com/postgres/postgres/commit/bf279ddd1c)
 
 ### Conclusion
 

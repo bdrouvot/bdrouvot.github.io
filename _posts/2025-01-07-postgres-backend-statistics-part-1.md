@@ -21,7 +21,7 @@ permalink: "/2025/01/07/postgres-backend-statistics-part-1/"
 ### Introduction
 
 PostgreSQL 18 will normally (as there is always a risk of seeing something reverted until its GA release) include this commit:
-[Add backend-level statistics to pgstats](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=9aea73fc61d4e77e000724ce0b2f896590a10e03).
+[Add backend-level statistics to pgstats](https://github.com/postgres/postgres/commit/9aea73fc61d4e77e000724ce0b2f896590a10e03).
 
 ```
 commit 9aea73fc61d4e77e000724ce0b2f896590a10e03

@@ -21,7 +21,7 @@ permalink: "/2023/04/19/postgres-16-highlight-logical-decoding-on-standby/"
 ### Introduction
 
 PostgreSQL 16 will normally (as there is always a risk of seeing something reverted in the beta phase) include this commit:
-[Allow logical decoding on standbys](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=0fdab27ad68a059a1663fa5ce48d76333f1bd74c).
+[Allow logical decoding on standbys](https://github.com/postgres/postgres/commit/0fdab27ad68a059a1663fa5ce48d76333f1bd74c).
 
 ```
 commit: 0fdab27ad68a059a1663fa5ce48d76333f1bd74c
@@ -306,17 +306,17 @@ subscribing to the standby.
 
 To allow logical decoding on standbys, prior to the one mentioned in the Introduction, the following commits have also been implemented:
 
-- [Pass down table relation into more index relation functions](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=61b313e47eb987682441c675724c22bf4363c9c4)
-- [Add info in WAL records in preparation for logical slot conflict handling](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=6af1793954e8c5e753af83c3edb37ed3267dd179) (this commit message also explains the overall design)
-- [Replace replication slot's invalidated_at LSN with an enum](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=15f8203a5975d6b9b78e2c64e213ed964b50c044)
-- [Prevent use of invalidated logical slot in CreateDecodingContext()](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=4397abd0a2af955326c0608d63f3716ce5901004)
-- [Support invalidating replication slots due to horizon and wal_level](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=be87200efd9308ccfe217ce8828f316e93e370da)
-- [Handle logical slot conflicts on standby](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=26669757b6a7665c1069e77e6472bd8550193ca6)
-- [For cascading replication, wake physical and logical walsenders separately](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=e101dfac3a53c20bfbf1ca85d30a368c2954facf)
+- [Pass down table relation into more index relation functions](https://github.com/postgres/postgres/commit/61b313e47eb987682441c675724c22bf4363c9c4)
+- [Add info in WAL records in preparation for logical slot conflict handling](https://github.com/postgres/postgres/commit/6af1793954e8c5e753af83c3edb37ed3267dd179) (this commit message also explains the overall design)
+- [Replace replication slot's invalidated_at LSN with an enum](https://github.com/postgres/postgres/commit/15f8203a5975d6b9b78e2c64e213ed964b50c044)
+- [Prevent use of invalidated logical slot in CreateDecodingContext()](https://github.com/postgres/postgres/commit/4397abd0a2af955326c0608d63f3716ce5901004)
+- [Support invalidating replication slots due to horizon and wal_level](https://github.com/postgres/postgres/commit/be87200efd9308ccfe217ce8828f316e93e370da)
+- [Handle logical slot conflicts on standby](https://github.com/postgres/postgres/commit/26669757b6a7665c1069e77e6472bd8550193ca6)
+- [For cascading replication, wake physical and logical walsenders separately](https://github.com/postgres/postgres/commit/e101dfac3a53c20bfbf1ca85d30a368c2954facf)
 
 ### Conclusion
 
-Thanks to this new [commit](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=0fdab27ad68a059a1663fa5ce48d76333f1bd74c)
+Thanks to this new [commit](https://github.com/postgres/postgres/commit/0fdab27ad68a059a1663fa5ce48d76333f1bd74c)
 it will be possible to:
 
 - create logical replication slot on a standby

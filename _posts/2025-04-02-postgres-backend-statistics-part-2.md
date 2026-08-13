@@ -21,7 +21,7 @@ permalink: "/2025/04/02/postgres-backend-statistics-part-2/"
 ### Introduction
 
 PostgreSQL 18 will normally (as there is always a risk of seeing something reverted until its GA release) include those commits:
-[Add data for WAL in pg_stat_io and backend statistics](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a051e71e28a12342a4fb39a3c149a197159f9c46):
+[Add data for WAL in pg_stat_io and backend statistics](https://github.com/postgres/postgres/commit/a051e71e28a12342a4fb39a3c149a197159f9c46):
 
 ```
 commit a051e71e28a12342a4fb39a3c149a197159f9c46
@@ -35,7 +35,7 @@ statistics (pg_stat_get_backend_io()).
 .
 .
 ```
-and [Add WAL data to backend statistics](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=76def4cdd7c2b32d19e950a160f834392ea51744):
+and [Add WAL data to backend statistics](https://github.com/postgres/postgres/commit/76def4cdd7c2b32d19e950a160f834392ea51744):
 
 ```
 commit 76def4cdd7c2b32d19e950a160f834392ea51744
