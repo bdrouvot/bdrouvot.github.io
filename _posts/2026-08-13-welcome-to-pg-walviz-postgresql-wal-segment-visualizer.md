@@ -33,19 +33,9 @@ full-page images and raw bytes.
 
 It is a read-only tool that displays a WAL segment in a local browser.
 
-It presents the same WAL data at three levels:
-
-- The segment overview displays all the WAL pages and where the record
-  fragments are located.
-- The WAL Record Fragments panel lists the records present on the selected
-  page.
-- The record inspector and Physical Bytes panels display the record structure
-  and raw bytes.
-
-Those views are synchronized. For example, selecting a page in the segment
-overview updates the list of WAL record fragments and the physical bytes.
-Selecting a record does the same for the other views. One can also go directly
-to a page number, record number, file offset or LSN.
+The interface is split into four synchronized views. Selecting a page or record
+in one view updates the others. One can also go directly to a page number,
+record number, file offset or LSN.
 
 As a picture is worth a thousand words, let's have a look at it:
 
@@ -53,12 +43,50 @@ As a picture is worth a thousand words, let's have a look at it:
      class="aligncenter size-full"
      alt="pg_walviz overview" />
 
-As you can see, the colors in the Physical Layout and Physical Bytes panels
-help to locate the record header, block headers, image headers, relation
-locator, block number, full-page images, main data and alignment padding.
+#### Segment overview
 
-Moving the mouse over a byte also displays its value, file offset, LSN, WAL
-page, record, fragment, XID and decoded component.
+<img src="{{ site.baseurl }}/assets/images/pg_walviz-segment-overview.png"
+     class="aligncenter size-full"
+     alt="pg_walviz segment overview" />
+
+The heatmap shows where each resource manager writes WAL in the segment.
+Its horizontal axis represents WAL page ranges and its colors represent the
+amount of record data in each range. One can click a cell to inspect it or drag
+across pages to zoom. The Summary tab reports record and full-page-image bytes
+by resource manager.
+
+#### WAL Record Fragments
+
+<img src="{{ site.baseurl }}/assets/images/pg_walviz-record-fragments.png"
+     class="aligncenter size-full"
+     alt="pg_walviz WAL Record Fragments" />
+
+The WAL Record Fragments panel lists the records stored on the selected WAL
+page. A record spanning several pages is displayed once on each page. One can
+filter the list or go directly to a page or record number.
+
+#### Selected Record
+
+<img src="{{ site.baseurl }}/assets/images/pg_walviz-selected-record.png"
+     class="aligncenter size-full"
+     alt="pg_walviz Selected Record inspector" />
+
+The Selected Record inspector displays the decoded record header, physical
+layout, block references, full-page-image information, CRC and `pg_waldump`
+description. The Physical Layout colors indicate record and block headers,
+image headers, relation locators, block numbers, full-page images, block data,
+main data and alignment padding.
+
+#### Physical Bytes
+
+<img src="{{ site.baseurl }}/assets/images/pg_walviz-physical-bytes.png"
+     class="aligncenter size-full"
+     alt="pg_walviz Physical Bytes" />
+
+The Physical Bytes panel displays the raw WAL bytes with colors matching the
+selected record's Physical Layout. One can go directly to a file offset or LSN.
+Moving the mouse over a byte displays its value, file offset, LSN, WAL page,
+record, fragment, XID and decoded component.
 
 ### How to use it
 
@@ -104,9 +132,8 @@ Then `http://127.0.0.1:8765/` can be opened locally.
   recycled, the metadata and bytes could disagree. Use completed archived
   segments or immutable copies instead.
 - WAL may contain sensitive data, so the viewer should only be exposed locally.
-- Large inputs are not lazy-loaded yet. The browser receives the metadata for
-  the complete input set in one JSON response. Large segments or many small
-  WAL records can therefore take time and memory to load.
+- WAL metadata is parsed at startup, so large segments or many small WAL records
+  can take time to load. Fragment rows and record details are loaded on demand.
 - Full-page images are located and their compression method and hole metadata
   are reported. They are not decompressed or reconstructed as PostgreSQL data
   pages.
